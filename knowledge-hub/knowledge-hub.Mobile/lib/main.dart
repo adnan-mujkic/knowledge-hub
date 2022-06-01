@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'models/order.dart';
+import 'views/order.dart';
+
+
 
 void main() {
   runApp(const MyApp());
@@ -48,68 +54,146 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  List<Order> ordersList = List<Order>.empty(growable: true);
+  late OrderController selectedOrder;
+  bool displaySelectedOrder = false;
 
-  void _incrementCounter() {
+  _MyHomePageState(){
+    for(int i = 0; i < 5; i++){
+      Order order = Order();
+      order.populate(
+          'assets/book.png',
+          'John Doe',
+          'Book 1',
+          'Book author',
+          '00000',
+          '10.10.2022',
+          '10.10.2022',
+          'Dispatched',
+          'Address line 1');
+
+      ordersList.add(order);
+    }
+  }
+
+  List<OrderController> getOrderList() {
+    List<OrderController> tempList = List<OrderController>.empty(growable: true);
+
+    for(int i = 0; i < 5; i++){
+      OrderController temp = OrderController(ordersList[i], true, i);
+      temp.updateClickedEvent.subscribe((args) {
+        selectedOrder = OrderController(ordersList[i], false, i);
+        toggleDisplaySelectedOrder();
+      });
+      tempList.add(temp);
+    }
+
+    return tempList;
+  }
+
+  void toggleDisplaySelectedOrder(){
+    debugPrint("Clicked update");
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      this.displaySelectedOrder = !this.displaySelectedOrder;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
+      appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(60.0),
+          child: AppBar(
+            backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+            elevation: 4,
+            shadowColor: Colors.black.withOpacity(0.25),
+            flexibleSpace: Stack(
+              children: [
+                Container(
+                  alignment: Alignment.bottomLeft,
+                  height: 30,
+                  width: 30,
+                  margin: const EdgeInsets.only(left: 20, top: 45),
+                  child: Image.asset(
+                    'assets/Logo.png',
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(
+                      top: 40, bottom: 10, left: 70, right: 20),
+                  padding: const EdgeInsets.all(0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    color: const Color.fromARGB(30, 0, 0, 0),
+                  ),
+                  child: SizedBox(
+                      child: Stack(
+                          children: const <Widget>[
+                            Positioned(
+                                top: 10,
+                                left: 20,
+                                child: Icon(
+                                  Icons.search,
+                                  color: Colors.grey,
+                                  size: 24,
+                                )),
+                            Positioned(
+                                left: 60,
+                                top: -4,
+                                height: 50,
+                                width: 250,
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      labelText: "Search orders by number, city"),
+                                  style: TextStyle(
+                                      fontSize: 12
+                                  ),
+                                ))
+                          ])
+                  ),
+                )
+              ],
+            ) ,
+          )),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+            SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: getOrderList(),
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+            !displaySelectedOrder? Container() : SizedBox.expand(
+              child: Container(
+                width: double.infinity,
+                height: double.infinity,
+                color: Colors.black.withOpacity(0.5),
+                child: Stack(
+                  children: <Widget>[
+                    FractionallySizedBox(
+                      widthFactor: 1,
+                      heightFactor: 1,
+                      child: TextButton(
+                        onPressed: toggleDisplaySelectedOrder,
+                        child: Text(''),
+                      ),
+                    ),
+                    Align(
+                      child: FractionallySizedBox(
+                        widthFactor: 1,
+                        child: selectedOrder,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
