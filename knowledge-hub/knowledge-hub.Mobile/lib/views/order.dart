@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import '../components/customSelectButton.dart';
 import '../models/order.dart';
 import 'package:event/event.dart';
 
 class OrderController extends StatefulWidget{
   Order order = Order();
   bool preview;
+  bool userRole;
   int index;
   String? orderStatus = "Waiting";
   var updateClickedEvent = Event<Value<int>>();
 
 
-  OrderController(Order initialOrder, this.preview, this.index, {Key? key}) : super(key: key){
+  OrderController(Order initialOrder, this.preview, this.index, this.userRole, {Key? key}) : super(key: key){
     order = initialOrder;
   }
   @override
@@ -39,7 +39,15 @@ class OrderWidget  extends State<OrderController> {
       margin: const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: (preview != true? Colors.white : Color.fromARGB(30, 0, 0, 0)),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 6,
+            blurRadius: 6,
+            offset: Offset(0, 3), // changes position of shadow
+          )
+        ]
       ),
       child: Stack(
         children: <Widget>[
@@ -95,7 +103,7 @@ class OrderWidget  extends State<OrderController> {
                                     fontWeight: FontWeight.normal),
                               ),
                               Text(
-                                "Status: ${order.orderStatus}",
+                                "Status: ${getOrderNameFromIndex(widget.order.orderStatus)}",
                                 style: const TextStyle(
                                     fontWeight: FontWeight.normal),
                               ),
@@ -112,7 +120,7 @@ class OrderWidget  extends State<OrderController> {
               getPreview()
             ],
           ),
-          if(preview) Positioned(
+          if(preview && !widget.userRole) Positioned(
             right: 10,
             top: 10,
             width: 50,
@@ -145,6 +153,40 @@ class OrderWidget  extends State<OrderController> {
                 ],
               ),
             ),
+          ),
+          if(preview && widget.userRole && widget.orderStatus == "Waiting") Positioned(
+            right: 10,
+            top: 10,
+            width: 50,
+            height: 30,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Stack(
+                children: <Widget>[
+                  Positioned.fill(
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.all(0),
+                      primary: Colors.white,
+                      textStyle: const TextStyle(fontSize: 15),
+                    ),
+                    onPressed: onUpdateClicked,
+                    child: const Text(
+                      'Delete',
+                      style: TextStyle(
+                          fontSize: 11
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
           )
         ],
       ));
@@ -168,7 +210,7 @@ class OrderWidget  extends State<OrderController> {
                       Container(
                         height: 30,
                         child: DropdownButton(
-                            value: widget.orderStatus,
+                            value: getOrderNameFromIndex(widget.order.orderStatus),
                             items: <String>["Waiting", "Dispatch", "Return"]
                                 .map<DropdownMenuItem<String>>((String value){
                               return DropdownMenuItem<String>(
@@ -182,7 +224,8 @@ class OrderWidget  extends State<OrderController> {
                             }).toList(),
                             onChanged: (String? value){
                               setState(() => {
-                                widget.orderStatus = value
+                                widget.orderStatus = value,
+                                widget.order.orderStatus = getOrderIndexFromName(value)
                               });
                             }
                         ),
@@ -230,6 +273,29 @@ class OrderWidget  extends State<OrderController> {
     }else{
       return Container();
     }
+  }
+
+  int getOrderIndexFromName(String? value) {
+    switch(value){
+      case "Waiting":
+        return 0;
+      case "Dispatch":
+        return 1;
+      case "Return":
+        return 2;
+    }
+    return 0;
+  }
+  String? getOrderNameFromIndex(int index){
+    switch(index){
+      case 0:
+        return "Waiting";
+      case 1:
+        return "Dispatch";
+      case 2:
+        return "Return";
+    }
+    return "Waiting";
   }
 }
 

@@ -6,8 +6,9 @@ class Order{
   String orderNumber = "";
   String orderDate = "";
   String shippedDate = "";
-  String orderStatus = "";
+  int orderStatus = 0;
   String address = "";
+  String orderComment = "";
 
   void populate(
       String _imagePath,
@@ -17,8 +18,8 @@ class Order{
       String _orderNumber,
       String _orderDate,
       String _shippedDate,
-      String _orderStatus,
-      String _address,){
+      int _orderStatus,
+      String _address){
     imagePath = _imagePath;
     nameOfOrderPerson = _nameOfPerson;
     bookName = _bookName;

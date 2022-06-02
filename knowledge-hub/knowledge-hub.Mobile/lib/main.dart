@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:knowledge_hub_mobile/views/addBook.dart';
+import 'package:knowledge_hub_mobile/views/changeAddress.dart';
+import 'package:knowledge_hub_mobile/views/changePassword.dart';
+import 'package:knowledge_hub_mobile/views/changePaymentInfo.dart';
+import 'package:knowledge_hub_mobile/views/user.dart';
 
 import 'models/order.dart';
+import 'models/user.dart';
 import 'views/order.dart';
 
 
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -30,13 +36,13 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home:  MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  MyHomePage({Key? key, required this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -48,6 +54,14 @@ class MyHomePage extends StatefulWidget {
   // always marked "final".
 
   final String title;
+  late bool userRole = true;
+  late int currentDisplayIndex = 0;
+  late bool tabs = true;
+  User user = User(
+      "0000",
+      "adnanmujkic1337@gmail.com",
+      "Adnan",
+      "Biography");
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -57,6 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Order> ordersList = List<Order>.empty(growable: true);
   late OrderController selectedOrder;
   bool displaySelectedOrder = false;
+  int _selectedIndex = 0;
 
   _MyHomePageState(){
     for(int i = 0; i < 5; i++){
@@ -69,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
           '00000',
           '10.10.2022',
           '10.10.2022',
-          'Dispatched',
+          0,
           'Address line 1');
 
       ordersList.add(order);
@@ -80,9 +95,9 @@ class _MyHomePageState extends State<MyHomePage> {
     List<OrderController> tempList = List<OrderController>.empty(growable: true);
 
     for(int i = 0; i < 5; i++){
-      OrderController temp = OrderController(ordersList[i], true, i);
+      OrderController temp = OrderController(ordersList[i], true, i, widget.userRole);
       temp.updateClickedEvent.subscribe((args) {
-        selectedOrder = OrderController(ordersList[i], false, i);
+        selectedOrder = OrderController(ordersList[i], false, i, widget.userRole);
         toggleDisplaySelectedOrder();
       });
       tempList.add(temp);
@@ -92,9 +107,158 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void toggleDisplaySelectedOrder(){
-    debugPrint("Clicked update");
     setState(() {
       this.displaySelectedOrder = !this.displaySelectedOrder;
+    });
+  }
+
+  Widget GetDisplayScreen(){
+    if(widget.tabs == true){
+      switch(_selectedIndex){
+        case 0:
+          return Stack(
+            children: <Widget>[
+              Stack(
+                children: [
+                  Container(
+                    color: Colors.white,
+                    margin: EdgeInsets.only(
+                        top: (widget.userRole == true? 30 : 0),
+                        bottom: 60),
+                    child: widget.userRole == true? Container() : SingleChildScrollView(
+                      child: Container(
+                        padding: const EdgeInsets.all(1),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: getOrderList(),
+                        ),
+                      ),
+                    ),
+                  ),
+                  widget.userRole == true? Container(
+                    width: double.infinity,
+                    height: 30,
+                    color: const Color.fromARGB(255, 60, 60, 80),
+                    padding: EdgeInsets.all(0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                            onPressed: null,
+                            child: Text(
+                              "Categories",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12
+                              ),
+                            )
+                        ),
+                        TextButton(
+                            onPressed: null,
+                            child: Text(
+                              "Bestsellers",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12
+                              ),
+                            )
+                        ),
+                        TextButton(
+                            onPressed: null,
+                            child: Text(
+                              "On Sale",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12
+                              ),
+                            )
+                        ),
+                        TextButton(
+                            onPressed: null,
+                            child: Text(
+                              "Upcoming",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12
+                              ),
+                            )
+                        ),
+                      ],
+                    ),
+                  ) : Container(),
+                ],
+              ),
+              !displaySelectedOrder? Container() : SizedBox.expand(
+                child: Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: Colors.black.withOpacity(0.5),
+                  child: Stack(
+                    children: <Widget>[
+                      FractionallySizedBox(
+                        widthFactor: 1,
+                        heightFactor: 1,
+                        child: TextButton(
+                          onPressed: toggleDisplaySelectedOrder,
+                          child: Text(''),
+                        ),
+                      ),
+                      Align(
+                        child: FractionallySizedBox(
+                          widthFactor: 1,
+                          child: selectedOrder,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+
+      }
+      return Container();
+    }
+
+    debugPrint(this.widget.currentDisplayIndex.toString());
+
+    switch(this.widget.currentDisplayIndex){
+      case 0:
+        return UserManagmentWidget(widget.user);
+      case 1:
+        return ChangePasswordWidget();
+      case 2:
+        return ChangePaymentInfoWidget();
+      case 3:
+        return Container(
+          color: Colors.white,
+          margin: EdgeInsets.only(
+              top: 0,
+              bottom: 60),
+          child: SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.all(1),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: getOrderList(),
+              ),
+            ),
+          ),
+        );
+      case 4:
+        return ChangeAddressWidget();
+      case 5:
+        return AddBookWidget();
+    }
+    return Container();
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      this.widget.tabs = true;
+      _selectedIndex = index;
     });
   }
 
@@ -104,32 +268,22 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(60.0),
           child: AppBar(
-            backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+            backgroundColor: widget.userRole == true? Color.fromARGB(200, 221, 190, 169) : Color.fromARGB(255, 255, 255, 255),
             elevation: 4,
             shadowColor: Colors.black.withOpacity(0.25),
             flexibleSpace: Stack(
               children: [
                 Container(
-                  alignment: Alignment.bottomLeft,
-                  height: 30,
-                  width: 30,
-                  margin: const EdgeInsets.only(left: 20, top: 45),
-                  child: Image.asset(
-                    'assets/Logo.png',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Container(
                   margin: const EdgeInsets.only(
-                      top: 40, bottom: 10, left: 70, right: 20),
+                      top: 40, bottom: 10, left: 60, right: 20),
                   padding: const EdgeInsets.all(0),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(50),
-                    color: const Color.fromARGB(30, 0, 0, 0),
+                    color: widget.userRole == true? Colors.white : Color.fromARGB(30, 0, 0, 0),
                   ),
                   child: SizedBox(
                       child: Stack(
-                          children: const <Widget>[
+                          children: <Widget>[
                             Positioned(
                                 top: 10,
                                 left: 20,
@@ -146,52 +300,208 @@ class _MyHomePageState extends State<MyHomePage> {
                                 child: TextField(
                                   decoration: InputDecoration(
                                       border: InputBorder.none,
-                                      labelText: "Search orders by number, city"),
-                                  style: TextStyle(
+                                      labelText:
+                                        widget.userRole == true?
+                                        "Search books, authors, ISBNs" : "Search orders by number, city"
+                                  ),
+                                  style: const TextStyle(
                                       fontSize: 12
                                   ),
                                 ))
                           ])
                   ),
-                )
+                ),
               ],
             ) ,
           )),
       body: Center(
         child: Stack(
-          children: <Widget>[
+          children: [
             SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: getOrderList(),
-              ),
-            ),
-            !displaySelectedOrder? Container() : SizedBox.expand(
-              child: Container(
-                width: double.infinity,
-                height: double.infinity,
-                color: Colors.black.withOpacity(0.5),
-                child: Stack(
-                  children: <Widget>[
-                    FractionallySizedBox(
-                      widthFactor: 1,
-                      heightFactor: 1,
-                      child: TextButton(
-                        onPressed: toggleDisplaySelectedOrder,
-                        child: Text(''),
-                      ),
-                    ),
-                    Align(
-                      child: FractionallySizedBox(
-                        widthFactor: 1,
-                        child: selectedOrder,
-                      ),
-                    )
-                  ],
-                ),
-              ),
+                child: GetDisplayScreen()
             )
           ],
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: const Color.fromARGB(255, 221, 190, 169),
+        unselectedItemColor: const Color.fromARGB(200, 110, 90, 84),
+        selectedItemColor: Colors.white,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            activeIcon: Icon(Icons.home),
+            label: "Home",
+            backgroundColor: Color.fromARGB(255, 221, 190, 169),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.my_library_books_outlined),
+            activeIcon: Icon(Icons.my_library_books),
+            label: "My Books",
+            backgroundColor: Color.fromARGB(255, 221, 190, 169),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.turned_in_not),
+            activeIcon: Icon(Icons.turned_in),
+            label: 'Whishlist',
+            backgroundColor: Color.fromARGB(255, 221, 190, 169)
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_cart_outlined),
+              activeIcon: Icon(Icons.shopping_cart),
+              label: 'Cart',
+              backgroundColor: Color.fromARGB(255, 221, 190, 169)
+          ),
+        ],
+      ),
+      drawer: Container(
+        width: 200,
+        child: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              Container(
+                height: 100,
+                child: DrawerHeader(
+                  decoration: const BoxDecoration(
+                      color: Color.fromARGB(200, 221, 190, 169)
+                  ),
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: 32,
+                    width: 32,
+                    child: Image.asset(
+                      'assets/LogoWhite.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.all(10),
+                child: Center(
+                  child: Text(
+                    "Settings",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Color.fromARGB(150, 0, 0, 0)
+                    ),),
+                )
+              ),
+              const Divider(
+                height: 10,
+                thickness: 1,
+                indent: 10,
+                endIndent: 10,
+                color: Color.fromARGB(20, 0, 0, 0),
+              ),
+              ListTile(
+                title: Text("Account"),
+                leading: Icon(Icons.account_circle),
+                onTap: () {
+                  setState(() {
+                    this.widget.tabs = false;
+                    this.widget.currentDisplayIndex = 0;
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text("Privacy"),
+                leading: Icon(Icons.lock),
+                onTap: () {
+                  setState(() {
+                    this.widget.tabs = false;
+                    this.widget.currentDisplayIndex = 1;
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              if(widget.userRole) ListTile(
+                title: Text("Payment"),
+                leading: Icon(Icons.wallet),
+                onTap: () {
+                  setState(() {
+                    this.widget.tabs = false;
+                    this.widget.currentDisplayIndex = 2;
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              if(widget.userRole) ListTile(
+                title: Text("Orders"),
+                leading: Icon(Icons.shopping_bag),
+                onTap: () {
+                  setState(() {
+                    this.widget.tabs = false;
+                    this.widget.currentDisplayIndex = 3;
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              if(widget.userRole) ListTile(
+                title: Text("Adress"),
+                leading: Icon(Icons.pin_drop),
+                onTap: () {
+                  setState(() {
+                    this.widget.tabs = false;
+                    this.widget.currentDisplayIndex = 4;
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              if(widget.userRole) ListTile(
+                title: Text(
+                  "Add Book",
+                  style: TextStyle(
+                      color: Color.fromARGB(200, 50, 150, 10)
+                  ),
+                ),
+                leading: Icon(
+                  Icons.add,
+                  color: Color.fromARGB(200, 50, 150, 10),
+                ),
+                onTap: () {
+                  setState(() {
+                    this.widget.tabs = false;
+                    this.widget.currentDisplayIndex = 5;
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              const Divider(
+                height: 10,
+                thickness: 1,
+                indent: 10,
+                endIndent: 10,
+                color: Color.fromARGB(20, 0, 0, 0),
+              ),
+              ListTile(
+                title: Text(
+                  "Log Out",
+                  style: TextStyle(
+                    color: Color.fromARGB(200, 255, 0, 30)
+                  ),
+                ),
+                leading: Icon(
+                  Icons.logout,
+                  color: Color.fromARGB(180, 255, 0, 30),
+                ),
+                onTap: () {
+                  setState(() {
+                    this.widget.tabs = false;
+                    this.widget.currentDisplayIndex = 6;
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
