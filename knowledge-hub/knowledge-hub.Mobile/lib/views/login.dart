@@ -1,33 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:knowledge_hub_mobile/models/changePassword.dart';
 import 'package:knowledge_hub_mobile/models/user.dart';
+import '../models/loginRegister.dart';
 import '../models/order.dart';
 import 'package:event/event.dart';
 
-class ChangePasswordWidget extends StatefulWidget {
-  ChangePasswordWidget({Key? key}) : super(key: key){
-    userPassword = new ChangePassword();
+class LoginWidget extends StatefulWidget {
+  LoginWidget({Key? key}) : super(key: key){
+    userLogin = new UserLogin();
   }
 
-  late ChangePassword userPassword;
+  late UserLogin userLogin;
+  var openRegisterEvent = Event();
+  var loginEvent = Event();
 
   @override
-  ChangePasswordState createState() => ChangePasswordState();
+  LoginState createState() => LoginState();
 }
 
-class ChangePasswordState extends State<ChangePasswordWidget> {
+class LoginState extends State<LoginWidget> {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Align(
-        alignment: Alignment.bottomCenter,
-        child: Container(margin: EdgeInsets.only(top: 10, right: 30, left: 30),
+    return Scaffold(
+      body: Center(
+        child: Container(margin: EdgeInsets.only(top: 100, right: 30, left: 30),
             child: Column(
               children: [
                 Container(
                   margin: EdgeInsets.only(top: 10),
                   child: Text(
-                    "Privacy",
+                    "Login",
                     style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -35,7 +36,7 @@ class ChangePasswordState extends State<ChangePasswordWidget> {
                   ),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 50,
                 ),
                 Container(
                   margin: EdgeInsets.only(top: 10, bottom: 10),
@@ -44,12 +45,12 @@ class ChangePasswordState extends State<ChangePasswordWidget> {
                     children: [
                       Container(
                         margin: EdgeInsets.only(left: 10),
-                        child: Text("Old Password:"),
+                        child: Text("Email:"),
                       ),
                       Container(
                         margin: const EdgeInsets.only(top: 10),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
+                          borderRadius: BorderRadius.circular(10),
                           color: Color.fromARGB(10, 0, 0, 0),
                         ),
                         child: SizedBox(
@@ -58,10 +59,10 @@ class ChangePasswordState extends State<ChangePasswordWidget> {
                               child: TextField(
                                 decoration: InputDecoration(
                                     border: InputBorder.none,
-                                    hintText: this.widget.userPassword.OldPassword),
+                                    hintText: this.widget.userLogin.Email),
                                 style: const TextStyle(fontSize: 12),
-                                onChanged: (String? value){
-                                  this.widget.userPassword.OldPassword = value;
+                                onChanged: (String value){
+                                  this.widget.userLogin.Email = value;
                                 },
                               ),
                             )),
@@ -76,12 +77,12 @@ class ChangePasswordState extends State<ChangePasswordWidget> {
                     children: [
                       Container(
                         margin: EdgeInsets.only(left: 10),
-                        child: Text("New Password:"),
+                        child: Text("Password:"),
                       ),
                       Container(
                         margin: const EdgeInsets.only(top: 10),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
+                          borderRadius: BorderRadius.circular(10),
                           color: Color.fromARGB(10, 0, 0, 0),
                         ),
                         child: SizedBox(
@@ -90,10 +91,10 @@ class ChangePasswordState extends State<ChangePasswordWidget> {
                               child: TextField(
                                 decoration: InputDecoration(
                                     border: InputBorder.none,
-                                    hintText: this.widget.userPassword.NewPassword),
+                                    hintText: this.widget.userLogin.Password),
                                 style: const TextStyle(fontSize: 12),
-                                onChanged: (String? value){
-                                  this.widget.userPassword.NewPassword = value;
+                                onChanged: (String value){
+                                  this.widget.userLogin.Password = value;
                                 },
                               ),
                             )),
@@ -101,36 +102,11 @@ class ChangePasswordState extends State<ChangePasswordWidget> {
                     ],
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.only(top: 10, bottom: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(left: 10),
-                        child: Text("Confirm Password:"),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 10),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Color.fromARGB(10, 0, 0, 0),
-                        ),
-                        child: SizedBox(
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 2, bottom: 2, right: 20, left: 20),
-                              child: TextField(
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: this.widget.userPassword.ConfirmPassword),
-                                style: const TextStyle(fontSize: 12),
-                                onChanged: (String? value){
-                                  this.widget.userPassword.ConfirmPassword = value;
-                                },
-                              ),
-                            )),
-                      ),
-                    ],
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {},
+                    child: Text("Forgot Password?"),
                   ),
                 ),
                 const SizedBox(
@@ -147,11 +123,25 @@ class ChangePasswordState extends State<ChangePasswordWidget> {
                               )
                           )
                       ),
-                      onPressed: () => {},
+                      onPressed: () {
+                        widget.loginEvent.broadcast();
+                      },
                       child: Padding(
                         padding: EdgeInsets.all(15),
-                        child: Text("Save"),
+                        child: Text("Login"),
                       )
+                  ),
+                ),
+                const SizedBox(
+                  height: 50,
+                ),
+                Align(
+                  alignment: Alignment.center,
+                  child: TextButton(
+                    onPressed: () {
+                      widget.openRegisterEvent.broadcast();
+                    },
+                    child: Text("Register"),
                   ),
                 ),
               ],

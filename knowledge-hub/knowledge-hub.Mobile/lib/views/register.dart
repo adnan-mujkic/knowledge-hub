@@ -1,41 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:knowledge_hub_mobile/models/address.dart';
-import 'package:knowledge_hub_mobile/models/changePassword.dart';
 import 'package:knowledge_hub_mobile/models/user.dart';
+import '../models/loginRegister.dart';
 import '../models/order.dart';
 import 'package:event/event.dart';
 
-import '../models/paymentInfo.dart';
-
-class ChangeAddressWidget extends StatefulWidget {
-  ChangeAddressWidget({Key? key}) : super(key: key){
-    userAddress = new Address();
-    userAddress.FullName = "Adnan Mujkic";
-    userAddress.AdressLine = "Kneza Viseslava 69";
-    userAddress.City = "Mostar";
-    userAddress.Postcode = "0000";
+class RegisterWidget extends StatefulWidget {
+  RegisterWidget({Key? key}) : super(key: key){
+    userRegister = new Register();
   }
 
-  late Address userAddress;
-  var saveChangesEvent = Event();
+  late Register userRegister;
+  var openLoginEvent = Event();
+
 
   @override
-  ChangeAddressState createState() => ChangeAddressState();
+  RegisterState createState() => RegisterState();
 }
 
-class ChangeAddressState extends State<ChangeAddressWidget> {
+class RegisterState extends State<RegisterWidget> {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Align(
-        alignment: Alignment.bottomCenter,
-        child: Container(margin: EdgeInsets.only(top: 10, right: 30, left: 30),
+    return Scaffold(
+      body: Center(
+        child: Container(margin: EdgeInsets.only(top: 100, right: 30, left: 30),
             child: Column(
               children: [
                 Container(
                   margin: EdgeInsets.only(top: 10),
                   child: Text(
-                    "Address",
+                    "Register",
                     style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -43,7 +36,7 @@ class ChangeAddressState extends State<ChangeAddressWidget> {
                   ),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 50,
                 ),
                 Container(
                   margin: EdgeInsets.only(top: 10, bottom: 10),
@@ -52,24 +45,24 @@ class ChangeAddressState extends State<ChangeAddressWidget> {
                     children: [
                       Container(
                         margin: EdgeInsets.only(left: 10),
-                        child: Text("Full Name:"),
+                        child: Text("Email:"),
                       ),
                       Container(
                         margin: const EdgeInsets.only(top: 10),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
+                          borderRadius: BorderRadius.circular(10),
                           color: Color.fromARGB(10, 0, 0, 0),
                         ),
                         child: SizedBox(
                             child: Padding(
-                              padding: EdgeInsets.only(top: 0, bottom: 0, right: 20, left: 20),
+                              padding: EdgeInsets.only(top: 2, bottom: 2, right: 20, left: 20),
                               child: TextField(
                                 decoration: InputDecoration(
                                     border: InputBorder.none,
-                                    hintText: this.widget.userAddress.FullName),
+                                    hintText: this.widget.userRegister.Email),
                                 style: const TextStyle(fontSize: 12),
-                                onChanged: (String? value){
-                                  this.widget.userAddress.FullName = value;
+                                onChanged: (String value){
+                                  this.widget.userRegister.Email = value;
                                 },
                               ),
                             )),
@@ -84,24 +77,24 @@ class ChangeAddressState extends State<ChangeAddressWidget> {
                     children: [
                       Container(
                         margin: EdgeInsets.only(left: 10),
-                        child: Text("Address Line:"),
+                        child: Text("Password:"),
                       ),
                       Container(
                         margin: const EdgeInsets.only(top: 10),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
+                          borderRadius: BorderRadius.circular(10),
                           color: Color.fromARGB(10, 0, 0, 0),
                         ),
                         child: SizedBox(
                             child: Padding(
-                              padding: EdgeInsets.only(top: 0, bottom: 0, right: 20, left: 20),
+                              padding: EdgeInsets.only(top: 2, bottom: 2, right: 20, left: 20),
                               child: TextField(
                                 decoration: InputDecoration(
                                     border: InputBorder.none,
-                                    hintText: this.widget.userAddress.AdressLine),
+                                    hintText: this.widget.userRegister.Password),
                                 style: const TextStyle(fontSize: 12),
-                                onChanged: (String? value){
-                                  this.widget.userAddress.AdressLine = value;
+                                onChanged: (String value){
+                                  this.widget.userRegister.Password = value;
                                 },
                               ),
                             )),
@@ -116,56 +109,24 @@ class ChangeAddressState extends State<ChangeAddressWidget> {
                     children: [
                       Container(
                         margin: EdgeInsets.only(left: 10),
-                        child: Text("City:"),
+                        child: Text("Confirm Password:"),
                       ),
                       Container(
                         margin: const EdgeInsets.only(top: 10),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(10),
                           color: Color.fromARGB(10, 0, 0, 0),
                         ),
                         child: SizedBox(
                             child: Padding(
-                              padding: EdgeInsets.only(top: 0, bottom: 0, right: 20, left: 20),
+                              padding: EdgeInsets.only(top: 2, bottom: 2, right: 20, left: 20),
                               child: TextField(
                                 decoration: InputDecoration(
                                     border: InputBorder.none,
-                                    hintText: this.widget.userAddress.City),
+                                    hintText: this.widget.userRegister.ConfirmPassword),
                                 style: const TextStyle(fontSize: 12),
-                                onChanged: (String? value){
-                                  this.widget.userAddress.City = value;
-                                },
-                              ),
-                            )),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 10, bottom: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(left: 10),
-                        child: Text("Postcode:"),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 10),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Color.fromARGB(10, 0, 0, 0),
-                        ),
-                        child: SizedBox(
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 0, bottom: 0, right: 20, left: 20),
-                              child: TextField(
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: this.widget.userAddress.Postcode),
-                                style: const TextStyle(fontSize: 12),
-                                onChanged: (String? value){
-                                  this.widget.userAddress.Postcode = value;
+                                onChanged: (String value){
+                                  this.widget.userRegister.ConfirmPassword = value;
                                 },
                               ),
                             )),
@@ -187,15 +148,22 @@ class ChangeAddressState extends State<ChangeAddressWidget> {
                               )
                           )
                       ),
-                      onPressed: () => {
-                        widget.saveChangesEvent.broadcast()
-                      },
+                      onPressed: () => {},
                       child: Padding(
                         padding: EdgeInsets.all(15),
-                        child: Text("Save"),
+                        child: Text("Register"),
                       )
                   ),
                 ),
+                const SizedBox(
+                  height: 50,
+                ),
+                TextButton(
+                  onPressed: () {
+                    widget.openLoginEvent.broadcast();
+                  },
+                  child: Text("Login"),
+                )
               ],
             )),
       ),

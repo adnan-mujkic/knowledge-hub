@@ -9,6 +9,8 @@ class Order{
   int orderStatus = 0;
   String address = "";
   String orderComment = "";
+  double paid = 0;
+  String type = "";
 
   void populate(
       String _imagePath,

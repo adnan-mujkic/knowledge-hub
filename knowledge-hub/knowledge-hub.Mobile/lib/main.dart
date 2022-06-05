@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:knowledge_hub_mobile/views/addBook.dart';
+import 'package:knowledge_hub_mobile/components/paymentScreen.dart';
+import 'package:knowledge_hub_mobile/views/bookView.dart';
+import 'package:knowledge_hub_mobile/views/cart.dart';
 import 'package:knowledge_hub_mobile/views/changeAddress.dart';
 import 'package:knowledge_hub_mobile/views/changePassword.dart';
 import 'package:knowledge_hub_mobile/views/changePaymentInfo.dart';
+import 'package:knowledge_hub_mobile/views/login.dart';
+import 'package:knowledge_hub_mobile/views/register.dart';
 import 'package:knowledge_hub_mobile/views/user.dart';
+import 'package:knowledge_hub_mobile/views/whishlist.dart';
 
+import 'models/book.dart';
 import 'models/order.dart';
 import 'models/user.dart';
 import 'views/order.dart';
@@ -44,19 +50,12 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key, required this.title}) : super(key: key);
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
   late bool userRole = true;
   late int currentDisplayIndex = 0;
   late bool tabs = true;
+
+
   User user = User(
       "0000",
       "adnanmujkic1337@gmail.com",
@@ -72,6 +71,14 @@ class _MyHomePageState extends State<MyHomePage> {
   late OrderController selectedOrder;
   bool displaySelectedOrder = false;
   int _selectedIndex = 0;
+  late bool logged = false;
+  late bool loginScreen = true;
+  late bool viewingBook = false;
+  late Book book;
+  late int cartItemsNumber = 0;
+  final LoginWidget loginWidget = LoginWidget();
+  final RegisterWidget registerWidget = RegisterWidget();
+  late WishlistWidget wishlist;
 
   _MyHomePageState(){
     for(int i = 0; i < 5; i++){
@@ -89,6 +96,30 @@ class _MyHomePageState extends State<MyHomePage> {
 
       ordersList.add(order);
     }
+
+    loginWidget.openRegisterEvent.subscribe((args) {
+      setState(() {
+        loginScreen = false;
+      });
+    });
+    loginWidget.loginEvent.subscribe((args) {
+      setState((){
+        logged = true;
+      });
+    });
+    registerWidget.openLoginEvent.subscribe((args) {
+      setState(() {
+        loginScreen = true;
+      });
+    });
+
+    wishlist = WishlistWidget();
+    wishlist.selectedBookEvent.subscribe((args) {
+      setState(() {
+        viewingBook = true;
+        book = args!.value;
+      });
+    });
   }
 
   List<OrderController> getOrderList() {
@@ -114,6 +145,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget GetDisplayScreen(){
     if(widget.tabs == true){
+      if(viewingBook){
+        return Stack(
+          children: [
+            BookViewWidget(book),
+          ],
+        );
+      }
+
       switch(_selectedIndex){
         case 0:
           return Stack(
@@ -123,9 +162,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   Container(
                     color: Colors.white,
                     margin: EdgeInsets.only(
-                        top: (widget.userRole == true? 30 : 0),
-                        bottom: 60),
-                    child: widget.userRole == true? Container() : SingleChildScrollView(
+                        top: (widget.userRole == true? 30 : 0)),
+                    child: (widget.userRole == true? Container() : SingleChildScrollView(
                       child: Container(
                         padding: const EdgeInsets.all(1),
                         child: Column(
@@ -133,7 +171,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           children: getOrderList(),
                         ),
                       ),
-                    ),
+                    )),
                   ),
                   widget.userRole == true? Container(
                     width: double.infinity,
@@ -217,12 +255,16 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ],
           );
-
+        case 1:
+          return Container();
+        case 2:
+          return wishlist;
+          case 3:
+          return CartWidget();
       }
       return Container();
     }
 
-    debugPrint(this.widget.currentDisplayIndex.toString());
 
     switch(this.widget.currentDisplayIndex){
       case 0:
@@ -235,8 +277,7 @@ class _MyHomePageState extends State<MyHomePage> {
         return Container(
           color: Colors.white,
           margin: EdgeInsets.only(
-              top: 0,
-              bottom: 60),
+              top: 0),
           child: SingleChildScrollView(
             child: Container(
               padding: const EdgeInsets.all(1),
@@ -249,8 +290,6 @@ class _MyHomePageState extends State<MyHomePage> {
         );
       case 4:
         return ChangeAddressWidget();
-      case 5:
-        return AddBookWidget();
     }
     return Container();
   }
@@ -259,12 +298,13 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       this.widget.tabs = true;
       _selectedIndex = index;
+      this.viewingBook = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return logged? Scaffold(
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(60.0),
           child: AppBar(
@@ -273,6 +313,21 @@ class _MyHomePageState extends State<MyHomePage> {
             shadowColor: Colors.black.withOpacity(0.25),
             flexibleSpace: Stack(
               children: [
+                viewingBook? Container(
+                  margin: const EdgeInsets.only(
+                      top: 40, bottom: 10, left: 0, right: 20),
+                  child: TextButton(
+                    style: ButtonStyle(
+                      foregroundColor: MaterialStateProperty.all<Color>(Colors.white)
+                    ),
+                    onPressed: (){
+                      setState(() {
+                        viewingBook = false;
+                      });
+                    },
+                    child: Icon(Icons.arrow_back),
+                  ),
+                ) : Container(),
                 Container(
                   margin: const EdgeInsets.only(
                       top: 40, bottom: 10, left: 60, right: 20),
@@ -314,11 +369,14 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ) ,
           )),
-      body: Center(
+      body: SizedBox(
         child: Stack(
           children: [
-            SingleChildScrollView(
-                child: GetDisplayScreen()
+            Container(
+              width: double.infinity,
+              height: double.infinity,
+              color: const Color.fromARGB(10, 0, 0, 0),
+              child: GetDisplayScreen()
             )
           ],
         ),
@@ -331,7 +389,7 @@ class _MyHomePageState extends State<MyHomePage> {
         showUnselectedLabels: false,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),
             activeIcon: Icon(Icons.home),
@@ -351,14 +409,42 @@ class _MyHomePageState extends State<MyHomePage> {
             backgroundColor: Color.fromARGB(255, 221, 190, 169)
           ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart_outlined),
+              icon: Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.center,
+                children: [
+                  Icon(Icons.shopping_cart_outlined),
+                  cartItemsNumber > 0? Positioned(
+                    right: -11,
+                      top: -11,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            width: 24,
+                            height: 24,
+                            decoration: BoxDecoration(
+                                color: Colors.red.withOpacity(1),
+                                borderRadius: BorderRadius.circular(20)
+                            ),
+                          ),
+                          Text(
+                            cartItemsNumber.toString(),
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),)
+                        ],
+                      )
+                  ) : Container(),
+                ],
+              ) ,
               activeIcon: Icon(Icons.shopping_cart),
               label: 'Cart',
               backgroundColor: Color.fromARGB(255, 221, 190, 169)
           ),
         ],
       ),
-      drawer: Container(
+      drawer: viewingBook? null : Container(
         width: 200,
         child: Drawer(
           child: ListView(
@@ -455,25 +541,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   Navigator.pop(context);
                 },
               ),
-              if(widget.userRole) ListTile(
-                title: Text(
-                  "Add Book",
-                  style: TextStyle(
-                      color: Color.fromARGB(200, 50, 150, 10)
-                  ),
-                ),
-                leading: Icon(
-                  Icons.add,
-                  color: Color.fromARGB(200, 50, 150, 10),
-                ),
-                onTap: () {
-                  setState(() {
-                    this.widget.tabs = false;
-                    this.widget.currentDisplayIndex = 5;
-                  });
-                  Navigator.pop(context);
-                },
-              ),
               const Divider(
                 height: 10,
                 thickness: 1,
@@ -494,8 +561,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 onTap: () {
                   setState(() {
-                    this.widget.tabs = false;
-                    this.widget.currentDisplayIndex = 6;
+                    this.logged = false;
                   });
                   Navigator.pop(context);
                 },
@@ -504,6 +570,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-    );
+    ) :
+    (loginScreen? loginWidget : registerWidget);
   }
 }

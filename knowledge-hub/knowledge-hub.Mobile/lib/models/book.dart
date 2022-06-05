@@ -1,9 +1,11 @@
 class Book{
-  String? AuthorUuid = "";
-  String? BookName = "";
-  String? Language = "";
-  String? Category = "";
-  int? PriceDigital = 0;
-  int? PricePhysical = 0;
-  String? Description = "";
+  String AuthorUuid = "";
+  String AuthorName = "";
+  String BookName = "";
+  String Language = "";
+  String Category = "";
+  double PriceDigital = 0;
+  double PricePhysical = 0;
+  String Description = "";
+  double Rating = 5;
 }
