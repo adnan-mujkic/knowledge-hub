@@ -23,7 +23,7 @@ class WhishlistState extends State<WishlistWidget> {
 
   List<Widget> constructListWidget(){
     List<Widget> temp = List<Widget>.empty(growable: true);
-    var bookInList = BookInListWidget(Book());
+    var bookInList = BookInListWidget(Book(), 100);
     bookInList.bookSelectedEvent.subscribe((args) {
       selectedBook = args!.value;
       selectBook();

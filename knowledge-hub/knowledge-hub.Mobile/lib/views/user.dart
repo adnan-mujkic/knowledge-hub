@@ -4,11 +4,9 @@ import '../models/order.dart';
 import 'package:event/event.dart';
 
 class UserManagmentWidget extends StatefulWidget {
-  UserManagmentWidget(User newUser, {Key? key}) : super(key: key){
-    user = newUser;
-  }
+  UserManagmentWidget(this.user, {Key? key}) : super(key: key);
 
-  late User user;
+  User user;
 
   @override
   UserManagmentState createState() => UserManagmentState();

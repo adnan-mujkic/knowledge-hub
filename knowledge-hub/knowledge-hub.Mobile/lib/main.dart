@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:knowledge_hub_mobile/components/paymentScreen.dart';
+import 'package:http/http.dart' as http;
+import 'package:knowledge_hub_mobile/components/bookViewInList.dart';
+import 'package:knowledge_hub_mobile/views/mainBooksCategories.dart';
+import '../services/accountService.dart';
 import 'package:knowledge_hub_mobile/views/bookView.dart';
 import 'package:knowledge_hub_mobile/views/cart.dart';
 import 'package:knowledge_hub_mobile/views/changeAddress.dart';
@@ -11,6 +16,7 @@ import 'package:knowledge_hub_mobile/views/register.dart';
 import 'package:knowledge_hub_mobile/views/user.dart';
 import 'package:knowledge_hub_mobile/views/whishlist.dart';
 
+import 'models/authData.dart';
 import 'models/book.dart';
 import 'models/order.dart';
 import 'models/user.dart';
@@ -56,11 +62,7 @@ class MyHomePage extends StatefulWidget {
   late bool tabs = true;
 
 
-  User user = User(
-      "0000",
-      "adnanmujkic1337@gmail.com",
-      "Adnan",
-      "Biography");
+  User user = User();
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -69,18 +71,59 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<Order> ordersList = List<Order>.empty(growable: true);
   late OrderController selectedOrder;
+  List<Book> bookList = List<Book>.empty(growable: true);
+  List<Widget> booksWidgets = List<Widget>.empty(growable: true);
   bool displaySelectedOrder = false;
   int _selectedIndex = 0;
   late bool logged = false;
   late bool loginScreen = true;
   late bool viewingBook = false;
+  bool loadingScreen = true;
   late Book book;
   late int cartItemsNumber = 0;
-  final LoginWidget loginWidget = LoginWidget();
-  final RegisterWidget registerWidget = RegisterWidget();
+  var accountService = AccountService.instance;
+  late LoginWidget loginWidget;
+  late RegisterWidget registerWidget;
   late WishlistWidget wishlist;
+  late MainBooksCategoriesWidget mainBooksCategoriesWidget;
 
   _MyHomePageState(){
+    accountService.loadFileFromDisk().then((value)  async {
+        await http.get(
+          Uri.parse('http://192.168.1.103:5000/api/Book/'),
+          headers: <String, String>{
+            'Content-Type' : 'application/json; charset=UTF-8',
+          },
+        ).then((res) {
+          setState((){
+            loadingScreen = false;
+            if(accountService.authData.Email != ""){
+              logged = true;
+            }
+            if(res.statusCode == 200){
+              List<dynamic> map = jsonDecode(res.body) as List<dynamic>;
+              map.forEach((element) {
+                Book bookElement = Book.fromJson(element);
+                bookList.add(bookElement);
+                booksWidgets.add(BookInListWidget(bookElement, 100));
+              });
+
+              mainBooksCategoriesWidget = MainBooksCategoriesWidget(bookList);
+              mainBooksCategoriesWidget.selectedBookEvent.subscribe((args) {
+                setState((){
+                  viewingBook = true;
+                  book = args!.value;
+                });
+              });
+
+              debugPrint(booksWidgets.length.toString());
+            }
+          });
+        });
+      }
+    );
+    loginWidget = LoginWidget();
+    registerWidget = RegisterWidget();
     for(int i = 0; i < 5; i++){
       Order order = Order();
       order.populate(
@@ -110,6 +153,13 @@ class _MyHomePageState extends State<MyHomePage> {
     registerWidget.openLoginEvent.subscribe((args) {
       setState(() {
         loginScreen = true;
+      });
+    });
+    registerWidget.createAccountEvent.subscribe((args) {
+      setState(() {
+        logged = true;
+        accountService.authData.Email = args!.value1;
+        accountService.authData.Password = args.value2;
       });
     });
 
@@ -160,18 +210,13 @@ class _MyHomePageState extends State<MyHomePage> {
               Stack(
                 children: [
                   Container(
-                    color: Colors.white,
+                    width: double.infinity,
                     margin: EdgeInsets.only(
                         top: (widget.userRole == true? 30 : 0)),
-                    child: (widget.userRole == true? Container() : SingleChildScrollView(
-                      child: Container(
+                    child: Container(
                         padding: const EdgeInsets.all(1),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: getOrderList(),
-                        ),
-                      ),
-                    )),
+                        child: mainBooksCategoriesWidget
+                    ),
                   ),
                   widget.userRole == true? Container(
                     width: double.infinity,
@@ -304,7 +349,25 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return logged? Scaffold(
+    return loadingScreen?
+    Scaffold(
+      body: Container(
+        height: double.infinity,
+        width: double.infinity,
+        color: const Color.fromARGB(255, 221, 190, 169),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset('assets/LogoWhite.png'),
+              const SizedBox(height: 30),
+              const Text("Stocking bookshelves...", style: TextStyle(color: Colors.white),)
+            ],
+          ),
+        ),
+      ),
+    ):
+    (logged? Scaffold(
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(60.0),
           child: AppBar(
@@ -318,7 +381,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       top: 40, bottom: 10, left: 0, right: 20),
                   child: TextButton(
                     style: ButtonStyle(
-                      foregroundColor: MaterialStateProperty.all<Color>(Colors.white)
+                        foregroundColor: MaterialStateProperty.all<Color>(Colors.white)
                     ),
                     onPressed: (){
                       setState(() {
@@ -356,8 +419,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                   decoration: InputDecoration(
                                       border: InputBorder.none,
                                       labelText:
-                                        widget.userRole == true?
-                                        "Search books, authors, ISBNs" : "Search orders by number, city"
+                                      widget.userRole == true?
+                                      "Search books, authors, ISBNs" : "Search orders by number, city"
                                   ),
                                   style: const TextStyle(
                                       fontSize: 12
@@ -373,10 +436,10 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Stack(
           children: [
             Container(
-              width: double.infinity,
-              height: double.infinity,
-              color: const Color.fromARGB(10, 0, 0, 0),
-              child: GetDisplayScreen()
+                width: double.infinity,
+                height: double.infinity,
+                color: const Color.fromARGB(10, 0, 0, 0),
+                child: GetDisplayScreen()
             )
           ],
         ),
@@ -403,10 +466,10 @@ class _MyHomePageState extends State<MyHomePage> {
             backgroundColor: Color.fromARGB(255, 221, 190, 169),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.turned_in_not),
-            activeIcon: Icon(Icons.turned_in),
-            label: 'Whishlist',
-            backgroundColor: Color.fromARGB(255, 221, 190, 169)
+              icon: Icon(Icons.turned_in_not),
+              activeIcon: Icon(Icons.turned_in),
+              label: 'Whishlist',
+              backgroundColor: Color.fromARGB(255, 221, 190, 169)
           ),
           BottomNavigationBarItem(
               icon: Stack(
@@ -415,7 +478,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   Icon(Icons.shopping_cart_outlined),
                   cartItemsNumber > 0? Positioned(
-                    right: -11,
+                      right: -11,
                       top: -11,
                       child: Stack(
                         alignment: Alignment.center,
@@ -468,16 +531,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.all(10),
-                child: Center(
-                  child: Text(
-                    "Settings",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: Color.fromARGB(150, 0, 0, 0)
-                    ),),
-                )
+                  margin: EdgeInsets.all(10),
+                  child: Center(
+                    child: Text(
+                      "Settings",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: Color.fromARGB(150, 0, 0, 0)
+                      ),),
+                  )
               ),
               const Divider(
                 height: 10,
@@ -552,7 +615,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 title: Text(
                   "Log Out",
                   style: TextStyle(
-                    color: Color.fromARGB(200, 255, 0, 30)
+                      color: Color.fromARGB(200, 255, 0, 30)
                   ),
                 ),
                 leading: Icon(
@@ -570,7 +633,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-    ) :
-    (loginScreen? loginWidget : registerWidget);
+    ) : (loginScreen? loginWidget : registerWidget));
   }
 }

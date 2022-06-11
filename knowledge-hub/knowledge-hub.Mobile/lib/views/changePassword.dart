@@ -56,9 +56,10 @@ class ChangePasswordState extends State<ChangePasswordWidget> {
                             child: Padding(
                               padding: EdgeInsets.only(top: 2, bottom: 2, right: 20, left: 20),
                               child: TextField(
+                                autocorrect: false,
+                                obscureText: true,
                                 decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: this.widget.userPassword.OldPassword),
+                                    border: InputBorder.none,),
                                 style: const TextStyle(fontSize: 12),
                                 onChanged: (String? value){
                                   this.widget.userPassword.OldPassword = value;
@@ -88,9 +89,10 @@ class ChangePasswordState extends State<ChangePasswordWidget> {
                             child: Padding(
                               padding: EdgeInsets.only(top: 2, bottom: 2, right: 20, left: 20),
                               child: TextField(
+                                autocorrect: false,
+                                obscureText: true,
                                 decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: this.widget.userPassword.NewPassword),
+                                    border: InputBorder.none,),
                                 style: const TextStyle(fontSize: 12),
                                 onChanged: (String? value){
                                   this.widget.userPassword.NewPassword = value;
@@ -120,9 +122,10 @@ class ChangePasswordState extends State<ChangePasswordWidget> {
                             child: Padding(
                               padding: EdgeInsets.only(top: 2, bottom: 2, right: 20, left: 20),
                               child: TextField(
+                                autocorrect: false,
+                                obscureText: true,
                                 decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: this.widget.userPassword.ConfirmPassword),
+                                    border: InputBorder.none,),
                                 style: const TextStyle(fontSize: 12),
                                 onChanged: (String? value){
                                   this.widget.userPassword.ConfirmPassword = value;

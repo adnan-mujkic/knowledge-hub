@@ -1,13 +1,26 @@
 class User{
-  String? Uuid;
-  String? Email;
-  String? Username;
-  String? Biography;
+  int UserId = 0;
+  String Email = "";
+  String Username = "";
+  String Biography = "";
+  String ImagePath = "";
+  int UserRole = 2;
 
-  User(String uuid, String email, String username, String bio){
-    Uuid = uuid;
-    Email = email;
-    Username = username;
-    Biography = bio;
-  }
+  User();
+
+  Map<String, dynamic> toJson() => {
+    'Userid': UserId,
+    'Email' : Email,
+    'Username' : Username,
+    'Biography' : Biography,
+    'ImagePath' : ImagePath,
+    'UserRole' : UserRole,
+  };
+  User.fromJson(Map<String, dynamic> jsonFile):
+        UserId = jsonFile['userId']??0,
+        Email = jsonFile['email']??"",
+        Username = jsonFile['username']??"",
+        Biography = jsonFile['biography']??"",
+        ImagePath = jsonFile['imagePath']??"",
+        UserRole = jsonFile['userRole']??2;
 }

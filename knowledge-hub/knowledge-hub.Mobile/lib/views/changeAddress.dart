@@ -1,19 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:knowledge_hub_mobile/models/address.dart';
-import 'package:knowledge_hub_mobile/models/changePassword.dart';
-import 'package:knowledge_hub_mobile/models/user.dart';
-import '../models/order.dart';
+import 'package:knowledge_hub_mobile/services/accountService.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:event/event.dart';
 
-import '../models/paymentInfo.dart';
 
 class ChangeAddressWidget extends StatefulWidget {
   ChangeAddressWidget({Key? key}) : super(key: key){
-    userAddress = new Address();
-    userAddress.FullName = "Adnan Mujkic";
-    userAddress.AdressLine = "Kneza Viseslava 69";
-    userAddress.City = "Mostar";
-    userAddress.Postcode = "0000";
+    userAddress = AccountService.instance.addressData;
   }
 
   late Address userAddress;
@@ -24,6 +18,11 @@ class ChangeAddressWidget extends StatefulWidget {
 }
 
 class ChangeAddressState extends State<ChangeAddressWidget> {
+
+  saveAddress(){
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -187,8 +186,13 @@ class ChangeAddressState extends State<ChangeAddressWidget> {
                               )
                           )
                       ),
-                      onPressed: () => {
-                        widget.saveChangesEvent.broadcast()
+                      onPressed: ()  {
+                        saveAddress();
+                        widget.saveChangesEvent.broadcast();
+                        showSimpleNotification(
+                          Text("Saved!"),
+                          background: Colors.green
+                        );
                       },
                       child: Padding(
                         padding: EdgeInsets.all(15),

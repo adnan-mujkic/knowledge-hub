@@ -9,6 +9,7 @@ class BookViewWidget extends StatefulWidget {
 
   late Book book;
   int? digitalSelected = 0;
+  int reviewScore = 1;
 
   List<Widget> getStars(){
     List<Widget> icons = new List<Widget>.empty(growable: true);
@@ -41,6 +42,13 @@ class BookViewWidget extends StatefulWidget {
 }
 
 class BookViewState extends State<BookViewWidget> {
+
+  selectStar(int index){
+    setState((){
+      widget.reviewScore = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,7 +65,7 @@ class BookViewState extends State<BookViewWidget> {
                         child: Text(
                           widget.book.BookName,
                           style: TextStyle(
-                              fontSize: 24,
+                              fontSize: 20,
                               fontWeight: FontWeight.bold,
                               color: Colors.blueGrey),
                         ),
@@ -67,7 +75,7 @@ class BookViewState extends State<BookViewWidget> {
                         child: Text(
                           widget.book.AuthorName,
                           style: TextStyle(
-                              fontSize: 18),
+                              fontSize: 16),
                         ),
                       ),
                       Container(
@@ -202,14 +210,64 @@ class BookViewState extends State<BookViewWidget> {
                         margin: EdgeInsets.only(top: 10, bottom: 10),
                         child: Column(
                           children: [
-                            Text("Comments",
+                            const Text("Reviews",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18
                               ),),
-                            Divider(
+                            const Divider(
                               thickness: 1,
                               height: 20,
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                InkWell(
+                                  onTap: (){
+                                    selectStar(1);
+                                  },
+                                  child: widget.reviewScore >= 1?
+                                  Icon(Icons.star_rounded, size: 32,) :
+                                  Icon(Icons.star_border_rounded, size: 32,),
+                                ),
+                                InkWell(
+                                  onTap: (){
+                                    selectStar(2);
+                                  },
+                                  child: widget.reviewScore >= 2?
+                                  Icon(Icons.star_rounded, size: 32,) :
+                                  Icon(Icons.star_border_rounded, size: 32,),
+                                ),
+                                InkWell(
+                                  onTap: (){
+                                    selectStar(3);
+                                  },
+                                  child: widget.reviewScore >= 3?
+                                  Icon(Icons.star_rounded, size: 32,) :
+                                  Icon(Icons.star_border_rounded, size: 32,),
+                                ),
+                                InkWell(
+                                  onTap: (){
+                                    selectStar(4);
+                                  },
+                                  child: widget.reviewScore >= 4?
+                                  Icon(Icons.star_rounded, size: 32,) :
+                                  Icon(Icons.star_border_rounded, size: 32,),
+                                ),
+                                InkWell(
+                                  onTap: (){
+                                    selectStar(5);
+                                  },
+                                  child: widget.reviewScore >= 5?
+                                  Icon(Icons.star_rounded, size: 32,) :
+                                  Icon(Icons.star_border_rounded, size: 32,),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
                             ),
                             Container(
                               decoration: BoxDecoration(
@@ -221,7 +279,7 @@ class BookViewState extends State<BookViewWidget> {
                                     padding: EdgeInsets.only(top: 2, bottom: 2, right: 20, left: 20),
                                     child: TextField(
                                       maxLines: 5,
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                           border: InputBorder.none,
                                           hintText: "Type in a comment..."),
                                       style: const TextStyle(fontSize: 12),
@@ -247,7 +305,7 @@ class BookViewState extends State<BookViewWidget> {
                                   onPressed: () => {},
                                   child: Padding(
                                     padding: EdgeInsets.all(15),
-                                    child: Text("Post comment"),
+                                    child: Text("Post review"),
                                   )
                               ),
                             ),
