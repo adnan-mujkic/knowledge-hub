@@ -12,5 +12,6 @@
       public double Score { get; set; }
       public string Language { get; set; }
       public string Category { get; set; }
+      public List<ReviewResponse> Reviews { get; set; }
    }
 }

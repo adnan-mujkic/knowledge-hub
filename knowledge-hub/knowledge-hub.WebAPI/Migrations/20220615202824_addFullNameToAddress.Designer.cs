@@ -12,8 +12,8 @@ using knowledge_hub.WebAPI.Database;
 namespace knowledge_hub.WebAPI.Migrations
 {
     [DbContext(typeof(databaseContext))]
-    [Migration("20220611163027_initial")]
-    partial class initial
+    [Migration("20220615202824_addFullNameToAddress")]
+    partial class addFullNameToAddress
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,37 @@ namespace knowledge_hub.WebAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("knowledge_hub.WebAPI.Database.Address", b =>
+                {
+                    b.Property<int>("AddressId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AddressId"), 1L, 1);
+
+                    b.Property<string>("AddressLine")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AddressId");
+
+                    b.HasIndex("CityId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Addresses");
+                });
 
             modelBuilder.Entity("knowledge_hub.WebAPI.Database.Book", b =>
                 {
@@ -347,6 +378,50 @@ namespace knowledge_hub.WebAPI.Migrations
                     b.HasKey("CityId");
 
                     b.ToTable("Cities");
+
+                    b.HasData(
+                        new
+                        {
+                            CityId = 1,
+                            Country = "Bosnia and Herzegovina",
+                            Name = "Sarajevo",
+                            ZipCode = "71000"
+                        },
+                        new
+                        {
+                            CityId = 2,
+                            Country = "Bosnia and Herzegovina",
+                            Name = "Mostar",
+                            ZipCode = "88000"
+                        },
+                        new
+                        {
+                            CityId = 3,
+                            Country = "Bosnia and Herzegovina",
+                            Name = "Konjic",
+                            ZipCode = "88400"
+                        },
+                        new
+                        {
+                            CityId = 4,
+                            Country = "Bosnia and Herzegovina",
+                            Name = "Zenica",
+                            ZipCode = "72000"
+                        },
+                        new
+                        {
+                            CityId = 5,
+                            Country = "Bosnia and Herzegovina",
+                            Name = "Banja Luka",
+                            ZipCode = "78000"
+                        },
+                        new
+                        {
+                            CityId = 6,
+                            Country = "Bosnia and Herzegovina",
+                            Name = "Tuzla",
+                            ZipCode = "75000"
+                        });
                 });
 
             modelBuilder.Entity("knowledge_hub.WebAPI.Database.Language", b =>
@@ -587,17 +662,8 @@ namespace knowledge_hub.WebAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"), 1L, 1);
 
-                    b.Property<string>("AddressLine")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Biography")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("City")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImagePath")
@@ -609,9 +675,6 @@ namespace knowledge_hub.WebAPI.Migrations
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ZipCode")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId");
@@ -641,6 +704,25 @@ namespace knowledge_hub.WebAPI.Migrations
                         .IsUnique();
 
                     b.ToTable("UserRoles");
+                });
+
+            modelBuilder.Entity("knowledge_hub.WebAPI.Database.Address", b =>
+                {
+                    b.HasOne("knowledge_hub.WebAPI.Database.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("knowledge_hub.WebAPI.Database.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("knowledge_hub.WebAPI.Database.Book", b =>

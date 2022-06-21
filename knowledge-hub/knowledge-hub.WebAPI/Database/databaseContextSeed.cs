@@ -11,6 +11,15 @@ namespace knowledge_hub.WebAPI.Database
             new Role { RoleID = 3, Name = "Delivery" }
          );
 
+         modelBuilder.Entity<City>().HasData(
+            new City { CityId = 1, Name = "Sarajevo", ZipCode = "71000", Country = "Bosnia and Herzegovina" },
+            new City { CityId = 2, Name = "Mostar", ZipCode = "88000", Country = "Bosnia and Herzegovina" },
+            new City { CityId = 3, Name = "Konjic", ZipCode = "88400", Country = "Bosnia and Herzegovina" },
+            new City { CityId = 4, Name = "Zenica", ZipCode = "72000", Country = "Bosnia and Herzegovina" },
+            new City { CityId = 5, Name = "Banja Luka", ZipCode = "78000", Country = "Bosnia and Herzegovina" },
+            new City { CityId = 6, Name = "Tuzla", ZipCode = "75000", Country = "Bosnia and Herzegovina" }
+         );
+
          modelBuilder.Entity<Category>().HasData(
             new Category { CategoryId = 1, Name = "Art & Photography" },
             new Category { CategoryId = 2, Name = "Biography" },

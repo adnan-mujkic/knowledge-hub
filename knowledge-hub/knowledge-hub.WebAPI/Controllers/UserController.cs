@@ -17,7 +17,7 @@ namespace knowledge_hub.WebAPI.Controllers
       }
 
       [HttpPost("Login")]
-      public async Task<UserResponse> Login(AuthenticationRequest request) {
+      public async Task<UserDataResponse> Login(AuthenticationRequest request) {
          return await _service.Login(request);
       }
 
@@ -29,10 +29,6 @@ namespace knowledge_hub.WebAPI.Controllers
       public async Task<UserResponse> RegisterUser(UserRegisterRequest request) {
          return await _service.RegisterUser(request);
       }
-      [HttpPost("UpdateAdress")]
-      public async Task<UserResponse> UpdateAddress(UserAddressUpdateRequest request) {
-         return await _service.UpdateAddress(request);
-      }
       [HttpPost("UpdatePayment")]
       public async Task<PaymentInfoResponse> UpdatePayment(UserPaymentInfoRequest request) {
          return await _service.UpdatePayment(request);
@@ -40,6 +36,10 @@ namespace knowledge_hub.WebAPI.Controllers
       [HttpPost("UpdatePassword")]
       public async Task<HttpStatusCode> UpdatePassword(PasswordUpdateRequest request) {
          return await _service.UpdatePassword(request);
+      }
+      [HttpPost("UpdateAddress")]
+      public async Task<AddressResponse> UpdateAddress(UserAddressUpdateRequest request) {
+         return await _service.UpdateAddress(request);
       }
    }
 }

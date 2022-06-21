@@ -72,11 +72,7 @@ namespace knowledge_hub.WebAPI.Migrations
                     Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Biography = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LoginId = table.Column<int>(type: "int", nullable: false),
-                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AddressLine = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ZipCode = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    LoginId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -113,6 +109,33 @@ namespace knowledge_hub.WebAPI.Migrations
                         column: x => x.LanguageId,
                         principalTable: "Languages",
                         principalColumn: "LanguageId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Addresses",
+                columns: table => new
+                {
+                    AddressId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AddressLine = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CityId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Addresses", x => x.AddressId);
+                    table.ForeignKey(
+                        name: "FK_Addresses_Cities_CityId",
+                        column: x => x.CityId,
+                        principalTable: "Cities",
+                        principalColumn: "CityId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Addresses_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -331,6 +354,19 @@ namespace knowledge_hub.WebAPI.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Cities",
+                columns: new[] { "CityId", "Country", "Name", "ZipCode" },
+                values: new object[,]
+                {
+                    { 1, "Bosnia and Herzegovina", "Sarajevo", "71000" },
+                    { 2, "Bosnia and Herzegovina", "Mostar", "88000" },
+                    { 3, "Bosnia and Herzegovina", "Konjic", "88400" },
+                    { 4, "Bosnia and Herzegovina", "Zenica", "72000" },
+                    { 5, "Bosnia and Herzegovina", "Banja Luka", "78000" },
+                    { 6, "Bosnia and Herzegovina", "Tuzla", "75000" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Languages",
                 columns: new[] { "LanguageId", "Name" },
                 values: new object[,]
@@ -367,6 +403,16 @@ namespace knowledge_hub.WebAPI.Migrations
                     { 7, "Louise Pickford", 8, "Fresh, tasty and bursting with nutritious ingredients and lively aromas, delicious one-bowl, Asian-inspired noodle dishes have never been more popular. Their variety and versatility, speedy cooking time and ability to soak up the bold flavours they're prepared with, make noodle dishes an exotic yet accessible dish and, with The Noodle Bowl, you'll be able to celebrate this wonderful food and feast on the results. ", "", 1, "The Noodle Bowl : Over 70 Recipes for Asian-Inspired Noodle Dishes", 11.99, 21.5, 4.5 },
                     { 8, "Louise Pickford", 8, "These hearty one-pot meals, flavoured with fragrant spices, are cooked and served from an elegant, specially designed cooking vessel, also called a tagine. In Ghillie Basan's collection of deliciously authentic recipes you will find some of the best-loved classics of the Moroccan kitchen.", "", 1, "The Modern Tagine Cookbook : Delicious Recipes for Moroccan One-Pot Meals", 12.6, 23.5, 3.75 }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Addresses_CityId",
+                table: "Addresses",
+                column: "CityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Addresses_UserId",
+                table: "Addresses",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Books_CategoryId",
@@ -449,6 +495,9 @@ namespace knowledge_hub.WebAPI.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Addresses");
+
             migrationBuilder.DropTable(
                 name: "Logins");
 

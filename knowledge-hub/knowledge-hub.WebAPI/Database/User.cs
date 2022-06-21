@@ -16,9 +16,5 @@ namespace knowledge_hub.WebAPI.Database
       public int LoginId { get; set; }
       public Login Login { get; set; }
       public virtual UserRoles UserRole { get; set; }
-      public string? FullName { get; set; }
-      public string? AddressLine { get; set; }
-      public string? City { get; set; }
-      public string?  ZipCode { get; set; }
    }
 }

@@ -19,7 +19,21 @@ namespace knowledge_hub.WebAPI.Services
             .Include(c => c.category)
             .Include(l => l.language)
             .ToListAsync();
-         return _mapper.Map<List<BookResponse>>(databaseEntities);
+         
+         var booksWithReviews = new List<BookResponse>();
+         for (int i = 0; i < databaseEntities.Count - 1; i++)
+         {
+            var book = _mapper.Map<BookResponse>(databaseEntities[i]);
+
+            var comments = await _dbContext.Reviews
+            .Where(x => x.BookId == databaseEntities[i].BookId)
+            .ToListAsync();
+
+            book.Reviews = _mapper.Map<List<ReviewResponse>>(comments);
+            booksWithReviews.Add(book);
+         }
+         
+         return booksWithReviews;
       }
    }
 }

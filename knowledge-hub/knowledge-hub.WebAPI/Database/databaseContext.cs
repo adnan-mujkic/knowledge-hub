@@ -20,6 +20,7 @@ namespace knowledge_hub.WebAPI.Database
       public DbSet<Order> Orders { get; set; }
       public DbSet<Transaction> Transactions { get; set; }
       public DbSet<BookUserWishlist> Whishlist { get; set; }
+      public DbSet<Address> Addresses { get; set; }
 
 
 

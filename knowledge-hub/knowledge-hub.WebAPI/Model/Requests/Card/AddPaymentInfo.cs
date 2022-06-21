@@ -1,7 +1,8 @@
-﻿namespace knowledge_hub.WebAPI.Model.Responses
+﻿namespace knowledge_hub.WebAPI.Model.Requests
 {
-   public class PaymentInfoResponse
+   public class AddPaymentInfo
    {
+      public int UserId { get; set; }
       public string FullName { get; set; }
       public string CardNumber { get; set; }
       public string Date { get; set; }

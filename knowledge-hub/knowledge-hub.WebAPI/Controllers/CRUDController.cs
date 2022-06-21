@@ -24,19 +24,17 @@ namespace knowledge_hub.WebAPI.Controllers
       }
 
       [HttpPost]
-      [Authorize(Roles = "Admin,User,Delivery")]
       public async Task<T> Insert(TInsert insertRequest) {
          return await _crudService.Insert(insertRequest);
       }
 
       [HttpPut]
-      [Authorize]
+      [Authorize(Roles = "User")]
       public async Task<T> Update(int ID, TUpdate updateRequest) {
          return await _crudService.Update(ID, updateRequest);
       }
 
       [HttpDelete]
-      [Authorize(Roles = "Admin, User")]
       public async Task<bool> Delete(int ID) {
          return await _crudService.Delete(ID);
       }
