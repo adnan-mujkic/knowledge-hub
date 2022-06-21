@@ -4,7 +4,7 @@ class User{
   String Username = "";
   String Biography = "";
   String ImagePath = "";
-  int UserRole = 2;
+  String UserRole = "";
 
   User();
 
@@ -22,5 +22,5 @@ class User{
         Username = jsonFile['username']??"",
         Biography = jsonFile['biography']??"",
         ImagePath = jsonFile['imagePath']??"",
-        UserRole = jsonFile['userRole']??2;
+        UserRole = jsonFile['userRole']??"";
 }

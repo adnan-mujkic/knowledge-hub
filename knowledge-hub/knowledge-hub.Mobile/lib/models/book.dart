@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'comment.dart';
 class Book{
   int BookId = 0;
-  String AuthorName = "";
+  String Author = "";
   String BookName = "";
   String Language = "";
   String Category = "";
@@ -18,7 +18,7 @@ class Book{
 
   Map<String, dynamic> toJson() => {
     'bookId': BookId,
-    'authorName' : AuthorName,
+    'author' : Author,
     'bookName' : BookName,
     'language' : Language,
     'category' : Category,
@@ -27,11 +27,11 @@ class Book{
     'description' : Description,
     'score' : Rating,
     'imagePath' : ImagePath,
-    'comments': comments,
+    'reviews': comments,
   };
   Book.fromJson(Map<String, dynamic> jsonFile):
         BookId = jsonFile['bookId']??0,
-        AuthorName = jsonFile['author']??"",
+        Author = jsonFile['author']??"",
         BookName = jsonFile['name']??"",
         Language = jsonFile['language']??"",
         Category = jsonFile['category']??"",
@@ -43,7 +43,5 @@ class Book{
         ImagePath = jsonFile['imagePath']??"",
         Rating = jsonFile['score'] is int?
           (jsonFile['score'] as int).toDouble() : jsonFile['score'],
-        comments = (jsonFile.containsKey('comments') && jsonFile['comments'])?
-        List<Comment>.from(json.decode(jsonFile['comments']).map((model)=> Comment.fromJson(model)))
-        : List<Comment>.empty();
+        comments = List<Comment>.empty(growable: true);
 }

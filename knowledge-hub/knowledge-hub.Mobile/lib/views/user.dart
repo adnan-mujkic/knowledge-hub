@@ -1,18 +1,47 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:knowledge_hub_mobile/models/user.dart';
-import '../models/order.dart';
-import 'package:event/event.dart';
+import 'package:http/http.dart' as http;
+import 'package:knowledge_hub_mobile/services/accountService.dart';
 
 class UserManagmentWidget extends StatefulWidget {
-  UserManagmentWidget(this.user, {Key? key}) : super(key: key);
+  UserManagmentWidget({Key? key}) : super(key: key){
+    username = AccountService.instance.userData.Username;
+    biography = AccountService.instance.userData.Biography;
+  }
 
-  User user;
+  late String username;
+  late String biography;
 
   @override
   UserManagmentState createState() => UserManagmentState();
 }
 
 class UserManagmentState extends State<UserManagmentWidget> {
+
+  saveAccountSettings()async{
+    final response = await http.put(
+      Uri.parse('http://192.168.1.103:5000/api/User?ID=${AccountService.instance.userData.UserId.toString()}'),
+      headers: <String, String>{
+        'Content-Type' : 'application/json; charset=UTF-8',
+        'Authorization' : "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
+      },
+      body: jsonEncode({
+        'username' : widget.username,
+        'biography': widget.biography,
+        'imagePath' : ''
+      }),
+    );
+
+    if(response.statusCode == 200){
+      Map<String, dynamic> map = jsonDecode(response.body);
+      AccountService.instance.userData.Username = map['username']??"";
+      AccountService.instance.userData.Biography = map['biography']??"";
+      AccountService.instance.saveFileToDisk();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -55,42 +84,10 @@ class UserManagmentState extends State<UserManagmentWidget> {
                               child: TextField(
                                 decoration: InputDecoration(
                                     border: InputBorder.none,
-                                    hintText: this.widget.user.Username),
+                                    hintText: this.widget.username),
                                 style: const TextStyle(fontSize: 12),
                                 onChanged: (String value){
-                                  this.widget.user.Username = value;
-                                },
-                              ),
-                            )),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 10, bottom: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(left: 10),
-                        child: Text("Email:"),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 10),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: Color.fromARGB(10, 0, 0, 0),
-                        ),
-                        child: SizedBox(
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 2, bottom: 2, right: 20, left: 20),
-                              child: TextField(
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: this.widget.user.Email),
-                                style: const TextStyle(fontSize: 12),
-                                onChanged: (String value){
-                                  this.widget.user.Email = value;
+                                  this.widget.username = value;
                                 },
                               ),
                             )),
@@ -120,10 +117,10 @@ class UserManagmentState extends State<UserManagmentWidget> {
                                 maxLines: 10,
                                 decoration: InputDecoration(
                                     border: InputBorder.none,
-                                    hintText: this.widget.user.Biography),
+                                    hintText: this.widget.biography),
                                 style: const TextStyle(fontSize: 12),
                                 onChanged: (String value){
-                                  this.widget.user.Biography = value;
+                                  this.widget.biography = value;
                                 },
                               ),
                             )),
@@ -145,7 +142,9 @@ class UserManagmentState extends State<UserManagmentWidget> {
                               )
                           )
                       ),
-                      onPressed: () => {},
+                      onPressed: () {
+                        saveAccountSettings();
+                      },
                       child: Padding(
                         padding: EdgeInsets.all(15),
                         child: Text("Save"),

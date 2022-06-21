@@ -13,7 +13,7 @@ class BookService{
       book.PricePhysical = Random.secure().nextInt(100) as double;
       book.PriceDigital = Random.secure().nextInt(100) as double;
       book.Description = "Description";
-      book.AuthorName = "John $i Doe";
+      book.Author = "John $i Doe";
       book.Rating = 3.5;
       var comment = Comment();
       comment.Username = "Doe";

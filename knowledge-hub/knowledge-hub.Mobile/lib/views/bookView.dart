@@ -1,15 +1,23 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:knowledge_hub_mobile/components/comment.dart';
+import 'package:knowledge_hub_mobile/models/comment.dart';
 import '../models/book.dart';
 import 'package:expandable_text/expandable_text.dart';
+import 'package:http/http.dart' as http;
+
+import '../services/accountService.dart';
 
 class BookViewWidget extends StatefulWidget {
   BookViewWidget(this.book, {Key? key}) : super(key: key);
 
   late Book book;
+  bool bookInWishlist = false;
   int? digitalSelected = 0;
   int reviewScore = 1;
+  String commentText = "";
 
   List<Widget> getStars(){
     List<Widget> icons = new List<Widget>.empty(growable: true);
@@ -42,11 +50,143 @@ class BookViewWidget extends StatefulWidget {
 }
 
 class BookViewState extends State<BookViewWidget> {
+  int currentlyDisplayedComments = 0;
+  List<Comment> comments = List<Comment>.empty(growable: true);
+  List<Widget> commentsWidgets = List<Widget>.empty(growable: true);
+  late Future<List<Comment>> futureComments;
+  bool userCommentExists = true;
+
+  @override
+  void initState(){
+    super.initState();
+    futureComments = getReviews(widget.book.BookId);
+  }
 
   selectStar(int index){
     setState((){
       widget.reviewScore = index;
     });
+  }
+
+  checkIfBookInWishlist(){
+    for (var value in AccountService.instance.wishlist) {
+      if(value == widget.book.BookId) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  addOrRemoveFromWishlist() async{
+    if(checkIfBookInWishlist()){
+      final response = await http.delete(
+        Uri.parse('http://192.168.1.103:5000/api/Wishlist?ID=${widget.book.BookId}'),
+        headers: <String, String>{
+          'Content-Type' : 'application/json; charset=UTF-8',
+          'Authorization' : "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
+        },
+      );
+      if(response.statusCode == 200){
+        debugPrint(response.body);
+        AccountService.instance.wishlist.removeWhere((element) => element == widget.book.BookId);
+        AccountService.instance.saveFileToDisk();
+        setState((){});
+      }
+    }else{
+      final response = await http.post(
+        Uri.parse('http://192.168.1.103:5000/api/Wishlist'),
+        headers: <String, String>{
+          'Content-Type' : 'application/json; charset=UTF-8',
+          'Authorization' : "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
+        },
+        body: jsonEncode({
+          'bookId' : widget.book.BookId,
+          'userId': AccountService.instance.userData.UserId
+        }),
+      );
+      if(response.statusCode == 200){
+        var book = Book.fromJson(jsonDecode(response.body)['book']);
+        AccountService.instance.wishlist.add(book.BookId);
+        AccountService.instance.saveFileToDisk();
+        setState((){});
+      }
+    }
+  }
+
+  initializeComments(List<Comment> commentsToDisplay){
+    userCommentExists = false;
+    commentsWidgets.removeRange(0, commentsWidgets.length);
+    comments.removeRange(0, comments.length);
+
+    comments = commentsToDisplay;
+    currentlyDisplayedComments = comments.length >= 4? 4 : comments.length;
+    for(int i = 0; i < currentlyDisplayedComments; i++){
+      commentsWidgets.add(
+          Container(
+            padding: const EdgeInsets.only(top: 5, bottom: 5),
+            child:  CommentWidget(comments[i]),
+          )
+      );
+    }
+
+    comments.forEach((element) {
+      if(element.UserId == AccountService.instance.userData.UserId){
+        setState((){
+          userCommentExists = true;
+        });
+      }
+    });
+
+    return commentsWidgets;
+  }
+
+  showMoreComments(){
+    int amountToIncrease = 4;
+    if(commentsWidgets.length == comments.length){
+      amountToIncrease = 0;
+    }
+    else if(commentsWidgets.length + amountToIncrease > comments.length) {
+      amountToIncrease = comments.length - commentsWidgets.length;
+    }
+
+    setState((){
+      currentlyDisplayedComments += amountToIncrease;
+    });
+  }
+
+  postReview()async{
+    final response = await http.post(
+        Uri.parse('http://192.168.1.103:5000/api/Review'),
+        headers: <String, String>{
+          'Content-Type' : 'application/json; charset=UTF-8',
+          'Authorization' : "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
+        },
+      body:jsonEncode({
+          'userId': AccountService.instance.userData.UserId,
+          'bookId': widget.book.BookId,
+          'rating': widget.reviewScore,
+          'commentText': widget.commentText
+      })
+    );
+    if(response.statusCode == 200){
+
+    }
+  }
+
+  Future<List<Comment>> getReviews(int bookId) async{
+    final response = await http.get(
+        Uri.parse('http://192.168.1.103:5000/api/Review/GetByBook?bookId=$bookId'),
+        headers: <String, String>{
+          'Content-Type' : 'application/json; charset=UTF-8',
+          'Authorization' : "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
+        }
+    );
+    if(response.statusCode == 200){
+      var jsonBody = jsonDecode(response.body);
+      Iterable iterable = jsonBody;
+      return List<Comment>.from(iterable.map((e) => Comment.fromJson(e)));
+    }
+    return List<Comment>.empty();
   }
 
   @override
@@ -73,7 +213,7 @@ class BookViewState extends State<BookViewWidget> {
                       Container(
                         margin: EdgeInsets.only(top: 10),
                         child: Text(
-                          widget.book.AuthorName,
+                          widget.book.Author,
                           style: TextStyle(
                               fontSize: 16),
                         ),
@@ -166,17 +306,20 @@ class BookViewState extends State<BookViewWidget> {
                         width: double.infinity,
                         child: ElevatedButton(
                             style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all<Color>(Colors.teal),
+                                backgroundColor: MaterialStateProperty.all<Color>(
+                                    checkIfBookInWishlist()? Colors.red : Colors.teal),
                                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                     RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(10)
                                     )
                                 )
                             ),
-                            onPressed: () => {},
+                            onPressed: () {
+                              addOrRemoveFromWishlist();
+                            },
                             child: Padding(
                               padding: EdgeInsets.all(15),
-                              child: Text("Add to whishlist"),
+                              child: Text(checkIfBookInWishlist()? "Remove from wishlist" : "Add to wishlist"),
                             )
                         ),
                       ),
@@ -222,102 +365,124 @@ class BookViewState extends State<BookViewWidget> {
                             const SizedBox(
                               height: 10,
                             ),
-                            Row(
+                            userCommentExists? Container() : Column(
                               children: [
-                                InkWell(
-                                  onTap: (){
-                                    selectStar(1);
-                                  },
-                                  child: widget.reviewScore >= 1?
-                                  Icon(Icons.star_rounded, size: 32,) :
-                                  Icon(Icons.star_border_rounded, size: 32,),
-                                ),
-                                InkWell(
-                                  onTap: (){
-                                    selectStar(2);
-                                  },
-                                  child: widget.reviewScore >= 2?
-                                  Icon(Icons.star_rounded, size: 32,) :
-                                  Icon(Icons.star_border_rounded, size: 32,),
-                                ),
-                                InkWell(
-                                  onTap: (){
-                                    selectStar(3);
-                                  },
-                                  child: widget.reviewScore >= 3?
-                                  Icon(Icons.star_rounded, size: 32,) :
-                                  Icon(Icons.star_border_rounded, size: 32,),
-                                ),
-                                InkWell(
-                                  onTap: (){
-                                    selectStar(4);
-                                  },
-                                  child: widget.reviewScore >= 4?
-                                  Icon(Icons.star_rounded, size: 32,) :
-                                  Icon(Icons.star_border_rounded, size: 32,),
-                                ),
-                                InkWell(
-                                  onTap: (){
-                                    selectStar(5);
-                                  },
-                                  child: widget.reviewScore >= 5?
-                                  Icon(Icons.star_rounded, size: 32,) :
-                                  Icon(Icons.star_border_rounded, size: 32,),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: Color.fromARGB(10, 0, 0, 0),
-                              ),
-                              child: SizedBox(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(top: 2, bottom: 2, right: 20, left: 20),
-                                    child: TextField(
-                                      maxLines: 5,
-                                      decoration: const InputDecoration(
-                                          border: InputBorder.none,
-                                          hintText: "Type in a comment..."),
-                                      style: const TextStyle(fontSize: 12),
-                                      onChanged: (String value){
+                                Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: (){
+                                        selectStar(1);
                                       },
+                                      child: widget.reviewScore >= 1?
+                                      Icon(Icons.star_rounded, size: 32,) :
+                                      Icon(Icons.star_border_rounded, size: 32,),
                                     ),
-                                  )),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                  style: ButtonStyle(
-                                      backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
-                                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(10)
+                                    InkWell(
+                                      onTap: (){
+                                        selectStar(2);
+                                      },
+                                      child: widget.reviewScore >= 2?
+                                      Icon(Icons.star_rounded, size: 32,) :
+                                      Icon(Icons.star_border_rounded, size: 32,),
+                                    ),
+                                    InkWell(
+                                      onTap: (){
+                                        selectStar(3);
+                                      },
+                                      child: widget.reviewScore >= 3?
+                                      Icon(Icons.star_rounded, size: 32,) :
+                                      Icon(Icons.star_border_rounded, size: 32,),
+                                    ),
+                                    InkWell(
+                                      onTap: (){
+                                        selectStar(4);
+                                      },
+                                      child: widget.reviewScore >= 4?
+                                      Icon(Icons.star_rounded, size: 32,) :
+                                      Icon(Icons.star_border_rounded, size: 32,),
+                                    ),
+                                    InkWell(
+                                      onTap: (){
+                                        selectStar(5);
+                                      },
+                                      child: widget.reviewScore >= 5?
+                                      Icon(Icons.star_rounded, size: 32,) :
+                                      Icon(Icons.star_border_rounded, size: 32,),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: Color.fromARGB(10, 0, 0, 0),
+                                  ),
+                                  child: SizedBox(
+                                      child: Padding(
+                                        padding: EdgeInsets.only(top: 2, bottom: 2, right: 20, left: 20),
+                                        child: TextField(
+                                          maxLines: 5,
+                                          decoration: const InputDecoration(
+                                              border: InputBorder.none,
+                                              hintText: "Type in a comment..."),
+                                          style: const TextStyle(fontSize: 12),
+                                          onChanged: (String value){
+                                            setState((){
+                                              widget.commentText = value;
+                                            });
+                                          },
+                                        ),
+                                      )),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                      style: ButtonStyle(
+                                          backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
+                                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(10)
+                                              )
                                           )
+                                      ),
+                                      onPressed: () => {
+                                        postReview()
+                                      },
+                                      child: Padding(
+                                        padding: EdgeInsets.all(15),
+                                        child: Text("Post review"),
                                       )
                                   ),
-                                  onPressed: () => {},
-                                  child: Padding(
-                                    padding: EdgeInsets.all(15),
-                                    child: Text("Post review"),
-                                  )
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                              ],
+                            )
                           ],
                         ),
                       ),
-                      CommentWidget(),
+                      FutureBuilder<List<Comment>>(
+                        future: futureComments,
+                        builder: (context, snapshot){
+                          if(snapshot.hasData){
+                            return Column(
+                                children: initializeComments(snapshot.data!)
+                            );
+                          }
+
+                          return const CircularProgressIndicator();
+                        },
+                      ),
                       TextButton(
-                        onPressed: (){},
+                        onPressed: (){
+                          showMoreComments();
+                        },
                         child: Text("Load More"),
                       ),
                       const SizedBox(

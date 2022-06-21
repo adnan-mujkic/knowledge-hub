@@ -1,9 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:knowledge_hub_mobile/components/bookViewInList.dart';
+import 'package:knowledge_hub_mobile/services/persistentDataService.dart';
 import 'package:knowledge_hub_mobile/views/mainBooksCategories.dart';
 import '../services/accountService.dart';
 import 'package:knowledge_hub_mobile/views/bookView.dart';
@@ -15,14 +14,10 @@ import 'package:knowledge_hub_mobile/views/login.dart';
 import 'package:knowledge_hub_mobile/views/register.dart';
 import 'package:knowledge_hub_mobile/views/user.dart';
 import 'package:knowledge_hub_mobile/views/whishlist.dart';
-
-import 'models/authData.dart';
 import 'models/book.dart';
 import 'models/order.dart';
 import 'models/user.dart';
 import 'views/order.dart';
-
-
 
 void main() {
   runApp(MyApp());
@@ -82,6 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late Book book;
   late int cartItemsNumber = 0;
   var accountService = AccountService.instance;
+  var persistentData = PersistentDataService.instance;
   late LoginWidget loginWidget;
   late RegisterWidget registerWidget;
   late WishlistWidget wishlist;
@@ -122,6 +118,9 @@ class _MyHomePageState extends State<MyHomePage> {
         });
       }
     );
+    //LOADING PERSISTENT DATA
+    PersistentDataService.instance.fetchCities();
+
     loginWidget = LoginWidget();
     registerWidget = RegisterWidget();
     for(int i = 0; i < 5; i++){
@@ -313,7 +312,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     switch(this.widget.currentDisplayIndex){
       case 0:
-        return UserManagmentWidget(widget.user);
+        return UserManagmentWidget();
       case 1:
         return ChangePasswordWidget();
       case 2:
@@ -346,6 +345,7 @@ class _MyHomePageState extends State<MyHomePage> {
       this.viewingBook = false;
     });
   }
+
 
   @override
   Widget build(BuildContext context) {

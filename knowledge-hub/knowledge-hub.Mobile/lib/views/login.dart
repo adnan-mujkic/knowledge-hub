@@ -49,13 +49,14 @@ class LoginState extends State<LoginWidget> {
         });
       }
 
-      AccountService.instance.authData.Email = widget.userLogin.Email!;
-      AccountService.instance.authData.Password = widget.userLogin.Password!;
-      AccountService.instance.userData.Email = AccountService.instance.authData.Email;
-      AccountService.instance.userData.Username = map['username'];
-      AccountService.instance.userData.Biography = map['biography'];
-      AccountService.instance.userData.ImagePath = map['imagePath'];
-      AccountService.instance.userData.UserRole = map['userRole'];
+      var as = AccountService.fromJson(map);
+      AccountService.instance.userData = as.userData;
+      AccountService.instance.authData = as.authData;
+      AccountService.instance.addressData = as.addressData;
+      AccountService.instance.paymentData = as.paymentData;
+      AccountService.instance.myBooks = as.myBooks;
+      AccountService.instance.wishlist = as.wishlist;
+      AccountService.instance.cart = as.cart;
       AccountService.instance.saveFileToDisk();
       widget.loginEvent.broadcast();
     }else{

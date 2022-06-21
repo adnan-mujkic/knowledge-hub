@@ -1,4 +1,5 @@
 class PaymentInfo{
+  int CardInfoId = 0;
   String CardHolder = "";
   String CardNumber = "";
   String ExpiryDate = "";
@@ -6,14 +7,16 @@ class PaymentInfo{
 
   PaymentInfo();
   Map<String, dynamic> toJson() => {
-    'cardHolder' : CardHolder,
+    'cardInfoId': CardInfoId,
+    'fullName' : CardHolder,
     'cardNumber' : CardNumber,
-    'expiryDate' : ExpiryDate,
+    'cardDate' : ExpiryDate,
     'cVC' : CVC
   };
   PaymentInfo.fromJson(Map<String, dynamic> jsonFile):
-        CardHolder = jsonFile['cardHolder']??"",
+        CardInfoId = jsonFile['cardInfoId']??0,
+        CardHolder = jsonFile['fullName']??"",
         CardNumber = jsonFile['cardNumber']??"",
-        ExpiryDate = jsonFile['expiryDate']??"",
+        ExpiryDate = jsonFile['cardDate']??"",
         CVC = jsonFile['cVC']??"";
 }

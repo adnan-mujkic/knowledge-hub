@@ -1,18 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:knowledge_hub_mobile/models/changePassword.dart';
-import 'package:knowledge_hub_mobile/models/user.dart';
-import '../models/order.dart';
+import 'package:http/http.dart' as http;
 import 'package:event/event.dart';
+import 'package:knowledge_hub_mobile/services/accountService.dart';
 
 import '../models/paymentInfo.dart';
 
 class ChangePaymentInfoWidget extends StatefulWidget {
   ChangePaymentInfoWidget({Key? key}) : super(key: key){
-    userPaymentInfo = new PaymentInfo();
-    userPaymentInfo.CardHolder = "Adnan Mujkic";
-    userPaymentInfo.CardNumber = "0000 0000 0000 0000";
-    userPaymentInfo.ExpiryDate = "02/22";
-    userPaymentInfo.CVC = "987";
+    userPaymentInfo = AccountService.instance.paymentData;
   }
 
   late PaymentInfo userPaymentInfo;
@@ -23,6 +20,30 @@ class ChangePaymentInfoWidget extends StatefulWidget {
 }
 
 class ChangePaymentInfoState extends State<ChangePaymentInfoWidget> {
+
+  savePaymentInfo() async{
+    final response = await http.post(
+      Uri.parse('http://192.168.1.103:5000/api/User/UpdatePayment'),
+      headers: <String, String>{
+        'Content-Type' : 'application/json; charset=UTF-8',
+        'Authorization' : "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
+      },
+      body: jsonEncode({
+        'userId' : AccountService.instance.userData.UserId,
+        'fullName' : widget.userPaymentInfo.CardHolder,
+        'cardNumber' : widget.userPaymentInfo.CardNumber,
+        'date' : widget.userPaymentInfo.ExpiryDate,
+        'cvc' : widget.userPaymentInfo.CVC
+      }),
+    );
+
+    if(response.statusCode == 200){
+      Map<String, dynamic> map = jsonDecode(response.body);
+      AccountService.instance.paymentData = PaymentInfo.fromJson(map);
+      AccountService.instance.saveFileToDisk();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -186,8 +207,9 @@ class ChangePaymentInfoState extends State<ChangePaymentInfoWidget> {
                               )
                           )
                       ),
-                      onPressed: () => {
-                        widget.saveChangesEvent.broadcast()
+                      onPressed: () {
+                        savePaymentInfo();
+                        widget.saveChangesEvent.broadcast();
                       },
                       child: Padding(
                         padding: EdgeInsets.all(15),

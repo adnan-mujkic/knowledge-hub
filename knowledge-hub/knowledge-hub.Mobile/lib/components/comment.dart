@@ -5,11 +5,7 @@ import '../models/loginRegister.dart';
 import 'package:event/event.dart';
 
 class CommentWidget extends StatefulWidget {
-  CommentWidget({Key? key}) : super(key: key){
-    comment = new Comment();
-    comment.Username = "Adnan";
-    comment.CommentText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce blandit auctor ligula, semper pellentesque erat fermentum ut.";
-  }
+  CommentWidget(this.comment, {Key? key}) : super(key: key);
 
   late Comment comment;
 

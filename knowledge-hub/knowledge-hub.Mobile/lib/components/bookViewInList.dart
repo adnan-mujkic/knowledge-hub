@@ -77,7 +77,7 @@ class BookInListState extends State<BookInListWidget> {
                       color: Color.fromARGB(30, 0, 0, 0)
                   ),
                   Text(
-                    widget.book.AuthorName,
+                    widget.book.Author,
                     style: TextStyle(
                       fontSize: 8
                     ),
