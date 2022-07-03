@@ -9,12 +9,12 @@ class User{
   User();
 
   Map<String, dynamic> toJson() => {
-    'Userid': UserId,
-    'Email' : Email,
-    'Username' : Username,
-    'Biography' : Biography,
-    'ImagePath' : ImagePath,
-    'UserRole' : UserRole,
+    'userId': UserId,
+    'email' : Email,
+    'username' : Username,
+    'biography' : Biography,
+    'imagePath' : ImagePath,
+    'userRole' : UserRole,
   };
   User.fromJson(Map<String, dynamic> jsonFile):
         UserId = jsonFile['userId']??0,

@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import '../services/persistentDataService.dart';
 import 'package:flutter/material.dart';
 import 'package:knowledge_hub_mobile/components/bookViewInList.dart';
 import 'package:event/event.dart';
@@ -29,7 +29,7 @@ class WhishlistState extends State<WishlistWidget> {
 
   fetchWishlistBooks()async{
     final response = await http.get(
-      Uri.parse('http://192.168.1.103:5000/api/Wishlist/WishlistByUserId?userId=${AccountService.instance.userData.UserId.toString()}'),
+      Uri.parse('${PersistentDataService.instance.BackendUri}/api/Wishlist/WishlistByUserId?userId=${AccountService.instance.userData.UserId.toString()}'),
       headers: <String, String>{
         'Content-Type' : 'application/json; charset=UTF-8',
         'Authorization' : "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"

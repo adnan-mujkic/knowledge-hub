@@ -6,7 +6,7 @@ import 'package:knowledge_hub_mobile/models/user.dart';
 import '../models/order.dart';
 import 'package:http/http.dart' as http;
 import 'package:event/event.dart';
-
+import '../services/persistentDataService.dart';
 import '../services/accountService.dart';
 
 class ChangePasswordWidget extends StatefulWidget {
@@ -24,7 +24,7 @@ class ChangePasswordState extends State<ChangePasswordWidget> {
 
   changePassword()async{
     final response = await http.put(
-      Uri.parse('http://192.168.1.103:5000/api/User/UpdatePassword'),
+      Uri.parse('${PersistentDataService.instance.BackendUri}/api/User/UpdatePassword'),
       headers: <String, String>{
         'Content-Type' : 'application/json; charset=UTF-8',
         'Authorization' : "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"

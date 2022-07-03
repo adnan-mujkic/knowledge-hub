@@ -1,199 +1,227 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import '../models/order.dart';
 import 'package:event/event.dart';
+import 'package:http/http.dart' as http;
 
-class OrderController extends StatefulWidget{
+import '../services/accountService.dart';
+import '../services/persistentDataService.dart';
+
+class OrderController extends StatefulWidget {
   Order order = Order();
   bool preview;
   bool userRole;
   int index;
   String? orderStatus = "Waiting";
+  String? comment = "";
   var updateClickedEvent = Event<Value<int>>();
 
-
-  OrderController(Order initialOrder, this.preview, this.index, this.userRole, {Key? key}) : super(key: key){
+  OrderController(Order initialOrder, this.preview, this.index, this.userRole,
+      {Key? key})
+      : super(key: key) {
     order = initialOrder;
   }
   @override
-  State<StatefulWidget> createState() => OrderWidget(order, preview, index);
+  State<StatefulWidget> createState() => OrderWidget(order, index);
 }
 
-class OrderWidget  extends State<OrderController> {
+class OrderWidget extends State<OrderController> {
   Order order = Order();
-  bool preview;
   int index;
+  bool showDetails = false;
 
-  void onUpdateClicked(){
+  void onUpdateClicked() {
     widget.updateClickedEvent.broadcast(Value(index));
+    setState(() {
+      widget.preview = !widget.preview;
+    });
   }
 
-  OrderWidget(Order initialOrder, this.preview, this.index){
+  OrderWidget(Order initialOrder, this.index) {
     order = initialOrder;
+  }
+
+  void updateOrder() async {
+    final response = await http.put(
+        Uri.parse(
+            '${PersistentDataService.instance.BackendUri}/api/Order?ID=${widget.order.orderId}'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization':
+              "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
+        },
+        body: jsonEncode(
+            {'comment': widget.comment, 'orderStatus': getOrderStatusEnum()}));
+    if (response.statusCode == 200) {
+      var map = jsonDecode(response.body);
+      setState(() {
+        widget.order = Order.fromJson(map);
+      });
+    }
+  }
+
+  int getOrderStatusEnum() {
+    switch (widget.orderStatus) {
+      case null:
+        return 0;
+      case "Waiting":
+        return 0;
+      case "Dispatch":
+        return 1;
+      case "Return":
+        return 2;
+      default:
+        return 0;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-  return Container(
-      width: double.infinity,
-      height: preview != true? 350 : 160,
-      margin: const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 6,
-            blurRadius: 6,
-            offset: Offset(0, 3), // changes position of shadow
-          )
-        ]
-      ),
-      child: Stack(
-        children: <Widget>[
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: <Widget>[
-                  Container(
-                    alignment: Alignment.topLeft,
-                    height: 120,
-                    width: 60,
-                    margin: const EdgeInsets.only(left: 20, top: 0),
-                    child: Image.asset(
-                      order.imagePath,
-                      fit: BoxFit.cover,
+    return Container(
+        width: double.infinity,
+        height: widget.preview != true ? 350 : 180,
+        margin: const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 6,
+                blurRadius: 6,
+                offset: Offset(0, 3), // changes position of shadow
+              )
+            ]),
+        child: Stack(
+          children: <Widget>[
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  children: <Widget>[
+                    Container(
+                      alignment: Alignment.topLeft,
+                      height: 120,
+                      width: 60,
+                      margin: const EdgeInsets.only(left: 20, top: 0),
+                      child: Image.asset(
+                        'assets/book.png',
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    child: Flexible(
-                        child: Container(
-                          margin: const EdgeInsets.only(
-                              left: 20, top: 22, bottom: 10, right: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
+                    SizedBox(
+                      child: Flexible(
+                          child: Container(
+                        margin: const EdgeInsets.only(
+                            left: 20, top: 22, bottom: 10, right: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: 200,
+                              child: Text(
                                 order.nameOfOrderPerson,
+                                maxLines: 1,
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
+                                    fontWeight: FontWeight.bold,
+                                    overflow: TextOverflow.ellipsis),
                               ),
-                              Text(
-                                "${order.bookName} | ${order.bookAuthor}",
+                            ),
+                            Container(
+                              width: 200,
+                              child: Text(
+                                "${order.bookName}",
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.normal),
+                                  fontWeight: FontWeight.normal,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                maxLines: 2,
                               ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                "Order number: ${order.orderNumber}",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.normal),
-                              ),
-                              Text(
-                                "Ordered: ${order.orderDate}",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.normal),
-                              ),
-                              Text(
-                                "Shipped: ${order.shippedDate}",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.normal),
-                              ),
-                              Text(
-                                "Status: ${getOrderNameFromIndex(widget.order.orderStatus)}",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.normal),
-                              ),
-                              Text(
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              "Ordered: ${order.orderDate}",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.normal),
+                            ),
+                            Text(
+                              "Shipped: ${order.shippedDate}",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.normal),
+                            ),
+                            Text(
+                              "Status: ${getOrderNameFromIndex(widget.order.orderStatus)}",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.normal),
+                            ),
+                            Container(
+                              width: 200,
+                              child: Text(
                                 "Address: ${order.address}",
-                                style: const TextStyle(fontWeight: FontWeight.normal),
+                                maxLines: 1,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.normal,
+                                    overflow: TextOverflow.ellipsis),
                               ),
-                            ],
+                            ),
+                          ],
+                        ),
+                      )),
+                    ),
+                  ],
+                ),
+                Text(
+                  "Order number: ${order.orderNumber}",
+                  style: const TextStyle(
+                      fontWeight: FontWeight.normal, fontSize: 12),
+                ),
+                getPreview()
+              ],
+            ),
+            if (!widget.userRole)
+              Positioned(
+                right: 10,
+                top: 10,
+                width: 50,
+                height: 30,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Stack(
+                    children: <Widget>[
+                      Positioned.fill(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: widget.preview
+                                ? Colors.green
+                                : Colors.lightBlue,
                           ),
-                        )),
+                        ),
+                      ),
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.all(0),
+                          primary: Colors.white,
+                          textStyle: const TextStyle(fontSize: 15),
+                        ),
+                        onPressed: onUpdateClicked,
+                        child: Text(
+                          (widget.preview ? "Update" : "^"),
+                          style: TextStyle(fontSize: 11),
+                        ),
+                      )
+                    ],
                   ),
-                ],
+                ),
               ),
-              getPreview()
-            ],
-          ),
-          if(preview && !widget.userRole) Positioned(
-            right: 10,
-            top: 10,
-            width: 50,
-            height: 30,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Stack(
-                children: <Widget>[
-                  Positioned.fill(
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.green,
-                      ),
-                    ),
-                  ),
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.all(0),
-                      primary: Colors.white,
-                      textStyle: const TextStyle(fontSize: 15),
-                    ),
-                    onPressed: onUpdateClicked,
-                    child: const Text(
-                        'Update',
-                      style: TextStyle(
-                        fontSize: 11
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
-          if(preview && widget.userRole && widget.orderStatus == "Waiting") Positioned(
-            right: 10,
-            top: 10,
-            width: 50,
-            height: 30,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Stack(
-                children: <Widget>[
-                  Positioned.fill(
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.red,
-                      ),
-                    ),
-                  ),
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.all(0),
-                      primary: Colors.white,
-                      textStyle: const TextStyle(fontSize: 15),
-                    ),
-                    onPressed: onUpdateClicked,
-                    child: const Text(
-                      'Delete',
-                      style: TextStyle(
-                          fontSize: 11
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          )
-        ],
-      ));
+          ],
+        ));
   }
 
-  Container getPreview(){
-    if(!preview){
+  Container getPreview() {
+    if (!widget.preview) {
       return Container(
         child: Column(
           children: [
@@ -210,25 +238,25 @@ class OrderWidget  extends State<OrderController> {
                       Container(
                         height: 30,
                         child: DropdownButton(
-                            value: getOrderNameFromIndex(widget.order.orderStatus),
+                            value:
+                                getOrderNameFromIndex(widget.order.orderStatus),
                             items: <String>["Waiting", "Dispatch", "Return"]
-                                .map<DropdownMenuItem<String>>((String value){
+                                .map<DropdownMenuItem<String>>((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
                                 child: Text(
                                   value,
-                                  style: TextStyle(
-                                      fontSize: 12
-                                  ),),
+                                  style: TextStyle(fontSize: 12),
+                                ),
                               );
                             }).toList(),
-                            onChanged: (String? value){
+                            onChanged: (String? value) {
                               setState(() => {
-                                widget.orderStatus = value,
-                                widget.order.orderStatus = getOrderIndexFromName(value)
-                              });
-                            }
-                        ),
+                                    widget.orderStatus = value,
+                                    widget.order.orderStatus =
+                                        getOrderIndexFromName(value)
+                                  });
+                            }),
                       ),
                     ],
                   ),
@@ -236,47 +264,48 @@ class OrderWidget  extends State<OrderController> {
                     height: 100,
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children:const [
+                        children: [
                           Text("Comment"),
                           Expanded(
-                            child:
-                            Padding(
+                            child: Padding(
                               padding: EdgeInsets.only(top: 6, bottom: 6),
-                              child: TextField(
+                              child: TextFormField(
                                 maxLines: 5,
+                                initialValue: widget.comment,
+                                onChanged: (String val) => {
+                                  setState(() {
+                                    widget.comment = val;
+                                  })
+                                },
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(),
-                                  hintText: 'Enter a comment...',
+                                  hintText: widget.comment,
                                 ),
-                                style: TextStyle(
-                                  fontSize: 12
-                                ),
+                                style: TextStyle(fontSize: 12),
                               ),
                             ),
                           )
-                        ]
-                    ),
+                        ]),
                   ),
                   ElevatedButton(
                       style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(Colors.green)
-                      ),
-                      onPressed: () => {},
-                      child: Text("Save")
-                  ),
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.green)),
+                      onPressed: () => {updateOrder()},
+                      child: Text("Save")),
                 ],
               ),
             )
           ],
         ),
       );
-    }else{
+    } else {
       return Container();
     }
   }
 
   int getOrderIndexFromName(String? value) {
-    switch(value){
+    switch (value) {
       case "Waiting":
         return 0;
       case "Dispatch":
@@ -286,8 +315,9 @@ class OrderWidget  extends State<OrderController> {
     }
     return 0;
   }
-  String? getOrderNameFromIndex(int index){
-    switch(index){
+
+  String? getOrderNameFromIndex(int index) {
+    switch (index) {
       case 0:
         return "Waiting";
       case 1:
@@ -298,4 +328,3 @@ class OrderWidget  extends State<OrderController> {
     return "Waiting";
   }
 }
-

@@ -1,9 +1,14 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
 import 'package:knowledge_hub_mobile/components/bookViewInList.dart';
 import 'package:knowledge_hub_mobile/services/persistentDataService.dart';
 import 'package:knowledge_hub_mobile/views/mainBooksCategories.dart';
+import 'package:knowledge_hub_mobile/views/ordersView.dart';
+import 'package:knowledge_hub_mobile/views/searchResults.dart';
 import '../services/accountService.dart';
 import 'package:knowledge_hub_mobile/views/bookView.dart';
 import 'package:knowledge_hub_mobile/views/cart.dart';
@@ -43,7 +48,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home:  MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
@@ -52,10 +57,9 @@ class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
-  late bool userRole = true;
+  late bool userRole = false;
   late int currentDisplayIndex = 0;
   late bool tabs = true;
-
 
   User user = User();
 
@@ -73,6 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late bool logged = false;
   late bool loginScreen = true;
   late bool viewingBook = false;
+  late bool viewingSearch = false;
   bool loadingScreen = true;
   late Book book;
   late int cartItemsNumber = 0;
@@ -81,60 +86,61 @@ class _MyHomePageState extends State<MyHomePage> {
   late LoginWidget loginWidget;
   late RegisterWidget registerWidget;
   late WishlistWidget wishlist;
+  SearchResultsWidget? searchResultWidget = null;
   late MainBooksCategoriesWidget mainBooksCategoriesWidget;
+  late List<Book> searchedBooks = List<Book>.empty(growable: true);
 
-  _MyHomePageState(){
-    accountService.loadFileFromDisk().then((value)  async {
-        await http.get(
-          Uri.parse('http://192.168.1.103:5000/api/Book/'),
-          headers: <String, String>{
-            'Content-Type' : 'application/json; charset=UTF-8',
-          },
-        ).then((res) {
-          setState((){
-            loadingScreen = false;
-            if(accountService.authData.Email != ""){
-              logged = true;
-            }
-            if(res.statusCode == 200){
-              List<dynamic> map = jsonDecode(res.body) as List<dynamic>;
-              map.forEach((element) {
-                Book bookElement = Book.fromJson(element);
-                bookList.add(bookElement);
-                booksWidgets.add(BookInListWidget(bookElement, 100));
+  String fullscreenNotificationText = "";
+  bool displayFullscreenNotification = false;
+
+  _MyHomePageState() {
+    accountService.loadFileFromDisk().then((value) async {
+      await http.get(
+        Uri.parse('${PersistentDataService.instance.BackendUri}/api/Book/'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      ).then((res) {
+        setState(() {
+          loadingScreen = false;
+          if (accountService.authData.Email != "") {
+            logged = true;
+          }
+          if (res.statusCode == 200) {
+            List<dynamic> map = jsonDecode(res.body) as List<dynamic>;
+            map.forEach((element) {
+              Book bookElement = Book.fromJson(element);
+              bookList.add(bookElement);
+              booksWidgets.add(BookInListWidget(bookElement, 100));
+            });
+
+            mainBooksCategoriesWidget = MainBooksCategoriesWidget(bookList);
+            mainBooksCategoriesWidget.selectedBookEvent.subscribe((args) {
+              setState(() {
+                viewingBook = true;
+                book = args!.value;
               });
-
-              mainBooksCategoriesWidget = MainBooksCategoriesWidget(bookList);
-              mainBooksCategoriesWidget.selectedBookEvent.subscribe((args) {
-                setState((){
-                  viewingBook = true;
-                  book = args!.value;
-                });
-              });
-
-              debugPrint(booksWidgets.length.toString());
-            }
-          });
+            });
+          }
         });
-      }
-    );
-    //LOADING PERSISTENT DATA
-    PersistentDataService.instance.fetchCities();
+      });
+
+      //LOADING PERSISTENT DATA
+      PersistentDataService.instance.fetchCities();
+      PersistentDataService.instance.fetchCartItems();
+
+      setState(() {
+        widget.userRole =
+            AccountService.instance.userData.UserRole != "Delivery";
+      });
+    });
 
     loginWidget = LoginWidget();
     registerWidget = RegisterWidget();
-    for(int i = 0; i < 5; i++){
+    for (int i = 0; i < 5; i++) {
       Order order = Order();
-      order.populate(
-          'assets/book.png',
-          'John Doe',
-          'Book 1',
-          'Book author',
-          '00000',
-          '10.10.2022',
-          '10.10.2022',
-          0,
-          'Address line 1');
+      order.populate('assets/book.png', 'John Doe', 'Book 1', 'Book author',
+          '00000', '10.10.2022', '10.10.2022', 0, 'Address line 1');
 
       ordersList.add(order);
     }
@@ -145,8 +151,12 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     });
     loginWidget.loginEvent.subscribe((args) {
-      setState((){
+      setState(() {
         logged = true;
+        setState(() {
+          widget.userRole =
+              AccountService.instance.userData.UserRole != "Delivery";
+        });
       });
     });
     registerWidget.openLoginEvent.subscribe((args) {
@@ -159,6 +169,10 @@ class _MyHomePageState extends State<MyHomePage> {
         logged = true;
         accountService.authData.Email = args!.value1;
         accountService.authData.Password = args.value2;
+        setState(() {
+          widget.userRole =
+              AccountService.instance.userData.UserRole != "Delivery";
+        });
       });
     });
 
@@ -169,32 +183,39 @@ class _MyHomePageState extends State<MyHomePage> {
         book = args!.value;
       });
     });
+
+    PersistentDataService.instance.screenWideNotification.subscribe((args) {
+      toggleFullscreenNotification(args!.value, true);
+    });
   }
 
-  List<OrderController> getOrderList() {
-    List<OrderController> tempList = List<OrderController>.empty(growable: true);
-
-    for(int i = 0; i < 5; i++){
-      OrderController temp = OrderController(ordersList[i], true, i, widget.userRole);
-      temp.updateClickedEvent.subscribe((args) {
-        selectedOrder = OrderController(ordersList[i], false, i, widget.userRole);
-        toggleDisplaySelectedOrder();
-      });
-      tempList.add(temp);
-    }
-
-    return tempList;
-  }
-
-  void toggleDisplaySelectedOrder(){
+  void toggleDisplaySelectedOrder() {
     setState(() {
       this.displaySelectedOrder = !this.displaySelectedOrder;
     });
   }
 
-  Widget GetDisplayScreen(){
-    if(widget.tabs == true){
-      if(viewingBook){
+  Widget GetDisplayScreen() {
+    if (!widget.userRole) {
+      return OrdersViewWidget(widget.userRole);
+    }
+
+    if (searchedBooks.isNotEmpty && !viewingBook) {
+      if (searchResultWidget != null) {
+        searchResultWidget?.selectedBookEvent.unsubscribeAll();
+      }
+      searchResultWidget = SearchResultsWidget(searchedBooks);
+      searchResultWidget?.selectedBookEvent.subscribe((args) {
+        setState(() {
+          viewingBook = true;
+          book = args!.value;
+        });
+      });
+      return searchResultWidget!;
+    }
+
+    if (widget.tabs == true) {
+      if (viewingBook) {
         return Stack(
           children: [
             BookViewWidget(book),
@@ -202,7 +223,7 @@ class _MyHomePageState extends State<MyHomePage> {
         );
       }
 
-      switch(_selectedIndex){
+      switch (_selectedIndex) {
         case 0:
           return Stack(
             children: <Widget>[
@@ -210,107 +231,54 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   Container(
                     width: double.infinity,
-                    margin: EdgeInsets.only(
-                        top: (widget.userRole == true? 30 : 0)),
+                    margin:
+                        EdgeInsets.only(top: (widget.userRole == true ? 0 : 0)),
                     child: Container(
                         padding: const EdgeInsets.all(1),
-                        child: mainBooksCategoriesWidget
-                    ),
+                        child: mainBooksCategoriesWidget),
                   ),
-                  widget.userRole == true? Container(
-                    width: double.infinity,
-                    height: 30,
-                    color: const Color.fromARGB(255, 60, 60, 80),
-                    padding: EdgeInsets.all(0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        TextButton(
-                            onPressed: null,
-                            child: Text(
-                              "Categories",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12
-                              ),
-                            )
-                        ),
-                        TextButton(
-                            onPressed: null,
-                            child: Text(
-                              "Bestsellers",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12
-                              ),
-                            )
-                        ),
-                        TextButton(
-                            onPressed: null,
-                            child: Text(
-                              "On Sale",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12
-                              ),
-                            )
-                        ),
-                        TextButton(
-                            onPressed: null,
-                            child: Text(
-                              "Upcoming",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12
-                              ),
-                            )
-                        ),
-                      ],
-                    ),
-                  ) : Container(),
                 ],
               ),
-              !displaySelectedOrder? Container() : SizedBox.expand(
-                child: Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  color: Colors.black.withOpacity(0.5),
-                  child: Stack(
-                    children: <Widget>[
-                      FractionallySizedBox(
-                        widthFactor: 1,
-                        heightFactor: 1,
-                        child: TextButton(
-                          onPressed: toggleDisplaySelectedOrder,
-                          child: Text(''),
+              !displaySelectedOrder
+                  ? Container()
+                  : SizedBox.expand(
+                      child: Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                        color: Colors.black.withOpacity(0.5),
+                        child: Stack(
+                          children: <Widget>[
+                            FractionallySizedBox(
+                              widthFactor: 1,
+                              heightFactor: 1,
+                              child: TextButton(
+                                onPressed: toggleDisplaySelectedOrder,
+                                child: Text(''),
+                              ),
+                            ),
+                            Align(
+                              child: FractionallySizedBox(
+                                widthFactor: 1,
+                                child: selectedOrder,
+                              ),
+                            )
+                          ],
                         ),
                       ),
-                      Align(
-                        child: FractionallySizedBox(
-                          widthFactor: 1,
-                          child: selectedOrder,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
+                    ),
             ],
           );
         case 1:
           return Container();
         case 2:
           return wishlist;
-          case 3:
+        case 3:
           return CartWidget();
       }
       return Container();
     }
 
-
-    switch(this.widget.currentDisplayIndex){
+    switch (this.widget.currentDisplayIndex) {
       case 0:
         return UserManagmentWidget();
       case 1:
@@ -318,20 +286,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case 2:
         return ChangePaymentInfoWidget();
       case 3:
-        return Container(
-          color: Colors.white,
-          margin: EdgeInsets.only(
-              top: 0),
-          child: SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.all(1),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: getOrderList(),
-              ),
-            ),
-          ),
-        );
+        return OrdersViewWidget(widget.userRole);
       case 4:
         return ChangeAddressWidget();
     }
@@ -346,293 +301,393 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void toggleFullscreenNotification(String text, bool activate) {
+    setState(() {
+      fullscreenNotificationText = text;
+      displayFullscreenNotification = activate;
+    });
+  }
+
+  void searchBooks(String searchQuery) async {
+    final response = await http.get(
+      Uri.parse(
+          '${PersistentDataService.instance.BackendUri}/api/Book/SearchBooks?search=$searchQuery'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization':
+            "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
+      },
+    );
+    if (response.statusCode == 200) {
+      List<dynamic> map = jsonDecode(response.body) as List<dynamic>;
+      searchedBooks.clear();
+
+      setState(() {
+        map.forEach((element) {
+          searchedBooks.add(Book.fromJson(element));
+        });
+        viewingSearch = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return loadingScreen?
-    Scaffold(
-      body: Container(
-        height: double.infinity,
-        width: double.infinity,
-        color: const Color.fromARGB(255, 221, 190, 169),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset('assets/LogoWhite.png'),
-              const SizedBox(height: 30),
-              const Text("Stocking bookshelves...", style: TextStyle(color: Colors.white),)
-            ],
-          ),
-        ),
-      ),
-    ):
-    (logged? Scaffold(
-      appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(60.0),
-          child: AppBar(
-            backgroundColor: widget.userRole == true? Color.fromARGB(200, 221, 190, 169) : Color.fromARGB(255, 255, 255, 255),
-            elevation: 4,
-            shadowColor: Colors.black.withOpacity(0.25),
-            flexibleSpace: Stack(
-              children: [
-                viewingBook? Container(
-                  margin: const EdgeInsets.only(
-                      top: 40, bottom: 10, left: 0, right: 20),
-                  child: TextButton(
-                    style: ButtonStyle(
-                        foregroundColor: MaterialStateProperty.all<Color>(Colors.white)
-                    ),
-                    onPressed: (){
-                      setState(() {
-                        viewingBook = false;
-                      });
-                    },
-                    child: Icon(Icons.arrow_back),
-                  ),
-                ) : Container(),
-                Container(
-                  margin: const EdgeInsets.only(
-                      top: 40, bottom: 10, left: 60, right: 20),
-                  padding: const EdgeInsets.all(0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    color: widget.userRole == true? Colors.white : Color.fromARGB(30, 0, 0, 0),
-                  ),
-                  child: SizedBox(
-                      child: Stack(
-                          children: <Widget>[
-                            Positioned(
-                                top: 10,
-                                left: 20,
-                                child: Icon(
-                                  Icons.search,
-                                  color: Colors.grey,
-                                  size: 24,
-                                )),
-                            Positioned(
-                                left: 60,
-                                top: -4,
-                                height: 50,
-                                width: 250,
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      labelText:
-                                      widget.userRole == true?
-                                      "Search books, authors, ISBNs" : "Search orders by number, city"
-                                  ),
-                                  style: const TextStyle(
-                                      fontSize: 12
-                                  ),
-                                ))
-                          ])
-                  ),
+    return loadingScreen
+        ? Scaffold(
+            body: Container(
+              height: double.infinity,
+              width: double.infinity,
+              color: const Color.fromARGB(255, 221, 190, 169),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/LogoWhite.png'),
+                    const SizedBox(height: 30),
+                    const Text(
+                      "Stocking bookshelves...",
+                      style: TextStyle(color: Colors.white),
+                    )
+                  ],
                 ),
-              ],
-            ) ,
-          )),
-      body: SizedBox(
-        child: Stack(
-          children: [
-            Container(
-                width: double.infinity,
-                height: double.infinity,
-                color: const Color.fromARGB(10, 0, 0, 0),
-                child: GetDisplayScreen()
-            )
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: const Color.fromARGB(255, 221, 190, 169),
-        unselectedItemColor: const Color.fromARGB(200, 110, 90, 84),
-        selectedItemColor: Colors.white,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            activeIcon: Icon(Icons.home),
-            label: "Home",
-            backgroundColor: Color.fromARGB(255, 221, 190, 169),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.my_library_books_outlined),
-            activeIcon: Icon(Icons.my_library_books),
-            label: "My Books",
-            backgroundColor: Color.fromARGB(255, 221, 190, 169),
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.turned_in_not),
-              activeIcon: Icon(Icons.turned_in),
-              label: 'Whishlist',
-              backgroundColor: Color.fromARGB(255, 221, 190, 169)
-          ),
-          BottomNavigationBarItem(
-              icon: Stack(
-                clipBehavior: Clip.none,
-                alignment: Alignment.center,
-                children: [
-                  Icon(Icons.shopping_cart_outlined),
-                  cartItemsNumber > 0? Positioned(
-                      right: -11,
-                      top: -11,
-                      child: Stack(
-                        alignment: Alignment.center,
+              ),
+            ),
+          )
+        : (logged
+            ? Scaffold(
+                appBar: PreferredSize(
+                    preferredSize: const Size.fromHeight(60.0),
+                    child: AppBar(
+                      backgroundColor: Color.fromARGB(200, 221, 190, 169),
+                      elevation: 4,
+                      shadowColor: Colors.black.withOpacity(0.25),
+                      flexibleSpace: Stack(
                         children: [
+                          viewingBook || viewingSearch
+                              ? Container(
+                                  margin: const EdgeInsets.only(
+                                      top: 40, bottom: 10, left: 0, right: 20),
+                                  child: TextButton(
+                                    style: ButtonStyle(
+                                        foregroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                Colors.white)),
+                                    onPressed: () {
+                                      setState(() {
+                                        viewingBook = false;
+                                        viewingSearch = false;
+                                        searchedBooks.clear();
+                                      });
+                                    },
+                                    child: Icon(Icons.arrow_back),
+                                  ),
+                                )
+                              : Container(),
                           Container(
-                            width: 24,
-                            height: 24,
+                            margin: const EdgeInsets.only(
+                                top: 40, bottom: 10, left: 60, right: 20),
+                            padding: const EdgeInsets.all(0),
                             decoration: BoxDecoration(
-                                color: Colors.red.withOpacity(1),
-                                borderRadius: BorderRadius.circular(20)
+                              borderRadius: BorderRadius.circular(50),
+                              color: widget.userRole == true
+                                  ? Colors.white
+                                  : Color.fromARGB(30, 0, 0, 0),
                             ),
+                            child: SizedBox(
+                                child: Stack(children: <Widget>[
+                              Positioned(
+                                  top: 10,
+                                  left: 20,
+                                  child: Icon(
+                                    Icons.search,
+                                    color: Colors.grey,
+                                    size: 24,
+                                  )),
+                              Positioned(
+                                  left: 60,
+                                  top: -4,
+                                  height: 50,
+                                  width: 250,
+                                  child: TextField(
+                                    decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        labelText: widget.userRole == true
+                                            ? "Search books, authors, ISBNs"
+                                            : "Search orders by number, city"),
+                                    style: const TextStyle(fontSize: 12),
+                                    onChanged: (String val) async {
+                                      if (val.length >= 3) {
+                                        searchBooks(val);
+                                      }
+                                    },
+                                  ))
+                            ])),
                           ),
-                          Text(
-                            cartItemsNumber.toString(),
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),)
                         ],
-                      )
-                  ) : Container(),
-                ],
-              ) ,
-              activeIcon: Icon(Icons.shopping_cart),
-              label: 'Cart',
-              backgroundColor: Color.fromARGB(255, 221, 190, 169)
-          ),
-        ],
-      ),
-      drawer: viewingBook? null : Container(
-        width: 200,
-        child: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              Container(
-                height: 100,
-                child: DrawerHeader(
-                  decoration: const BoxDecoration(
-                      color: Color.fromARGB(200, 221, 190, 169)
-                  ),
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 32,
-                    width: 32,
-                    child: Image.asset(
-                      'assets/LogoWhite.png',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                  margin: EdgeInsets.all(10),
-                  child: Center(
-                    child: Text(
-                      "Settings",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Color.fromARGB(150, 0, 0, 0)
-                      ),),
-                  )
-              ),
-              const Divider(
-                height: 10,
-                thickness: 1,
-                indent: 10,
-                endIndent: 10,
-                color: Color.fromARGB(20, 0, 0, 0),
-              ),
-              ListTile(
-                title: Text("Account"),
-                leading: Icon(Icons.account_circle),
-                onTap: () {
-                  setState(() {
-                    this.widget.tabs = false;
-                    this.widget.currentDisplayIndex = 0;
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: Text("Privacy"),
-                leading: Icon(Icons.lock),
-                onTap: () {
-                  setState(() {
-                    this.widget.tabs = false;
-                    this.widget.currentDisplayIndex = 1;
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-              if(widget.userRole) ListTile(
-                title: Text("Payment"),
-                leading: Icon(Icons.wallet),
-                onTap: () {
-                  setState(() {
-                    this.widget.tabs = false;
-                    this.widget.currentDisplayIndex = 2;
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-              if(widget.userRole) ListTile(
-                title: Text("Orders"),
-                leading: Icon(Icons.shopping_bag),
-                onTap: () {
-                  setState(() {
-                    this.widget.tabs = false;
-                    this.widget.currentDisplayIndex = 3;
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-              if(widget.userRole) ListTile(
-                title: Text("Adress"),
-                leading: Icon(Icons.pin_drop),
-                onTap: () {
-                  setState(() {
-                    this.widget.tabs = false;
-                    this.widget.currentDisplayIndex = 4;
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-              const Divider(
-                height: 10,
-                thickness: 1,
-                indent: 10,
-                endIndent: 10,
-                color: Color.fromARGB(20, 0, 0, 0),
-              ),
-              ListTile(
-                title: Text(
-                  "Log Out",
-                  style: TextStyle(
-                      color: Color.fromARGB(200, 255, 0, 30)
+                      ),
+                    )),
+                body: SizedBox(
+                  child: Stack(
+                    children: [
+                      Container(
+                          width: double.infinity,
+                          color: const Color.fromARGB(10, 0, 0, 0),
+                          child: Stack(
+                            children: [
+                              GetDisplayScreen(),
+                              displayFullscreenNotification
+                                  ? Container(
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                      color: Colors.black.withOpacity(0.3),
+                                      child: Align(
+                                        child: Container(
+                                          width: 250,
+                                          height: 150,
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(20)),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                margin: EdgeInsets.all(10),
+                                                width: 220,
+                                                height: 80,
+                                                child: Align(
+                                                  child: Text(
+                                                    fullscreenNotificationText,
+                                                    style: TextStyle(
+                                                        color: Colors.black
+                                                            .withOpacity(0.8)),
+                                                  ),
+                                                ),
+                                              ),
+                                              Spacer(),
+                                              Container(
+                                                width: 250,
+                                                child: TextButton(
+                                                    onPressed: () {
+                                                      toggleFullscreenNotification(
+                                                          "", false);
+                                                    },
+                                                    child: const Text("OK")),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  : Container()
+                            ],
+                          ))
+                    ],
                   ),
                 ),
-                leading: Icon(
-                  Icons.logout,
-                  color: Color.fromARGB(180, 255, 0, 30),
-                ),
-                onTap: () {
-                  setState(() {
-                    this.logged = false;
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    ) : (loginScreen? loginWidget : registerWidget));
+                bottomNavigationBar: !widget.userRole
+                    ? null
+                    : BottomNavigationBar(
+                        backgroundColor:
+                            const Color.fromARGB(255, 221, 190, 169),
+                        unselectedItemColor:
+                            const Color.fromARGB(200, 110, 90, 84),
+                        selectedItemColor: Colors.white,
+                        showSelectedLabels: false,
+                        showUnselectedLabels: false,
+                        currentIndex: _selectedIndex,
+                        onTap: _onItemTapped,
+                        items: <BottomNavigationBarItem>[
+                          BottomNavigationBarItem(
+                            icon: Icon(Icons.home_outlined),
+                            activeIcon: Icon(Icons.home),
+                            label: "Home",
+                            backgroundColor: Color.fromARGB(255, 221, 190, 169),
+                          ),
+                          BottomNavigationBarItem(
+                            icon: Icon(Icons.my_library_books_outlined),
+                            activeIcon: Icon(Icons.my_library_books),
+                            label: "My Books",
+                            backgroundColor: Color.fromARGB(255, 221, 190, 169),
+                          ),
+                          BottomNavigationBarItem(
+                              icon: Icon(Icons.turned_in_not),
+                              activeIcon: Icon(Icons.turned_in),
+                              label: 'Whishlist',
+                              backgroundColor:
+                                  Color.fromARGB(255, 221, 190, 169)),
+                          BottomNavigationBarItem(
+                              icon: Stack(
+                                clipBehavior: Clip.none,
+                                alignment: Alignment.center,
+                                children: [
+                                  Icon(Icons.shopping_cart_outlined),
+                                  cartItemsNumber > 0
+                                      ? Positioned(
+                                          right: -11,
+                                          top: -11,
+                                          child: Stack(
+                                            alignment: Alignment.center,
+                                            children: [
+                                              Container(
+                                                width: 24,
+                                                height: 24,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.red
+                                                        .withOpacity(1),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20)),
+                                              ),
+                                              Text(
+                                                cartItemsNumber.toString(),
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              )
+                                            ],
+                                          ))
+                                      : Container(),
+                                ],
+                              ),
+                              activeIcon: Icon(Icons.shopping_cart),
+                              label: 'Cart',
+                              backgroundColor:
+                                  Color.fromARGB(255, 221, 190, 169)),
+                        ],
+                      ),
+                drawer: viewingBook
+                    ? null
+                    : Container(
+                        width: 200,
+                        child: Drawer(
+                          child: ListView(
+                            padding: EdgeInsets.zero,
+                            children: [
+                              Container(
+                                height: 100,
+                                child: DrawerHeader(
+                                  decoration: const BoxDecoration(
+                                      color:
+                                          Color.fromARGB(200, 221, 190, 169)),
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    height: 32,
+                                    width: 32,
+                                    child: Image.asset(
+                                      'assets/LogoWhite.png',
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                  margin: EdgeInsets.all(10),
+                                  child: Center(
+                                    child: Text(
+                                      "Settings",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                          color: Color.fromARGB(150, 0, 0, 0)),
+                                    ),
+                                  )),
+                              const Divider(
+                                height: 10,
+                                thickness: 1,
+                                indent: 10,
+                                endIndent: 10,
+                                color: Color.fromARGB(20, 0, 0, 0),
+                              ),
+                              ListTile(
+                                title: Text("Account"),
+                                leading: Icon(Icons.account_circle),
+                                onTap: () {
+                                  setState(() {
+                                    this.widget.tabs = false;
+                                    this.widget.currentDisplayIndex = 0;
+                                  });
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              ListTile(
+                                title: Text("Privacy"),
+                                leading: Icon(Icons.lock),
+                                onTap: () {
+                                  setState(() {
+                                    this.widget.tabs = false;
+                                    this.widget.currentDisplayIndex = 1;
+                                  });
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              if (widget.userRole)
+                                ListTile(
+                                  title: Text("Payment"),
+                                  leading: Icon(Icons.wallet),
+                                  onTap: () {
+                                    setState(() {
+                                      this.widget.tabs = false;
+                                      this.widget.currentDisplayIndex = 2;
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              if (widget.userRole)
+                                ListTile(
+                                  title: Text("Orders"),
+                                  leading: Icon(Icons.shopping_bag),
+                                  onTap: () {
+                                    setState(() {
+                                      this.widget.tabs = false;
+                                      this.widget.currentDisplayIndex = 3;
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              if (widget.userRole)
+                                ListTile(
+                                  title: Text("Adress"),
+                                  leading: Icon(Icons.pin_drop),
+                                  onTap: () {
+                                    setState(() {
+                                      this.widget.tabs = false;
+                                      this.widget.currentDisplayIndex = 4;
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              const Divider(
+                                height: 10,
+                                thickness: 1,
+                                indent: 10,
+                                endIndent: 10,
+                                color: Color.fromARGB(20, 0, 0, 0),
+                              ),
+                              ListTile(
+                                title: Text(
+                                  "Log Out",
+                                  style: TextStyle(
+                                      color: Color.fromARGB(200, 255, 0, 30)),
+                                ),
+                                leading: Icon(
+                                  Icons.logout,
+                                  color: Color.fromARGB(180, 255, 0, 30),
+                                ),
+                                onTap: () {
+                                  setState(() {
+                                    this.logged = false;
+                                  });
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+              )
+            : (loginScreen ? loginWidget : registerWidget));
   }
 }

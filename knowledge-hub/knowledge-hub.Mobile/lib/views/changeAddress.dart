@@ -27,7 +27,7 @@ class ChangeAddressState extends State<ChangeAddressWidget> {
 
   changeAddress()async{
     final response = await http.post(
-      Uri.parse('http://192.168.1.103:5000/api/User/UpdateAddress'),
+      Uri.parse('${PersistentDataService.instance.BackendUri}/api/User/UpdateAddress'),
       headers: <String, String>{
         'Content-Type' : 'application/json; charset=UTF-8',
         'Authorization' : "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"

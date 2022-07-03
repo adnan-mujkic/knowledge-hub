@@ -5,6 +5,7 @@ import '../models/loginRegister.dart';
 import 'package:http/http.dart' as http;
 import 'package:event/event.dart';
 import '../services/accountService.dart';
+import '../services/persistentDataService.dart';
 
 class LoginWidget extends StatefulWidget {
   LoginWidget({Key? key}) : super(key: key){
@@ -30,7 +31,7 @@ class LoginState extends State<LoginWidget> {
     });
 
     final response = await http.post(
-      Uri.parse('http://192.168.1.103:5000/api/User/Login'),
+      Uri.parse('${PersistentDataService.instance.BackendUri}/api/User/Login'),
       headers: <String, String>{
         'Content-Type' : 'application/json; charset=UTF-8',
       },

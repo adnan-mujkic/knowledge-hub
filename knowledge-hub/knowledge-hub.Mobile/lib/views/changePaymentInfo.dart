@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:event/event.dart';
 import 'package:knowledge_hub_mobile/services/accountService.dart';
-
+import '../services/persistentDataService.dart';
 import '../models/paymentInfo.dart';
 
 class ChangePaymentInfoWidget extends StatefulWidget {
@@ -23,7 +23,7 @@ class ChangePaymentInfoState extends State<ChangePaymentInfoWidget> {
 
   savePaymentInfo() async{
     final response = await http.post(
-      Uri.parse('http://192.168.1.103:5000/api/User/UpdatePayment'),
+      Uri.parse('${PersistentDataService.instance.BackendUri}/api/User/UpdatePayment'),
       headers: <String, String>{
         'Content-Type' : 'application/json; charset=UTF-8',
         'Authorization' : "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"

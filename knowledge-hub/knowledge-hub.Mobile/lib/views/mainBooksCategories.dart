@@ -19,19 +19,19 @@ class MainBooksCategoriesState extends State<MainBooksCategoriesWidget> {
   late Book selectedBook = new Book();
   late Map<String, Book> OrderedBooksMap;
 
-  selectBook(){
+  selectBook() {
     widget.selectedBookEvent.broadcast(Value<Book>(selectedBook));
   }
 
-  List<Widget> constructListWidget(){
+  List<Widget> constructListWidget() {
     List<Widget> temp = List<Widget>.empty(growable: true);
 
     Map<String, List<Book>> bookCategoryMap = <String, List<Book>>{};
     widget.allBooks.forEach((element) {
-      if(!bookCategoryMap.containsKey(element.Category)){
-        List<Book> categoryList = List<Book>.filled(1, element,growable: true);
+      if (!bookCategoryMap.containsKey(element.Category)) {
+        List<Book> categoryList = List<Book>.filled(1, element, growable: true);
         bookCategoryMap[element.Category] = categoryList;
-      }else{
+      } else {
         bookCategoryMap[element.Category]?.add(element);
       }
     });
@@ -43,26 +43,24 @@ class MainBooksCategoriesState extends State<MainBooksCategoriesWidget> {
     return temp;
   }
 
-  Widget getRowContainer(List<Book> books, String categoryName){
+  Widget getRowContainer(List<Book> books, String categoryName) {
     List<Container> bookContainers = List<Container>.empty(growable: true);
     books.forEach((bookElement) {
       var bookInView = BookInListWidget(bookElement, 120);
       bookInView.bookSelectedEvent.subscribe((args) {
-        setState((){
+        setState(() {
           selectedBook = args!.value;
           selectBook();
         });
       });
-      bookContainers.add(
-          Container(
-            margin: EdgeInsets.only(right: 10),
-            child: bookInView,
-          )
-      );
+      bookContainers.add(Container(
+        margin: EdgeInsets.only(right: 10),
+        child: bookInView,
+      ));
     });
 
     return Container(
-      margin: EdgeInsets.only(top: 10, bottom: 10),
+      margin: EdgeInsets.only(top: 0, bottom: 10),
       color: Colors.white,
       height: 310,
       width: double.infinity,
@@ -73,23 +71,31 @@ class MainBooksCategoriesState extends State<MainBooksCategoriesWidget> {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(width: 1, color: Colors.black.withOpacity(0.1))
-                )
-              ),
+                  border: Border(
+                      bottom: BorderSide(
+                          width: 1, color: Colors.black.withOpacity(0.1)))),
               child: InkWell(
                 child: Row(
                   children: [
                     Text(categoryName),
-                    SizedBox(width: 5,),
-                    Icon(Icons.keyboard_arrow_right, color: Colors.black.withOpacity(0.7),)
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Icon(
+                      Icons.keyboard_arrow_right,
+                      color: Colors.black.withOpacity(0.7),
+                    )
                   ],
                 ),
-                onTap: (){debugPrint("Tapped category: ${categoryName}");},
+                onTap: () {
+                  debugPrint("Tapped category: ${categoryName}");
+                },
               ),
             ),
           ),
-          SizedBox(height: 10,),
+          SizedBox(
+            height: 10,
+          ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(

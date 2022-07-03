@@ -1,4 +1,5 @@
-class Order{
+class Order {
+  int orderId = 0;
   String imagePath = "";
   String nameOfOrderPerson = "";
   String bookName = "";
@@ -15,33 +16,34 @@ class Order{
   Order();
 
   Map<String, dynamic> toJson() => {
-    'imagePath' : imagePath,
-    'nameOfOrderPerson' : nameOfOrderPerson,
-    'bookName' : bookName,
-    'bookAuthor' : bookAuthor,
-    'orderNumber' : orderNumber,
-    'orderDate' : orderDate,
-    'shippedDate' : shippedDate,
-    'orderStatus' : orderStatus,
-    'address': address,
-    'orderComment': orderComment,
-    'paid': paid,
-    'type': type,
-  };
-  Order.fromJson(Map<String, dynamic> jsonFile):
-        imagePath = jsonFile['imagePath']??"",
-        nameOfOrderPerson = jsonFile['nameOfOrderPerson']??"",
-        bookName = jsonFile['bookName']??"",
-        bookAuthor = jsonFile['bookAuthor']??"",
-        orderNumber = jsonFile['orderNumber']??"",
-        orderDate = jsonFile['orderDate']??"",
-        shippedDate = jsonFile['shippedDate']??"",
-        orderStatus = jsonFile['orderStatus']??0,
-        address = jsonFile['address']??"",
-        orderComment = jsonFile['orderComment']??"",
-        paid = jsonFile['paid']??0,
-        type = jsonFile['type']??"";
-
+        'orderId': orderId,
+        'imagePath': imagePath,
+        'nameOfOrderPerson': nameOfOrderPerson,
+        'bookName': bookName,
+        'bookAuthor': bookAuthor,
+        'orderNumber': orderNumber,
+        'orderDate': orderDate,
+        'shippedDate': shippedDate,
+        'orderStatus': orderStatus,
+        'address': address,
+        'orderComment': orderComment,
+        'paid': paid,
+        'type': type,
+      };
+  Order.fromJson(Map<String, dynamic> jsonFile)
+      : orderId = jsonFile['orderId'] ?? 0,
+        imagePath = jsonFile['book']['imagePath'] ?? "",
+        nameOfOrderPerson = jsonFile['userFullName'] ?? "",
+        bookName = jsonFile['book']['name'] ?? "",
+        bookAuthor = jsonFile['book']['author'] ?? "",
+        orderNumber = jsonFile['orderNumber'] ?? "",
+        orderDate = jsonFile['orderDate'] ?? "",
+        shippedDate = jsonFile['shippingDate'] ?? "",
+        orderStatus = jsonFile['orderStatus'] ?? 0,
+        address = jsonFile['addressLine'] ?? "",
+        orderComment = jsonFile['comment'] ?? "",
+        paid = jsonFile['paid'] ?? 0,
+        type = jsonFile['type'] ?? "";
 
   void populate(
       String _imagePath,
@@ -52,7 +54,7 @@ class Order{
       String _orderDate,
       String _shippedDate,
       int _orderStatus,
-      String _address){
+      String _address) {
     imagePath = _imagePath;
     nameOfOrderPerson = _nameOfPerson;
     bookName = _bookName;

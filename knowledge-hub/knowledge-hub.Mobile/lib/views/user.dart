@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import '../services/persistentDataService.dart';
 import 'package:flutter/material.dart';
 import 'package:knowledge_hub_mobile/models/user.dart';
 import 'package:http/http.dart' as http;
@@ -22,7 +22,7 @@ class UserManagmentState extends State<UserManagmentWidget> {
 
   saveAccountSettings()async{
     final response = await http.put(
-      Uri.parse('http://192.168.1.103:5000/api/User?ID=${AccountService.instance.userData.UserId.toString()}'),
+      Uri.parse('${PersistentDataService.instance.BackendUri}/api/User?ID=${AccountService.instance.userData.UserId.toString()}'),
       headers: <String, String>{
         'Content-Type' : 'application/json; charset=UTF-8',
         'Authorization' : "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"

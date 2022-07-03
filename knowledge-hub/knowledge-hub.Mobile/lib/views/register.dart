@@ -5,6 +5,7 @@ import 'package:knowledge_hub_mobile/models/requests/userRegistrationRequest.dar
 import '../models/loginRegister.dart';
 import 'package:event/event.dart';
 import 'package:http/http.dart' as http;
+import '../services/persistentDataService.dart';
 
 class RegisterWidget extends StatefulWidget {
   RegisterWidget({Key? key}) : super(key: key){
@@ -38,7 +39,7 @@ class RegisterState extends State<RegisterWidget> {
   registerToSite() async{
     switchLoading(true);
     final response = await http.post(
-      Uri.parse('http://192.168.1.103:5000/api/User/Register'),
+      Uri.parse('${PersistentDataService.instance.BackendUri}/api/User/Register'),
       headers: <String, String>{
         'Content-Type' : 'application/json; charset=UTF-8',
       },
@@ -72,7 +73,7 @@ class RegisterState extends State<RegisterWidget> {
   createAccount() async{
     switchLoading(true);
     final response = await http.post(
-      Uri.parse('http://192.168.1.103:5000/api/User/RegisterUser'),
+      Uri.parse('${PersistentDataService.instance.BackendUri}/api/User/RegisterUser'),
       headers: <String, String>{
         'Content-Type' : 'application/json; charset=UTF-8',
       },
