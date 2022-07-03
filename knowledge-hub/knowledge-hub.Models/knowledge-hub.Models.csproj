@@ -1,10 +1,91 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C6D997C7-C0D7-4102-9C0E-D17F8D9E6673}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>knowledge_hub.Models</RootNamespace>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <AssemblyName>knowledge-hub.Models</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
-
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Model\Enums.cs" />
+    <Compile Include="Model\Report\BookReview.cs" />
+    <Compile Include="Model\Report\MostSoldBooksDate.cs" />
+    <Compile Include="Model\Report\UserPurchases.cs" />
+    <Compile Include="Model\Requests\AuthenticationRequest.cs" />
+    <Compile Include="Model\Requests\BookInsertRequest.cs" />
+    <Compile Include="Model\Requests\BookSearchRequest.cs" />
+    <Compile Include="Model\Requests\Card\AddPaymentInfo.cs" />
+    <Compile Include="Model\Requests\Card\UserPaymentInfoRequest.cs" />
+    <Compile Include="Model\Requests\Category\CategoryInsertRequest.cs" />
+    <Compile Include="Model\Requests\City\CityInsertRequest.cs" />
+    <Compile Include="Model\Requests\City\CitySearchRequest.cs" />
+    <Compile Include="Model\Requests\Language\LanguageInsertRequest.cs" />
+    <Compile Include="Model\Requests\LoginRegisterRequest.cs" />
+    <Compile Include="Model\Requests\Order\OrderInsertRequest.cs" />
+    <Compile Include="Model\Requests\Order\OrderUpdateRequest.cs" />
+    <Compile Include="Model\Requests\PasswordUpdateRequest.cs" />
+    <Compile Include="Model\Requests\Review\ReviewAddRequest.cs" />
+    <Compile Include="Model\Requests\Review\ReviewSearchRequest.cs" />
+    <Compile Include="Model\Requests\Transaction\TransactionInsertRequest.cs" />
+    <Compile Include="Model\Requests\UserAddressUpdateRequest.cs" />
+    <Compile Include="Model\Requests\UserInsertRequest.cs" />
+    <Compile Include="Model\Requests\UserRegisterRequest.cs" />
+    <Compile Include="Model\Requests\UserSearchRequest.cs" />
+    <Compile Include="Model\Requests\Wishlist\WishlistInsertRequest.cs" />
+    <Compile Include="Model\Requests\Wishlist\WishlistSearchRequest.cs" />
+    <Compile Include="Model\Responses\AddressResponse.cs" />
+    <Compile Include="Model\Responses\BaseResponse.cs" />
+    <Compile Include="Model\Responses\BookResponse.cs" />
+    <Compile Include="Model\Responses\Card\PaymentInfoResponse.cs" />
+    <Compile Include="Model\Responses\Category\CategoryResponse.cs" />
+    <Compile Include="Model\Responses\City\CityResponse.cs" />
+    <Compile Include="Model\Responses\Language\LanguageResponse.cs" />
+    <Compile Include="Model\Responses\Order\OrderResponse.cs" />
+    <Compile Include="Model\Responses\Order\OrderSearchRequest.cs" />
+    <Compile Include="Model\Responses\RegisterResponse.cs" />
+    <Compile Include="Model\Responses\Review\ReviewResponse.cs" />
+    <Compile Include="Model\Responses\RoleResponse.cs" />
+    <Compile Include="Model\Responses\Transaction\TransactionResponse.cs" />
+    <Compile Include="Model\Responses\UserDataResponse.cs" />
+    <Compile Include="Model\Responses\UserResponse.cs" />
+    <Compile Include="Model\Responses\UserRoleResponse.cs" />
+    <Compile Include="Model\Responses\Wishlist\WishlistResponse.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
