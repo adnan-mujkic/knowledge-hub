@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace knowledge_hub.WebAPI.Controllers
 {
-   public class WishlistController : CRUDController<WishlistResponse, WishlistSearchRequest, WishlistInsertRequest, WishlistInsertRequest>
+   public class WishlistController : CRUDController<WishlistResponse, WishlistInsertRequest, WishlistInsertRequest>
    {
       private readonly IWishlistService _service;
       public WishlistController(IWishlistService service)

@@ -9,7 +9,6 @@ namespace knowledge_hub.WebAPI.Database
       public string FullName { get; set; }
       public string CardNumber { get; set; }
       public string CardDate { get; set; }
-      public string CVC { get; set; }
       public int UserId { get; set; }
       public User User { get; set; }
    }

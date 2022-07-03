@@ -2,5 +2,6 @@
 {
    public class OrderSearchRequest
    {
+      public int UserId { get; set; }
    }
 }

@@ -7,6 +7,7 @@ namespace knowledge_hub.WebAPI.Database
       [Key]
       public int OrderId { get; set; }
       public string OrderNumber { get; set; }
+      public bool Digital { get; set; }
       public int UserId { get; set; }
       public User User { get; set; }
       public string UserFullName { get; set; }
@@ -15,9 +16,9 @@ namespace knowledge_hub.WebAPI.Database
       public DateTime OrderDate { get; set; }
       public DateTime ShippingDate { get; set; }
       public int OrderStatus { get; set; }
-      public string Comment { get; set; }
-      public string AddressLine { get; set; }
-      public int CityId { get; set; }
+      public string? Comment { get; set; }
+      public string? AddressLine { get; set; }
+      public int? CityId { get; set; }
       public City City { get; set; }
    }
 }

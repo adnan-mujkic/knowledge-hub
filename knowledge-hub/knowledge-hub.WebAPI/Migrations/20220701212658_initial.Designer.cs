@@ -12,8 +12,8 @@ using knowledge_hub.WebAPI.Database;
 namespace knowledge_hub.WebAPI.Migrations
 {
     [DbContext(typeof(databaseContext))]
-    [Migration("20220615202824_addFullNameToAddress")]
-    partial class addFullNameToAddress
+    [Migration("20220701212658_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -74,6 +74,10 @@ namespace knowledge_hub.WebAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ImagePath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -109,7 +113,8 @@ namespace knowledge_hub.WebAPI.Migrations
                             Author = "J. R. R. Tolkien",
                             CategoryId = 6,
                             Description = "Continuing the story begun in The Hobbit, this is the first part of Tolkien's epic masterpiece, The Lord of the Rings, featuring a striking black cover based on Tolkien's own design, the definitive text, and a detailed map of Middle-earth. Sauron, the Dark Lord, has gathered to him all the Rings of Power - the means by which he intends to rule Middle-earth. All he lacks in his plans for dominion is the One Ring - the ring that rules them all - which has fallen into the hands of the hobbit, Bilbo Baggins. In a sleepy village in the Shire, young Frodo Baggins finds himself faced with an immense task, as his elderly cousin Bilbo entrusts the Ring to his care. Frodo must leave his home and make a perilous journey across Middle-earth to the Cracks of Doom, there to destroy the Ring and foil the Dark Lord in his evil purpose. Now published again in B format, J.R.R. Tolkien's great work of imaginative fiction has been labelled both a heroic romance and a classic fantasy fiction. By turns comic and homely, epic and diabolic, the narrative moves through countless changes of scene and character in an imaginary world which is totally convincing in its detail.",
-                            ImagePath = "",
+                            FilePath = "LOTR1.pdf",
+                            ImagePath = "LOTR1.jpg",
                             LanguageId = 1,
                             Name = "The Fellowship of the Ring : The Lord of the Rings, Part 1",
                             PriceDigital = 8.9900000000000002,
@@ -122,7 +127,8 @@ namespace knowledge_hub.WebAPI.Migrations
                             Author = "J. R. R. Tolkien",
                             CategoryId = 6,
                             Description = "Building on the story begun in The Hobbit, this is the second part of Tolkien's epic masterpiece, The Lord of the Rings, featuring a striking black cover based on Tolkien's own design, the definitive text, and a detailed map of Middle-earth.",
-                            ImagePath = "",
+                            FilePath = "LOTR2.pdf",
+                            ImagePath = "LOTR2.jpg",
                             LanguageId = 1,
                             Name = "The Two Towers",
                             PriceDigital = 7.9900000000000002,
@@ -135,7 +141,8 @@ namespace knowledge_hub.WebAPI.Migrations
                             Author = "J. R. R. Tolkien",
                             CategoryId = 6,
                             Description = "Concluding the story begun in The Hobbit, this is the final part of Tolkien's epic masterpiece, The Lord of the Rings. Featuring a striking black cover based on Tolkien's own design, the definitive text, and a detailed map of Middle-earth.",
-                            ImagePath = "",
+                            FilePath = "LOTR3.pdf",
+                            ImagePath = "LOTR3.jpg",
                             LanguageId = 1,
                             Name = "The Return of the King",
                             PriceDigital = 7.9900000000000002,
@@ -148,7 +155,8 @@ namespace knowledge_hub.WebAPI.Migrations
                             Author = "J. R. R. Tolkien",
                             CategoryId = 6,
                             Description = "Bilbo Baggins is a hobbit who enjoys a comfortable, unambitious life, rarely travelling further than the pantry of his hobbit-hole in Bag End. But his contentment is disturbed when the wizard, Gandalf, and a company of thirteen dwarves arrive on his doorstep one day to whisk him away on an unexpected journey 'there and back again'. They have a plot to raid the treasure hoard of Smaug the Magnificent, a large and very dangerous dragon...",
-                            ImagePath = "",
+                            FilePath = "Hobbit.pdf",
+                            ImagePath = "Hobbit.jpg",
                             LanguageId = 1,
                             Name = "The Hobbit",
                             PriceDigital = 6.9900000000000002,
@@ -161,7 +169,8 @@ namespace knowledge_hub.WebAPI.Migrations
                             Author = " Hajime Isayama ",
                             CategoryId = 12,
                             Description = "Several hundred years ago, humans were nearly exterminated by giants. Giants are typically several stories tall, seem to have no intelligence and who devour human beings. A small percentage of humanity survied barricading themselves in a city protected by walls even taller than the biggest of giants. Flash forward to the present and the city has not seen a giant in over 100 years - before teenager Eren and his foster sister Mikasa witness something horrific as the city walls are destroyed by a super-giant that appears from nowhere.",
-                            ImagePath = "",
+                            FilePath = "AOT1.pdf",
+                            ImagePath = "AOT1.jpg",
                             LanguageId = 1,
                             Name = "Attack On Titan 1",
                             PriceDigital = 5.9900000000000002,
@@ -174,7 +183,8 @@ namespace knowledge_hub.WebAPI.Migrations
                             Author = "Chip Zdarsky, Mark Bagley",
                             CategoryId = 9,
                             Description = "In 1962's Amazing Fantasy #15, fifteen-year-old Peter Parker was bitten by a radioactive spider and became the Amazing Spider-Man! 57 years have passed in the real world since that event - so what would have happened if the same amount of time passed for Peter as well? To celebrate Marvel's 80th anniversary, Chip Zdarsky and Spider-Man legend Mark Bagley unite to spin a unique Spidey tale - telling an entire history of Spider-Man from beginning to end, set against the key events of the decades through which he lived!",
-                            ImagePath = "",
+                            FilePath = "SpiderManLifeStory.pdf",
+                            ImagePath = "SpiderManLifeStory.jpg",
                             LanguageId = 1,
                             Name = "Spider-man: Life Story",
                             PriceDigital = 12.99,
@@ -187,7 +197,8 @@ namespace knowledge_hub.WebAPI.Migrations
                             Author = "Louise Pickford",
                             CategoryId = 8,
                             Description = "Fresh, tasty and bursting with nutritious ingredients and lively aromas, delicious one-bowl, Asian-inspired noodle dishes have never been more popular. Their variety and versatility, speedy cooking time and ability to soak up the bold flavours they're prepared with, make noodle dishes an exotic yet accessible dish and, with The Noodle Bowl, you'll be able to celebrate this wonderful food and feast on the results. ",
-                            ImagePath = "",
+                            FilePath = "NoodleBowlRecipes.pdf",
+                            ImagePath = "NoodleBowlRecipes.jpg",
                             LanguageId = 1,
                             Name = "The Noodle Bowl : Over 70 Recipes for Asian-Inspired Noodle Dishes",
                             PriceDigital = 11.99,
@@ -200,7 +211,8 @@ namespace knowledge_hub.WebAPI.Migrations
                             Author = "Louise Pickford",
                             CategoryId = 8,
                             Description = "These hearty one-pot meals, flavoured with fragrant spices, are cooked and served from an elegant, specially designed cooking vessel, also called a tagine. In Ghillie Basan's collection of deliciously authentic recipes you will find some of the best-loved classics of the Moroccan kitchen.",
-                            ImagePath = "",
+                            FilePath = "ModernTagineCookbook.pdf",
+                            ImagePath = "ModernTagineCookbook.jpg",
                             LanguageId = 1,
                             Name = "The Modern Tagine Cookbook : Delicious Recipes for Moroccan One-Pot Meals",
                             PriceDigital = 12.6,
@@ -240,10 +252,6 @@ namespace knowledge_hub.WebAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CardInfoId"), 1L, 1);
 
-                    b.Property<string>("CVC")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("CardDate")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -264,6 +272,24 @@ namespace knowledge_hub.WebAPI.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Cards");
+
+                    b.HasData(
+                        new
+                        {
+                            CardInfoId = 1,
+                            CardDate = "01/25",
+                            CardNumber = "4242",
+                            FullName = "User 1",
+                            UserId = 3
+                        },
+                        new
+                        {
+                            CardInfoId = 2,
+                            CardDate = "02/24",
+                            CardNumber = "4242",
+                            FullName = "User 2",
+                            UserId = 4
+                        });
                 });
 
             modelBuilder.Entity("knowledge_hub.WebAPI.Database.Category", b =>
@@ -493,16 +519,39 @@ namespace knowledge_hub.WebAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("LoginId");
 
-                    b.HasIndex("UserId")
-                        .IsUnique()
-                        .HasFilter("[UserId] IS NOT NULL");
-
                     b.ToTable("Logins");
+
+                    b.HasData(
+                        new
+                        {
+                            LoginId = 1,
+                            Email = "admin@knowledge.com",
+                            PasswordHash = "SwR+KyGtwtOAP9Ky12SDGjqBuT4=",
+                            PasswordSalt = "ggZIRHGzm5z0LdSgj3g5bA=="
+                        },
+                        new
+                        {
+                            LoginId = 2,
+                            Email = "delivery@knowledge.com",
+                            PasswordHash = "fA+PAnSWmAB55Xofe0CXr0kkTzQ=",
+                            PasswordSalt = "YeyuMB2A387e83U2h4p/4A=="
+                        },
+                        new
+                        {
+                            LoginId = 3,
+                            Email = "user1@knowledge.com",
+                            PasswordHash = "QIk/mqwRI/NaTOTuIkR0PO/Qgf4=",
+                            PasswordSalt = "zLtKKc7CL4CXFhQeNtrYrA=="
+                        },
+                        new
+                        {
+                            LoginId = 4,
+                            Email = "user2@knowledge.com",
+                            PasswordHash = "+J+SNxcIt2KrwfFpxXUW93bgOa8=",
+                            PasswordSalt = "f7Dvnd1SWB3NJJVBjFyEWg=="
+                        });
                 });
 
             modelBuilder.Entity("knowledge_hub.WebAPI.Database.Order", b =>
@@ -514,18 +563,19 @@ namespace knowledge_hub.WebAPI.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"), 1L, 1);
 
                     b.Property<string>("AddressLine")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("BookId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CityId")
+                    b.Property<int?>("CityId")
                         .HasColumnType("int");
 
                     b.Property<string>("Comment")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Digital")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
@@ -556,6 +606,83 @@ namespace knowledge_hub.WebAPI.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Orders");
+
+                    b.HasData(
+                        new
+                        {
+                            OrderId = 1,
+                            AddressLine = "",
+                            BookId = 1,
+                            CityId = 1,
+                            Comment = "",
+                            Digital = true,
+                            OrderDate = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8875),
+                            OrderNumber = "8e778038-71fc-4930-bbee-197c50499f9d",
+                            OrderStatus = 0,
+                            ShippingDate = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8918),
+                            UserFullName = "User 1",
+                            UserId = 3
+                        },
+                        new
+                        {
+                            OrderId = 2,
+                            AddressLine = "",
+                            BookId = 2,
+                            CityId = 1,
+                            Comment = "",
+                            Digital = true,
+                            OrderDate = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8923),
+                            OrderNumber = "c4a82927-67ac-4aa1-a045-902caf095900",
+                            OrderStatus = 0,
+                            ShippingDate = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8924),
+                            UserFullName = "User 1",
+                            UserId = 3
+                        },
+                        new
+                        {
+                            OrderId = 3,
+                            AddressLine = "",
+                            BookId = 1,
+                            CityId = 1,
+                            Comment = "",
+                            Digital = true,
+                            OrderDate = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8927),
+                            OrderNumber = "5ed359e2-1ed1-4bea-bdcf-018afff2f05f",
+                            OrderStatus = 0,
+                            ShippingDate = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8929),
+                            UserFullName = "User 2",
+                            UserId = 4
+                        },
+                        new
+                        {
+                            OrderId = 4,
+                            AddressLine = "",
+                            BookId = 3,
+                            CityId = 1,
+                            Comment = "",
+                            Digital = true,
+                            OrderDate = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8932),
+                            OrderNumber = "7bc51742-86ee-4611-a46d-0dcc6f0161b6",
+                            OrderStatus = 0,
+                            ShippingDate = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8933),
+                            UserFullName = "User 2",
+                            UserId = 4
+                        },
+                        new
+                        {
+                            OrderId = 5,
+                            AddressLine = "",
+                            BookId = 3,
+                            CityId = 1,
+                            Comment = "",
+                            Digital = true,
+                            OrderDate = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8936),
+                            OrderNumber = "f5a98595-55d5-41f0-a467-d71ad7ba0603",
+                            OrderStatus = 0,
+                            ShippingDate = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8938),
+                            UserFullName = "User 2",
+                            UserId = 4
+                        });
                 });
 
             modelBuilder.Entity("knowledge_hub.WebAPI.Database.Review", b =>
@@ -633,10 +760,12 @@ namespace knowledge_hub.WebAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionId"), 1L, 1);
 
-                    b.Property<int>("CardInfoId")
+                    b.Property<int?>("CardInfoId")
+                        .IsRequired()
                         .HasColumnType("int");
 
-                    b.Property<int>("OrderId")
+                    b.Property<int?>("OrderId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<double>("Price")
@@ -652,6 +781,48 @@ namespace knowledge_hub.WebAPI.Migrations
                     b.HasIndex("OrderId");
 
                     b.ToTable("Transactions");
+
+                    b.HasData(
+                        new
+                        {
+                            TransactionId = 1,
+                            CardInfoId = 1,
+                            OrderId = 1,
+                            Price = 8.9900000000000002,
+                            TransactionTime = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8960)
+                        },
+                        new
+                        {
+                            TransactionId = 2,
+                            CardInfoId = 1,
+                            OrderId = 2,
+                            Price = 12.99,
+                            TransactionTime = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8963)
+                        },
+                        new
+                        {
+                            TransactionId = 3,
+                            CardInfoId = 2,
+                            OrderId = 3,
+                            Price = 13.99,
+                            TransactionTime = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8966)
+                        },
+                        new
+                        {
+                            TransactionId = 4,
+                            CardInfoId = 2,
+                            OrderId = 4,
+                            Price = 7.9900000000000002,
+                            TransactionTime = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8968)
+                        },
+                        new
+                        {
+                            TransactionId = 5,
+                            CardInfoId = 2,
+                            OrderId = 5,
+                            Price = 5.9900000000000002,
+                            TransactionTime = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8970)
+                        });
                 });
 
             modelBuilder.Entity("knowledge_hub.WebAPI.Database.User", b =>
@@ -663,23 +834,52 @@ namespace knowledge_hub.WebAPI.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"), 1L, 1);
 
                     b.Property<string>("Biography")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImagePath")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("LoginId")
                         .HasColumnType("int");
 
                     b.Property<string>("Username")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId");
 
+                    b.HasIndex("LoginId");
+
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1,
+                            Biography = "",
+                            LoginId = 1,
+                            Username = "Admin"
+                        },
+                        new
+                        {
+                            UserId = 2,
+                            Biography = "",
+                            LoginId = 2,
+                            Username = "Delivery"
+                        },
+                        new
+                        {
+                            UserId = 3,
+                            Biography = "",
+                            LoginId = 3,
+                            Username = "User"
+                        },
+                        new
+                        {
+                            UserId = 4,
+                            Biography = "",
+                            LoginId = 4,
+                            Username = "User"
+                        });
                 });
 
             modelBuilder.Entity("knowledge_hub.WebAPI.Database.UserRoles", b =>
@@ -704,6 +904,32 @@ namespace knowledge_hub.WebAPI.Migrations
                         .IsUnique();
 
                     b.ToTable("UserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            UserRoleID = 1,
+                            RoleID = 1,
+                            UserID = 1
+                        },
+                        new
+                        {
+                            UserRoleID = 2,
+                            RoleID = 3,
+                            UserID = 2
+                        },
+                        new
+                        {
+                            UserRoleID = 3,
+                            RoleID = 2,
+                            UserID = 3
+                        },
+                        new
+                        {
+                            UserRoleID = 4,
+                            RoleID = 2,
+                            UserID = 4
+                        });
                 });
 
             modelBuilder.Entity("knowledge_hub.WebAPI.Database.Address", b =>
@@ -774,15 +1000,6 @@ namespace knowledge_hub.WebAPI.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("knowledge_hub.WebAPI.Database.Login", b =>
-                {
-                    b.HasOne("knowledge_hub.WebAPI.Database.User", "User")
-                        .WithOne("Login")
-                        .HasForeignKey("knowledge_hub.WebAPI.Database.Login", "UserId");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("knowledge_hub.WebAPI.Database.Order", b =>
                 {
                     b.HasOne("knowledge_hub.WebAPI.Database.Book", "Book")
@@ -793,9 +1010,7 @@ namespace knowledge_hub.WebAPI.Migrations
 
                     b.HasOne("knowledge_hub.WebAPI.Database.City", "City")
                         .WithMany()
-                        .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CityId");
 
                     b.HasOne("knowledge_hub.WebAPI.Database.User", "User")
                         .WithMany()
@@ -840,12 +1055,23 @@ namespace knowledge_hub.WebAPI.Migrations
                     b.HasOne("knowledge_hub.WebAPI.Database.Order", "Order")
                         .WithMany()
                         .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("CardInfo");
 
                     b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("knowledge_hub.WebAPI.Database.User", b =>
+                {
+                    b.HasOne("knowledge_hub.WebAPI.Database.Login", "Login")
+                        .WithMany()
+                        .HasForeignKey("LoginId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Login");
                 });
 
             modelBuilder.Entity("knowledge_hub.WebAPI.Database.UserRoles", b =>
@@ -859,7 +1085,7 @@ namespace knowledge_hub.WebAPI.Migrations
                     b.HasOne("knowledge_hub.WebAPI.Database.User", "User")
                         .WithOne("UserRole")
                         .HasForeignKey("knowledge_hub.WebAPI.Database.UserRoles", "UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Role");
@@ -874,9 +1100,6 @@ namespace knowledge_hub.WebAPI.Migrations
 
             modelBuilder.Entity("knowledge_hub.WebAPI.Database.User", b =>
                 {
-                    b.Navigation("Login")
-                        .IsRequired();
-
                     b.Navigation("UserRole")
                         .IsRequired();
                 });

@@ -10,9 +10,9 @@ namespace knowledge_hub.WebAPI.Database
    {
       [Key]
       public int UserId { get; set; }
-      public string Username { get; set; }
-      public string ImagePath { get; set; }
-      public string Biography { get; set; }
+      public string? Username { get; set; }
+      public string? ImagePath { get; set; }
+      public string? Biography { get; set; }
       public int LoginId { get; set; }
       public Login Login { get; set; }
       public virtual UserRoles UserRole { get; set; }

@@ -5,7 +5,7 @@ using knowledge_hub.WebAPI.Model.Responses;
 
 namespace knowledge_hub.WebAPI.Services
 {
-   public class CityService: CRUDService<CityResponse, CitySearchRequest, CityInsertRequest, CityInsertRequest, City>
+   public class CityService: CRUDService<CityResponse, CityInsertRequest, CityInsertRequest, City>
    {
       private readonly databaseContext _dbContext;
       private readonly IMapper _mapper;

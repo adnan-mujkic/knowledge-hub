@@ -10,6 +10,7 @@ namespace knowledge_hub.WebAPI.Database
       public string Author { get; set; }
       public string Description { get; set; }
       public string ImagePath { get; set; }
+      public string FilePath { get; set; }
       public double PricePhysical { get; set; }
       public double PriceDigital { get; set; }
       public double Score { get; set; }

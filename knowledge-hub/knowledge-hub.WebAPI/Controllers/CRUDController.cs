@@ -6,10 +6,10 @@ namespace knowledge_hub.WebAPI.Controllers
 {
    [Route("api/[controller]")]
    [ApiController]
-   public class CRUDController<T, TSearch, TInsert, TUpdate>: ControllerBase
+   public class CRUDController<T, TInsert, TUpdate>: ControllerBase
    {
-      private readonly ICRUDService<T, TSearch,TInsert,TUpdate> _crudService;
-      public CRUDController(ICRUDService<T, TSearch, TInsert, TUpdate> crudService) {
+      private readonly ICRUDService<T, TInsert,TUpdate> _crudService;
+      public CRUDController(ICRUDService<T, TInsert, TUpdate> crudService) {
          _crudService = crudService;
       }
 
@@ -20,7 +20,7 @@ namespace knowledge_hub.WebAPI.Controllers
 
       [HttpGet("{ID}")]
       public async Task<T> GetById(int ID) {
-         return await _crudService.GetById(ID);
+         return await _crudService.GetById(ID, Request.Scheme + "//" + Request.Host);
       }
 
       [HttpPost]
@@ -29,12 +29,12 @@ namespace knowledge_hub.WebAPI.Controllers
       }
 
       [HttpPut]
-      [Authorize(Roles = "User")]
       public async Task<T> Update(int ID, TUpdate updateRequest) {
          return await _crudService.Update(ID, updateRequest);
       }
 
       [HttpDelete]
+      [Authorize(Roles = "Admin")]
       public async Task<bool> Delete(int ID) {
          return await _crudService.Delete(ID);
       }

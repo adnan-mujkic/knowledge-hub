@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace knowledge_hub.WebAPI.Controllers
 {
-   public class CityController : CRUDController<CityResponse, CitySearchRequest, CityInsertRequest, CityInsertRequest>
+   public class CityController : CRUDController<CityResponse, CityInsertRequest, CityInsertRequest>
    {
-      public CityController(ICRUDService<CityResponse, CitySearchRequest, CityInsertRequest, CityInsertRequest> service)
+      public CityController(ICRUDService<CityResponse, CityInsertRequest, CityInsertRequest> service)
          : base(service) {
 
       }

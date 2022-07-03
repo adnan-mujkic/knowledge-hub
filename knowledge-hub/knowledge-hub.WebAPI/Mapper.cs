@@ -15,14 +15,11 @@ namespace knowledge_hub.WebAPI
          CreateMap<UserInsertRequest, User>().ReverseMap();
 
          CreateMap<LoginRegisterRequest, Login>().ReverseMap();
-         CreateMap<Login, UserResponse>()
-            .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.User.Username))
-            .ForMember(dest => dest.UserRole, opt => opt.MapFrom(src => src.User.UserRole.Role.Name))
-            .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.User.ImagePath))
-            .ForMember(dest => dest.Biography, opt => opt.MapFrom(src => src.User.Biography))
-            .ReverseMap();
 
-         CreateMap<BookInsertRequest, Book>().ReverseMap();
+         CreateMap<BookInsertRequest, Book>()
+            .ForMember(dest => dest.BookId, opt => opt.UseDestinationValue())
+            .ForMember(dest => dest.Score, opt => opt.UseDestinationValue())
+            .ReverseMap();
          CreateMap<Book, BookResponse>()
             .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.category.Name))
             .ForMember(dest => dest.Language, opt => opt.MapFrom(src => src.language.Name))
@@ -33,16 +30,13 @@ namespace knowledge_hub.WebAPI
             .ReverseMap();
 
          CreateMap<CardInfo, PaymentInfoResponse>()
-            .ForMember(dest => dest.Cvc, opt => opt.MapFrom(src => src.CVC))
             .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.CardDate))
             .ReverseMap();
          CreateMap<UserPaymentInfoRequest, CardInfo>()
             .ForMember(dest => dest.CardDate, opt => opt.MapFrom(src => src.Date))
-            .ForMember(dest => dest.CVC, opt => opt.MapFrom(src => src.Cvc))
             .ReverseMap();
          CreateMap<AddPaymentInfo, CardInfo>()
             .ForMember(dest => dest.CardDate, opt => opt.MapFrom(src => src.Date))
-            .ForMember(dest => dest.CVC, opt => opt.MapFrom(src => src.Cvc))
             .ReverseMap();
 
          CreateMap<Order, OrderResponse>()
@@ -78,6 +72,31 @@ namespace knowledge_hub.WebAPI
             .ReverseMap();
          CreateMap<ReviewSearchRequest, Review>()
             .ReverseMap();
+
+         CreateMap<Order, OrderResponse>()
+            .ForMember(dest => dest.OrderDate, opt => opt.MapFrom(src => src.OrderDate.ToShortDateString()))
+            .ForMember(dest => dest.ShippingDate, opt => opt.MapFrom(src => src.ShippingDate.ToShortDateString()))
+            .ReverseMap();
+         CreateMap<OrderInsertRequest, Order>()
+            .ForMember(dest => dest.OrderDate, opt => opt.MapFrom(src => Convert.ToDateTime(src.OrderDate)))
+            .ForMember(dest => dest.Digital, opt => opt.Ignore())
+            .ForMember(dest => dest.Book, opt => opt.Ignore())
+            .ForMember(dest => dest.BookId, opt => opt.Ignore())
+            .ReverseMap();
+
+         CreateMap<Category, CategoryResponse>().ReverseMap();
+         CreateMap<CategoryInsertRequest, Category>().ReverseMap();
+
+         CreateMap<Language, LanguageResponse>().ReverseMap();
+         CreateMap<LanguageInsertRequest, Language>().ReverseMap();
+
+         CreateMap<Transaction, TransactionResponse>()
+            .ForMember(dest => dest.userFullName, opt => opt.MapFrom(src => src.Order.UserFullName))
+            .ForMember(dest => dest.bookName, opt => opt.MapFrom(src => src.Order.Book.Name))
+            .ForMember(dest => dest.cardLastDigits, opt => opt.MapFrom(src => "**** **** **** " + src.CardInfo.CardNumber))
+            .ForMember(dest => dest.transactionDate, opt => opt.MapFrom(src => src.TransactionTime.ToShortDateString()))
+            .ReverseMap();
+
       }
    }
 }

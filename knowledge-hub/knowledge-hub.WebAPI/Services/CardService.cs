@@ -5,7 +5,7 @@ using knowledge_hub.WebAPI.Model.Responses;
 
 namespace knowledge_hub.WebAPI.Services
 {
-   public class CardService: CRUDService<PaymentInfoResponse, UserPaymentInfoRequest, AddPaymentInfo, AddPaymentInfo, CardInfo>
+   public class CardService: CRUDService<PaymentInfoResponse,AddPaymentInfo, AddPaymentInfo, CardInfo>
    {
       private readonly databaseContext _dbContext;
       private readonly IMapper _mapper;

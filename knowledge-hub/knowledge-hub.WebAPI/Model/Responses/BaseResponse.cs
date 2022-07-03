@@ -2,6 +2,6 @@
 {
    public class BaseResponse
    {
-      public string Message { get; set; }
+      public string? Message { get; set; }
    }
 }

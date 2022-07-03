@@ -8,7 +8,7 @@ namespace knowledge_hub.WebAPI.Controllers
 {
    [Route("api/[controller]")]
    [ApiController]
-   public class UserController : CRUDController<UserResponse, UserSearchRequest, UserInsertRequest, UserInsertRequest>
+   public class UserController : CRUDController<UserResponse, UserInsertRequest, UserInsertRequest>
    {
       private readonly IUserService _service;
 
@@ -40,6 +40,21 @@ namespace knowledge_hub.WebAPI.Controllers
       [HttpPost("UpdateAddress")]
       public async Task<AddressResponse> UpdateAddress(UserAddressUpdateRequest request) {
          return await _service.UpdateAddress(request);
+      }
+
+      [HttpPut("UserUpdateInfo")]
+      public async Task<bool> UserUpdateInfo(UserDataResponse userInfo) {
+         return await _service.UserUpdateInfo(userInfo);
+      }
+
+      [HttpGet("GetDetailedUserInfo")]
+      public async Task<UserDataResponse> GetDetailedUserInfo(int ID) {
+         return await _service.GetDetailedUserInfo(ID);
+      }
+
+      [HttpGet("Search")]
+      public async Task<List<UserResponse>> SearchUser(string search) {
+         return await _service.SearchUser(search);
       }
    }
 }

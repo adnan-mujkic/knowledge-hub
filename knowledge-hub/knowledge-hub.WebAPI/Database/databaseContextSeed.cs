@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using knowledge_hub.WebAPI.Helpers;
+using Microsoft.EntityFrameworkCore;
 
 namespace knowledge_hub.WebAPI.Database
 {
@@ -10,6 +11,8 @@ namespace knowledge_hub.WebAPI.Database
             new Role { RoleID = 2, Name = "User" },
             new Role { RoleID = 3, Name = "Delivery" }
          );
+
+         SeedUsers(ref modelBuilder);
 
          modelBuilder.Entity<City>().HasData(
             new City { CityId = 1, Name = "Sarajevo", ZipCode = "71000", Country = "Bosnia and Herzegovina" },
@@ -57,7 +60,8 @@ namespace knowledge_hub.WebAPI.Database
                PricePhysical = 14.5,
                PriceDigital = 8.99,
                Score = 4.38,
-               ImagePath = "",
+               ImagePath = "LOTR1.jpg",
+               FilePath = "LOTR1.pdf",
                Description = "Continuing the story begun in The Hobbit, this is the first part of " +
                "Tolkien's epic masterpiece, The Lord of the Rings, featuring a striking black cover based on Tolkien's own design, " +
                "the definitive text, and a detailed map of Middle-earth. Sauron, the Dark Lord, has gathered to him all the " +
@@ -80,7 +84,8 @@ namespace knowledge_hub.WebAPI.Database
                PricePhysical = 13.5,
                PriceDigital = 7.99,
                Score = 4.46,
-               ImagePath = "",
+               ImagePath = "LOTR2.jpg",
+               FilePath = "LOTR2.pdf",
                Description = "Building on the story begun in The Hobbit, this is the second part of Tolkien's epic masterpiece, " +
                "The Lord of the Rings, featuring a striking black cover based on Tolkien's own design, the definitive text, " +
                "and a detailed map of Middle-earth."
@@ -95,7 +100,8 @@ namespace knowledge_hub.WebAPI.Database
                PricePhysical = 14.5,
                PriceDigital = 7.99,
                Score = 4.55,
-               ImagePath = "",
+               ImagePath = "LOTR3.jpg",
+               FilePath = "LOTR3.pdf",
                Description = "Concluding the story begun in The Hobbit, this is the final part of Tolkien's " +
                "epic masterpiece, The Lord of the Rings. Featuring a striking black cover based on Tolkien's " +
                "own design, the definitive text, and a detailed map of Middle-earth."
@@ -110,7 +116,8 @@ namespace knowledge_hub.WebAPI.Database
                PricePhysical = 11.5,
                PriceDigital = 6.99,
                Score = 4.28,
-               ImagePath = "",
+               ImagePath = "Hobbit.jpg",
+               FilePath = "Hobbit.pdf",
                Description = "Bilbo Baggins is a hobbit who enjoys a comfortable, unambitious life, " +
                "rarely travelling further than the pantry of his hobbit-hole in Bag End. But his contentment " +
                "is disturbed when the wizard, Gandalf, and a company of thirteen dwarves arrive on his " +
@@ -127,7 +134,8 @@ namespace knowledge_hub.WebAPI.Database
                PricePhysical = 12.0,
                PriceDigital = 5.99,
                Score = 4.47,
-               ImagePath = "",
+               ImagePath = "AOT1.jpg",
+               FilePath = "AOT1.pdf",
                Description = "Several hundred years ago, humans were nearly exterminated by giants. " +
                "Giants are typically several stories tall, seem to have no intelligence and who devour " +
                "human beings. A small percentage of humanity survied barricading themselves in a " +
@@ -146,7 +154,8 @@ namespace knowledge_hub.WebAPI.Database
                PricePhysical = 24.5,
                PriceDigital = 12.99,
                Score = 4.21,
-               ImagePath = "",
+               ImagePath = "SpiderManLifeStory.jpg",
+               FilePath = "SpiderManLifeStory.pdf",
                Description = "In 1962's Amazing Fantasy #15, fifteen-year-old Peter Parker was bitten by a " +
                "radioactive spider and became the Amazing Spider-Man! 57 years have passed in the real world " +
                "since that event - so what would have happened if the same amount of time passed for" +
@@ -164,13 +173,15 @@ namespace knowledge_hub.WebAPI.Database
                PricePhysical = 21.5,
                PriceDigital = 11.99,
                Score = 4.5,
-               ImagePath = "",
+               ImagePath = "NoodleBowlRecipes.jpg",
+               FilePath = "NoodleBowlRecipes.pdf",
                Description = "Fresh, tasty and bursting with nutritious ingredients and lively aromas, " +
                "delicious one-bowl, Asian-inspired noodle dishes have never been more popular. " +
                "Their variety and versatility, speedy cooking time and ability to soak up the bold " +
                "flavours they're prepared with, make noodle dishes an exotic yet accessible dish and, " +
                "with The Noodle Bowl, you'll be able to celebrate this wonderful food and feast on the results. "
-            }, new Book
+            }, 
+            new Book
             {
                BookId = 8,
                Author = "Louise Pickford",
@@ -180,13 +191,274 @@ namespace knowledge_hub.WebAPI.Database
                PricePhysical = 23.5,
                PriceDigital = 12.6,
                Score = 3.75,
-               ImagePath = "",
+               ImagePath = "ModernTagineCookbook.jpg",
+               FilePath = "ModernTagineCookbook.pdf",
                Description = "These hearty one-pot meals, flavoured with fragrant spices, are cooked and " +
                "served from an elegant, specially designed cooking vessel, also called a tagine. In Ghillie " +
                "Basan's collection of deliciously authentic recipes you will find some of the best-loved " +
                "classics of the Moroccan kitchen."
             }
          );
+
+         modelBuilder.Entity<CardInfo>().HasData(SeedCards());
+         modelBuilder.Entity<Order>().HasData(SeedOrders());
+         modelBuilder.Entity<Transaction>().HasData(SeedTransactions());
+      }
+
+      private void SeedUsers(ref ModelBuilder modelBuilder) {
+         string adminPassword = "admin";
+         string passwordSalt = PasswordHelper.GeneratePasswordSalt();
+         modelBuilder.Entity<Login>().HasData(
+            new Login
+            {
+               LoginId = 1,
+               Email = "admin@knowledge.com",
+               PasswordSalt = passwordSalt,
+               PasswordHash = PasswordHelper.GeneratePasswordHash(passwordSalt, adminPassword)
+            }
+            );
+         modelBuilder.Entity<User>().HasData(
+            new User
+            {
+               LoginId = 1,
+               UserId = 1,
+               Username = "Admin",
+               Biography = ""
+            });
+         modelBuilder.Entity<UserRoles>().HasData(
+            new UserRoles
+            {
+               UserRoleID = 1,
+               RoleID = 1,
+               UserID = 1
+            }
+            );
+
+         string deliveryPassword = "delivery";
+         passwordSalt = PasswordHelper.GeneratePasswordSalt();
+         modelBuilder.Entity<Login>().HasData(
+            new Login
+            {
+               LoginId = 2,
+               Email = "delivery@knowledge.com",
+               PasswordSalt = passwordSalt,
+               PasswordHash = PasswordHelper.GeneratePasswordHash(passwordSalt, deliveryPassword)
+            }
+            );
+         modelBuilder.Entity<User>().HasData(
+            new User
+            {
+               LoginId = 2,
+               UserId = 2,
+               Username = "Delivery",
+               Biography = ""
+            });
+         modelBuilder.Entity<UserRoles>().HasData(
+            new UserRoles
+            {
+               UserRoleID = 2,
+               RoleID = 3,
+               UserID = 2
+            }
+            );
+
+         string userPassword = "user";
+         passwordSalt = PasswordHelper.GeneratePasswordSalt();
+         modelBuilder.Entity<Login>().HasData(
+            new Login
+            {
+               LoginId = 3,
+               Email = "user1@knowledge.com",
+               PasswordSalt = passwordSalt,
+               PasswordHash = PasswordHelper.GeneratePasswordHash(passwordSalt, userPassword)
+            }
+            );
+         modelBuilder.Entity<User>().HasData(
+            new User
+            {
+               LoginId = 3,
+               UserId = 3,
+               Username = "User",
+               Biography = ""
+            });
+         modelBuilder.Entity<UserRoles>().HasData(
+            new UserRoles
+            {
+               UserRoleID = 3,
+               RoleID = 2,
+               UserID = 3
+            }
+            );
+
+         userPassword = "user";
+         passwordSalt = PasswordHelper.GeneratePasswordSalt();
+         modelBuilder.Entity<Login>().HasData(
+            new Login
+            {
+               LoginId = 4,
+               Email = "user2@knowledge.com",
+               PasswordSalt = passwordSalt,
+               PasswordHash = PasswordHelper.GeneratePasswordHash(passwordSalt, userPassword)
+            }
+            );
+         modelBuilder.Entity<User>().HasData(
+            new User
+            {
+               LoginId = 4,
+               UserId = 4,
+               Username = "User",
+               Biography = ""
+            });
+         modelBuilder.Entity<UserRoles>().HasData(
+            new UserRoles
+            {
+               UserRoleID = 4,
+               RoleID = 2,
+               UserID = 4
+            }
+            );
+      }
+
+      private CardInfo[] SeedCards() {
+         return new[] {
+            new CardInfo {
+               CardInfoId = 1,
+               FullName = "User 1",
+               CardNumber = "4242",
+               CardDate = "01/25",
+               UserId = 3
+            },
+            new CardInfo
+            {
+               CardInfoId = 2,
+               FullName = "User 2",
+               CardNumber = "4242",
+               CardDate = "02/24",
+               UserId = 4
+            }};
+      }
+
+      private Order[] SeedOrders() {
+         return new[] {
+            new Order
+            {
+               OrderId = 1,
+               OrderNumber = "8e778038-71fc-4930-bbee-197c50499f9d",
+               Digital = true,
+               UserId = 3,
+               UserFullName = "User 1",
+               BookId = 1,
+               OrderDate = DateTime.Now,
+               ShippingDate = DateTime.Now,
+               OrderStatus = 0,
+               Comment = "",
+               AddressLine = "",
+               CityId = 1
+            },
+            new Order
+            {
+               OrderId = 2,
+               OrderNumber = "c4a82927-67ac-4aa1-a045-902caf095900",
+               Digital = true,
+               UserId = 3,
+               UserFullName = "User 1",
+               BookId = 2,
+               OrderDate = DateTime.Now,
+               ShippingDate = DateTime.Now,
+               OrderStatus = 0,
+               Comment = "",
+               AddressLine = "",
+               CityId = 1
+            },
+            new Order
+            {
+               OrderId = 3,
+               OrderNumber = "5ed359e2-1ed1-4bea-bdcf-018afff2f05f",
+               Digital = true,
+               UserId = 4,
+               UserFullName = "User 2",
+               BookId = 1,
+               OrderDate = DateTime.Now,
+               ShippingDate = DateTime.Now,
+               OrderStatus = 0,
+               Comment = "",
+               AddressLine = "",
+               CityId = 1
+            },
+            new Order
+            {
+               OrderId = 4,
+               OrderNumber = "7bc51742-86ee-4611-a46d-0dcc6f0161b6",
+               Digital = true,
+               UserId = 4,
+               UserFullName = "User 2",
+               BookId = 3,
+               OrderDate = DateTime.Now,
+               ShippingDate = DateTime.Now,
+               OrderStatus = 0,
+               Comment = "",
+               AddressLine = "",
+               CityId = 1
+            },
+            new Order
+            {
+               OrderId = 5,
+               OrderNumber = "f5a98595-55d5-41f0-a467-d71ad7ba0603",
+               Digital = true,
+               UserId = 4,
+               UserFullName = "User 2",
+               BookId = 3,
+               OrderDate = DateTime.Now,
+               ShippingDate = DateTime.Now,
+               OrderStatus = 0,
+               Comment = "",
+               AddressLine = "",
+               CityId = 1
+            } };
+      }
+
+      private Transaction[] SeedTransactions() {
+         return new[] {
+            new Transaction
+            {
+               TransactionId = 1,
+               OrderId = 1,
+               CardInfoId = 1,
+               TransactionTime = DateTime.Now,
+               Price = 8.99
+            },
+            new Transaction
+            {
+               TransactionId = 2,
+               OrderId = 2,
+               CardInfoId = 1,
+               TransactionTime = DateTime.Now,
+               Price = 12.99
+            },
+            new Transaction
+            {
+               TransactionId = 3,
+               OrderId = 3,
+               CardInfoId = 2,
+               TransactionTime = DateTime.Now,
+               Price = 13.99
+            },
+            new Transaction
+            {
+               TransactionId = 4,
+               OrderId = 4,
+               CardInfoId = 2,
+               TransactionTime = DateTime.Now,
+               Price = 7.99
+            },
+            new Transaction
+            {
+               TransactionId = 5,
+               OrderId = 5,
+               CardInfoId = 2,
+               TransactionTime = DateTime.Now,
+               Price = 5.99
+            } };
       }
    }
 }

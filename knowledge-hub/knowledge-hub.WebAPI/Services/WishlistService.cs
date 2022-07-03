@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace knowledge_hub.WebAPI.Services
 {
-   public class WishlistService: CRUDService<WishlistResponse, WishlistSearchRequest, WishlistInsertRequest, WishlistInsertRequest, BookUserWishlist>, IWishlistService
+   public class WishlistService: CRUDService<WishlistResponse, WishlistInsertRequest, WishlistInsertRequest, BookUserWishlist>, IWishlistService
    {
       private readonly databaseContext _dbContext;
       private readonly IMapper _mapper;

@@ -6,6 +6,7 @@ using knowledge_hub.WebAPI.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Stripe;
 using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -44,11 +45,16 @@ builder.Services.AddDbContext<databaseContext>(options =>
    options.UseSqlServer(builder.Configuration.GetConnectionString("knowledge-hub")));
 
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<ICRUDService<BookResponse, BookSearchRequest, BookInsertRequest, BookInsertRequest>, BookService>();
-builder.Services.AddScoped<ICRUDService<PaymentInfoResponse, UserPaymentInfoRequest, AddPaymentInfo, AddPaymentInfo>, CardService>();
-builder.Services.AddScoped<ICRUDService<CityResponse, CitySearchRequest, CityInsertRequest, CityInsertRequest>, CityService>();
-builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<ICRUDService<PaymentInfoResponse, AddPaymentInfo, AddPaymentInfo>, knowledge_hub.WebAPI.Services.CardService>();
+builder.Services.AddScoped<ICRUDService<CityResponse, CityInsertRequest, CityInsertRequest>, CityService>();
+builder.Services.AddScoped<IReviewService, knowledge_hub.WebAPI.Services.ReviewService>();
 builder.Services.AddScoped<IWishlistService, WishlistService>();
+builder.Services.AddScoped<IOrderService, knowledge_hub.WebAPI.Services.OrderService>();
+builder.Services.AddScoped<ICRUDService<CategoryResponse, CategoryInsertRequest, CategoryInsertRequest>, CategoryService>();
+builder.Services.AddScoped<ICRUDService<LanguageResponse, LanguageInsertRequest, LanguageInsertRequest>, LanguageService>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
+
 
 builder.Services.AddAuthentication("AuthService")
               .AddScheme<AuthenticationSchemeOptions, AuthService>("AuthService", null);
@@ -56,9 +62,14 @@ builder.Services.AddAuthorization(options =>
 {
    options.AddPolicy("AdminOnly", policy => policy.RequireClaim(ClaimTypes.Role));
 });
-builder.WebHost.UseUrls("http://localhost:5000", "http://192.168.1.103:5000");
+builder.WebHost.UseUrls("http://localhost:5000", "http://192.168.1.101:5000");
+
+StripeConfiguration.ApiKey = "sk_test_51LDPJEJa87uOA78Aa5nA9zW3NmWxlSImbu3sR7MxH6NksDwGGqFHcrNUs8tVLxxZgURUviHWaSLmv79gul4gyJw8007rQAOjqB";
 
 var app = builder.Build();
+
+app.UseStaticFiles();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -72,5 +83,11 @@ if (app.Environment.IsDevelopment())
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+   var dbcontext = scope.ServiceProvider.GetRequiredService<databaseContext>();
+   dbcontext.Database.EnsureCreated();
+}
 
 app.Run();

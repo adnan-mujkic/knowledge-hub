@@ -26,9 +26,14 @@ namespace knowledge_hub.WebAPI.Database
 
       protected override void OnModelCreating(ModelBuilder modelBuilder) {
          modelBuilder.Entity<User>()
-            .HasOne(u => u.Login)
-            .WithOne(l => l.User)
-            .HasForeignKey<Login>(x => x.UserId);
+            .HasOne(u => u.UserRole)
+            .WithOne(r => r.User)
+            .OnDelete(DeleteBehavior.NoAction);
+
+         modelBuilder.Entity<Transaction>()
+            .HasOne(o => o.Order)
+            .WithMany()
+            .OnDelete(DeleteBehavior.NoAction);
 
          OnModelCreatingPartial(modelBuilder);
       }

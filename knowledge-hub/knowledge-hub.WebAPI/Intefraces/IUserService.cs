@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace knowledge_hub.WebAPI.Intefraces
 {
-   public interface IUserService: ICRUDService<UserResponse, UserSearchRequest, UserInsertRequest, UserInsertRequest>
+   public interface IUserService: ICRUDService<UserResponse, UserInsertRequest, UserInsertRequest>
    {
       Task<UserDataResponse> Login(AuthenticationRequest request);
       Task<RegisterResponse> Register(LoginRegisterRequest request);
@@ -14,5 +14,8 @@ namespace knowledge_hub.WebAPI.Intefraces
       Task<PaymentInfoResponse> UpdatePayment(UserPaymentInfoRequest request);
       Task<HttpStatusCode> UpdatePassword(PasswordUpdateRequest request);
       Task<AddressResponse> UpdateAddress(UserAddressUpdateRequest request);
+      Task<bool> UserUpdateInfo(UserDataResponse userInfo);
+      Task<UserDataResponse> GetDetailedUserInfo(int ID);
+      Task<List<UserResponse>> SearchUser(string search);
    }
 }

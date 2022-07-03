@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace knowledge_hub.WebAPI.Services
 {
-   public class ReviewService : CRUDService<ReviewResponse, ReviewSearchRequest, ReviewAddRequest, ReviewAddRequest, Review>, IReviewService
+   public class ReviewService : CRUDService<ReviewResponse, ReviewAddRequest, ReviewAddRequest, Review>, IReviewService
    {
       private readonly databaseContext _dbContext;
       private readonly IMapper _mapper;

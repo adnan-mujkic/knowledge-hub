@@ -5,5 +5,6 @@
       public string Username { get; set; }
       public string Biography { get; set; }
       public int LoginId { get; set; }
+      public byte[] Image { get; set; }
    }
 }

@@ -5,11 +5,10 @@ namespace knowledge_hub.WebAPI.Model.Responses
    {
       public LoginData authData { get; set; }
       public UserResponse userData { get; set; }
-      public AddressResponse addressData { get; set; }
-      public PaymentInfoResponse paymentData { get; set; }
-      public List<BookResponse> myBooks { get; set; }
-      public List<BookResponse> wishlist { get; set; }
-      public List<OrderResponse> cart { get; set; }
+      public AddressResponse? addressData { get; set; }
+      public PaymentInfoResponse? paymentData { get; set; }
+      public List<BookResponse>? myBooks { get; set; }
+      public List<BookResponse>? wishlist { get; set; }
    }
 
    public class LoginData {

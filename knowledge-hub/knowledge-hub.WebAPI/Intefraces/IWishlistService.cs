@@ -5,7 +5,7 @@ using knowledge_hub.WebAPI.Services;
 
 namespace knowledge_hub.WebAPI.Intefraces
 {
-   public interface IWishlistService: ICRUDService<WishlistResponse, WishlistSearchRequest, WishlistInsertRequest, WishlistInsertRequest>
+   public interface IWishlistService: ICRUDService<WishlistResponse, WishlistInsertRequest, WishlistInsertRequest>
    {
       Task<List<BookResponse>> GetByUserId(int userId);
       Task<bool> Check(WishlistInsertRequest request);

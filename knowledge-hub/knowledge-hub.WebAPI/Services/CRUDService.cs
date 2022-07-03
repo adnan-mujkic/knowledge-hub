@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace knowledge_hub.WebAPI.Services
 {
-   public class CRUDService<T, TSearch, TInsert, TUpdate, TDatabase> : ICRUDService<T, TSearch, TInsert, TUpdate>
+   public class CRUDService<T, TInsert, TUpdate, TDatabase> : ICRUDService<T, TInsert, TUpdate>
       where TDatabase : class
    {
       private readonly databaseContext _dbContext;
@@ -34,7 +34,7 @@ namespace knowledge_hub.WebAPI.Services
          return _mapper.Map<List<T>>(databaseEntities);
       }
 
-      public virtual async Task<T> GetById(int ID) {
+      public virtual async Task<T> GetById(int ID, string serverPath) {
          var databaseEntity = await _dbContext.Set<TDatabase>().FindAsync(ID);
          return _mapper.Map<T>(databaseEntity);
       }

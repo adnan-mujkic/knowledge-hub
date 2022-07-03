@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace knowledge_hub.WebAPI.Controllers
 {
-   public class ReviewController : CRUDController<ReviewResponse, ReviewSearchRequest, ReviewAddRequest, ReviewAddRequest>
+   public class ReviewController : CRUDController<ReviewResponse, ReviewAddRequest, ReviewAddRequest>
    {
       private readonly IReviewService _service;
       public ReviewController(IReviewService service)
