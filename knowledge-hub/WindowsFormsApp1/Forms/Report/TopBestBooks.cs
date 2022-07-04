@@ -59,11 +59,17 @@ namespace WindowsFormsApp1.Forms.Report
             .Take(10)
             .ToList();
 
-         dataGridView1.DataSource = dataSource;
+         bindingSource1.DataSource = dataSource;
+         reportViewer1.RefreshReport();
       }
 
       private void button1_Click(object sender, EventArgs e) {
          this.Hide();
+      }
+
+      private void TopBestBooks_Load(object sender, EventArgs e) {
+
+         this.reportViewer1.RefreshReport();
       }
    }
 }

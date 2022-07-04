@@ -26,12 +26,12 @@
       /// the contents of this method with the code editor.
       /// </summary>
       private void InitializeComponent() {
+         this.components = new System.ComponentModel.Container();
+         Microsoft.Reporting.WinForms.ReportDataSource reportDataSource1 = new Microsoft.Reporting.WinForms.ReportDataSource();
+         this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
          this.button1 = new System.Windows.Forms.Button();
-         this.dataGridView1 = new System.Windows.Forms.DataGridView();
-         this.BookId = new System.Windows.Forms.DataGridViewTextBoxColumn();
-         this.BookName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-         this.Score = new System.Windows.Forms.DataGridViewTextBoxColumn();
-         ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+         this.reportViewer1 = new Microsoft.Reporting.WinForms.ReportViewer();
+         ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
          this.SuspendLayout();
          // 
          // button1
@@ -39,7 +39,7 @@
          this.button1.BackColor = System.Drawing.Color.BurlyWood;
          this.button1.FlatAppearance.BorderSize = 0;
          this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-         this.button1.Location = new System.Drawing.Point(316, 660);
+         this.button1.Location = new System.Drawing.Point(629, 729);
          this.button1.Name = "button1";
          this.button1.Size = new System.Drawing.Size(95, 38);
          this.button1.TabIndex = 3;
@@ -47,64 +47,32 @@
          this.button1.UseVisualStyleBackColor = false;
          this.button1.Click += new System.EventHandler(this.button1_Click);
          // 
-         // dataGridView1
+         // reportViewer1
          // 
-         this.dataGridView1.AllowUserToAddRows = false;
-         this.dataGridView1.AllowUserToDeleteRows = false;
-         this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-         this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.BookId,
-            this.BookName,
-            this.Score});
-         this.dataGridView1.Location = new System.Drawing.Point(12, 12);
-         this.dataGridView1.Name = "dataGridView1";
-         this.dataGridView1.ReadOnly = true;
-         this.dataGridView1.RowHeadersWidth = 51;
-         this.dataGridView1.RowTemplate.Height = 24;
-         this.dataGridView1.Size = new System.Drawing.Size(711, 623);
-         this.dataGridView1.TabIndex = 2;
-         // 
-         // BookId
-         // 
-         this.BookId.DataPropertyName = "BookId";
-         this.BookId.HeaderText = "BookId";
-         this.BookId.MinimumWidth = 6;
-         this.BookId.Name = "BookId";
-         this.BookId.ReadOnly = true;
-         this.BookId.Visible = false;
-         this.BookId.Width = 125;
-         // 
-         // BookName
-         // 
-         this.BookName.DataPropertyName = "BookName";
-         this.BookName.HeaderText = "Book Name";
-         this.BookName.MinimumWidth = 6;
-         this.BookName.Name = "BookName";
-         this.BookName.ReadOnly = true;
-         this.BookName.Width = 300;
-         // 
-         // Score
-         // 
-         this.Score.DataPropertyName = "Score";
-         this.Score.HeaderText = "Average Score";
-         this.Score.MinimumWidth = 6;
-         this.Score.Name = "Score";
-         this.Score.ReadOnly = true;
-         this.Score.Width = 125;
+         reportDataSource1.Name = "BestBooksDataset";
+         reportDataSource1.Value = this.bindingSource1;
+         this.reportViewer1.LocalReport.DataSources.Add(reportDataSource1);
+         this.reportViewer1.LocalReport.ReportEmbeddedResource = "WindowsFormsApp1.Forms.Report.Data.BestBooks.rdlc";
+         this.reportViewer1.Location = new System.Drawing.Point(12, 12);
+         this.reportViewer1.Name = "reportViewer1";
+         this.reportViewer1.ServerReport.BearerToken = null;
+         this.reportViewer1.Size = new System.Drawing.Size(1326, 699);
+         this.reportViewer1.TabIndex = 4;
          // 
          // TopBestBooks
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.BackColor = System.Drawing.Color.Gainsboro;
-         this.ClientSize = new System.Drawing.Size(735, 710);
+         this.BackColor = System.Drawing.Color.White;
+         this.ClientSize = new System.Drawing.Size(1350, 779);
+         this.Controls.Add(this.reportViewer1);
          this.Controls.Add(this.button1);
-         this.Controls.Add(this.dataGridView1);
          this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
          this.Name = "TopBestBooks";
          this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
          this.Text = "TopBestBooks";
-         ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+         this.Load += new System.EventHandler(this.TopBestBooks_Load);
+         ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
          this.ResumeLayout(false);
 
       }
@@ -112,9 +80,7 @@
       #endregion
 
       private System.Windows.Forms.Button button1;
-      private System.Windows.Forms.DataGridView dataGridView1;
-      private System.Windows.Forms.DataGridViewTextBoxColumn BookId;
-      private System.Windows.Forms.DataGridViewTextBoxColumn BookName;
-      private System.Windows.Forms.DataGridViewTextBoxColumn Score;
+      private System.Windows.Forms.BindingSource bindingSource1;
+      private Microsoft.Reporting.WinForms.ReportViewer reportViewer1;
    }
 }

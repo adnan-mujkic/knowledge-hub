@@ -45,7 +45,8 @@ namespace WindowsFormsApp1.Forms.Report
             .Take(10)
             .ToList();
 
-         dataGridView1.DataSource = dataSource;
+         bindingSource1.DataSource = dataSource;
+         reportViewer1.RefreshReport();
       }
 
       private bool dateIsInLastYear(string date) {

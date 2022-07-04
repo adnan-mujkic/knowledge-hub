@@ -134,11 +134,6 @@
     <Compile Include="Forms\Login.Designer.cs">
       <DependentUpon>Login.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Report\Data\MostBooksSoldInPeriod_Report.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>MostBooksSoldInPeriod_Report.xsd</DependentUpon>
-    </Compile>
     <Compile Include="Forms\Report\MostSoldBooksInPeriod.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -242,6 +237,11 @@
     <EmbeddedResource Include="Forms\Login.resx">
       <DependentUpon>Login.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Report\Data\BestBooks.rdlc" />
+    <EmbeddedResource Include="Forms\Report\Data\MostSoldBooks.rdlc" />
+    <EmbeddedResource Include="Forms\Report\Data\MostSoldBooksReport.rdlc" />
+    <EmbeddedResource Include="Forms\Report\Data\TopUsersWithMostPurchases.rdlc" />
+    <EmbeddedResource Include="Forms\Report\Data\WorstBooks.rdlc" />
     <EmbeddedResource Include="Forms\Report\MostSoldBooksInPeriod.resx">
       <DependentUpon>MostSoldBooksInPeriod.cs</DependentUpon>
     </EmbeddedResource>
@@ -273,19 +273,10 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="Forms\Report\Data\MostBooksSoldInPeriod_Report.xsc">
-      <DependentUpon>MostBooksSoldInPeriod_Report.xsd</DependentUpon>
-    </None>
-    <None Include="Forms\Report\Data\MostBooksSoldInPeriod_Report.xsd">
-      <SubType>Designer</SubType>
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>MostBooksSoldInPeriod_Report.Designer.cs</LastGenOutput>
-    </None>
-    <None Include="Forms\Report\Data\MostBooksSoldInPeriod_Report.xss">
-      <DependentUpon>MostBooksSoldInPeriod_Report.xsd</DependentUpon>
-    </None>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\knowledge_hub.Models.Model.Report.BookReview.datasource" />
     <None Include="Properties\DataSources\knowledge_hub.Models.Model.Report.MostSoldBooksDate.datasource" />
+    <None Include="Properties\DataSources\knowledge_hub.Models.Model.Report.UserPurchases.datasource" />
     <None Include="Properties\DataSources\knowledge_hub.Models.Model.Responses.OrderResponse.datasource" />
     <None Include="Properties\DataSources\knowledge_hub.Models.Model.Responses.TransactionResponse.datasource" />
     <None Include="Properties\Settings.settings">
