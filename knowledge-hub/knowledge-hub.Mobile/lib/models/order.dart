@@ -1,3 +1,5 @@
+import 'package:knowledge_hub_mobile/models/book.dart';
+
 class Order {
   int orderId = 0;
   String imagePath = "";
@@ -12,6 +14,7 @@ class Order {
   String orderComment = "";
   double paid = 0;
   String type = "";
+  Book book = Book();
 
   Order();
 
@@ -43,7 +46,8 @@ class Order {
         address = jsonFile['addressLine'] ?? "",
         orderComment = jsonFile['comment'] ?? "",
         paid = jsonFile['paid'] ?? 0,
-        type = jsonFile['type'] ?? "";
+        type = jsonFile['type'] ?? "",
+        book = Book.fromJson(jsonFile['book']);
 
   void populate(
       String _imagePath,

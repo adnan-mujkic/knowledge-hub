@@ -315,9 +315,8 @@ class CartState extends State<CartWidget> {
                   children: getCart(),
                 ),
         ),
-        viewingPayment
-            ? Container()
-            : Positioned(
+        (!viewingPayment && AccountService.instance.cart.isNotEmpty)
+            ? Positioned(
                 height: 50,
                 width: MediaQuery.of(context).size.width,
                 bottom: 0,
@@ -332,7 +331,13 @@ class CartState extends State<CartWidget> {
                   },
                   child: const Text("Checkout"),
                 ),
-              ),
+              )
+            : Container(),
+        AccountService.instance.cart.isEmpty
+            ? Center(
+                child: Text("No books in cart..."),
+              )
+            : Container()
       ],
     );
   }

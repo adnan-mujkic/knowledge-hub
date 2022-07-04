@@ -40,7 +40,7 @@ class OrdersViewState extends State<OrdersViewWidget> {
   Future<List<Order>> getOrders() async {
     final response = await http.get(
         Uri.parse(
-            '${PersistentDataService.instance.BackendUri}/api/Order/GetByUser?UserId=${AccountService.instance.userData.UserId}'),
+            '${PersistentDataService.instance.BackendUri}/api/Order/GetByUser?ID=${AccountService.instance.userData.UserId}'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization':

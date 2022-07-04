@@ -105,9 +105,9 @@ class OrderWidget extends State<OrderController> {
                       height: 120,
                       width: 60,
                       margin: const EdgeInsets.only(left: 20, top: 0),
-                      child: Image.asset(
-                        'assets/book.png',
-                        fit: BoxFit.cover,
+                      child: FadeInImage(
+                        image: NetworkImage(widget.order.book.ImagePath),
+                        placeholder: const AssetImage("assets/book.png"),
                       ),
                     ),
                     SizedBox(

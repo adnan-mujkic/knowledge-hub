@@ -23,22 +23,23 @@ class CartItemViewState extends State<CartItemViewWidget> {
       height: 120,
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(10)),
-        color:  Colors.white,
+        color: Colors.white,
       ),
       child: Row(
         children: [
           Container(
             margin: const EdgeInsets.all(10),
-            child: Image.asset(
-              'assets/book.png',
-              fit: BoxFit.fitHeight,
-              scale: 1,
+            child: FadeInImage(
+              image: NetworkImage(widget.cartItem.book.ImagePath),
+              placeholder: const AssetImage("assets/book.png"),
             ),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               SizedBox(
                 width: 160,
                 child: Text(
@@ -49,12 +50,14 @@ class CartItemViewState extends State<CartItemViewWidget> {
                   softWrap: false,
                 ),
               ),
-              const SizedBox(height: 5,),
+              const SizedBox(
+                height: 5,
+              ),
               Text(widget.cartItem.book.Author),
-              Text(widget.cartItem.digital? "Digital":"Physical"),
-              Text(widget.cartItem.digital?
-              widget.cartItem.book.PriceDigital.toString() :
-              widget.cartItem.book.PricePhysical.toString()),
+              Text(widget.cartItem.digital ? "Digital" : "Physical"),
+              Text(widget.cartItem.digital
+                  ? widget.cartItem.book.PriceDigital.toString()
+                  : widget.cartItem.book.PricePhysical.toString()),
             ],
           ),
           const Spacer(),
@@ -64,17 +67,11 @@ class CartItemViewState extends State<CartItemViewWidget> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 ElevatedButton(
-                    onPressed: (){
-                      widget.bookSelectedEvent.broadcast(Value<Book>(widget.cartItem.book));
+                    onPressed: () {
+                      widget.bookRemoveEvent
+                          .broadcast(Value<Book>(widget.cartItem.book));
                     },
-                    child: const Text("View")
-                ),
-                ElevatedButton(
-                    onPressed: (){
-                      widget.bookRemoveEvent.broadcast(Value<Book>(widget.cartItem.book));
-                    },
-                    child: const Text("Remove")
-                )
+                    child: const Text("Remove"))
               ],
             ),
           )

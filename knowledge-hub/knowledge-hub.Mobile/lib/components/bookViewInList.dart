@@ -22,7 +22,7 @@ class BookInListState extends State<BookInListWidget> {
         width: widget.width,
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(10)),
-          color:  Colors.white,
+          color: Colors.white,
         ),
         child: Column(
           children: [
@@ -31,22 +31,19 @@ class BookInListState extends State<BookInListWidget> {
               height: widget.width * 1.4,
               child: Container(
                 margin: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.blueGrey.withOpacity(0.2),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: Offset(0, 3),
-                      )
-                    ]
-                ),
+                decoration: BoxDecoration(boxShadow: [
+                  BoxShadow(
+                    color: Colors.blueGrey.withOpacity(0.2),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: Offset(0, 3),
+                  )
+                ]),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Image.asset(
-                    'assets/book.png',
-                    fit: BoxFit.contain,
-                    scale: 1,
+                  child: FadeInImage(
+                    image: NetworkImage(widget.book.ImagePath),
+                    placeholder: const AssetImage("assets/book.png"),
                   ),
                 ),
               ),
@@ -63,10 +60,8 @@ class BookInListState extends State<BookInListWidget> {
                     height: 30,
                     child: Text(
                       widget.book.BookName,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 10
-                      ),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                     ),
@@ -74,13 +69,10 @@ class BookInListState extends State<BookInListWidget> {
                   const Divider(
                       height: 10,
                       thickness: 1,
-                      color: Color.fromARGB(30, 0, 0, 0)
-                  ),
+                      color: Color.fromARGB(30, 0, 0, 0)),
                   Text(
                     widget.book.Author,
-                    style: TextStyle(
-                      fontSize: 8
-                    ),
+                    style: TextStyle(fontSize: 8),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                   ),
@@ -90,11 +82,9 @@ class BookInListState extends State<BookInListWidget> {
                   Align(
                     alignment: Alignment.centerRight,
                     child: Text(
-                        "${widget.book.PricePhysical.toString()} KM",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 10
-                      ),
+                      "${widget.book.PricePhysical.toString()} KM",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
                     ),
                   )
                 ],

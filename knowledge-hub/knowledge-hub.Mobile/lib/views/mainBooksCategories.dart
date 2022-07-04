@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:knowledge_hub_mobile/components/bookViewInList.dart';
 import 'package:event/event.dart';
 import 'package:knowledge_hub_mobile/views/bookView.dart';
-
+import 'package:http/http.dart' as http;
 import '../models/book.dart';
+import '../services/accountService.dart';
+import '../services/persistentDataService.dart';
 
 class MainBooksCategoriesWidget extends StatefulWidget {
   MainBooksCategoriesWidget(this.allBooks, {Key? key}) : super(key: key);
@@ -23,7 +27,7 @@ class MainBooksCategoriesState extends State<MainBooksCategoriesWidget> {
     widget.selectedBookEvent.broadcast(Value<Book>(selectedBook));
   }
 
-  List<Widget> constructListWidget() {
+  List<Widget> constructListWidget(List<Book>? recommendations) {
     List<Widget> temp = List<Widget>.empty(growable: true);
 
     Map<String, List<Book>> bookCategoryMap = <String, List<Book>>{};
@@ -35,6 +39,10 @@ class MainBooksCategoriesState extends State<MainBooksCategoriesWidget> {
         bookCategoryMap[element.Category]?.add(element);
       }
     });
+
+    if (recommendations != null && recommendations.isNotEmpty) {
+      temp.add(getRowContainer(recommendations, "Recommendations"));
+    }
 
     bookCategoryMap.forEach((key, value) {
       temp.add(getRowContainer(value, key));
@@ -107,11 +115,40 @@ class MainBooksCategoriesState extends State<MainBooksCategoriesWidget> {
     );
   }
 
+  Future<List<Book>> getRecommendations() async {
+    final response = await http.get(
+        Uri.parse(
+            '${PersistentDataService.instance.BackendUri}/api/Book/RecommenedCourses?userId=${AccountService.instance.userData.UserId}'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization':
+              "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
+        });
+    if (response.statusCode == 200) {
+      var jsonBody = jsonDecode(response.body);
+      Iterable iterable = jsonBody;
+
+      var books = List<Book>.from(iterable.map((e) => Book.fromJson(e)));
+      return books;
+    }
+    return List<Book>.empty(growable: true);
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Column(
-        children: constructListWidget(),
+      child: FutureBuilder<List<Book>>(
+        future: getRecommendations(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData && snapshot.data != null) {
+            return Column(
+              children: constructListWidget(snapshot.data),
+            );
+          }
+          return Column(
+            children: constructListWidget(null),
+          );
+        },
       ),
     );
   }

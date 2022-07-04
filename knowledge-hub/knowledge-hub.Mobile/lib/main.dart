@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:knowledge_hub_mobile/components/bookViewInList.dart';
 import 'package:knowledge_hub_mobile/services/persistentDataService.dart';
 import 'package:knowledge_hub_mobile/views/mainBooksCategories.dart';
+import 'package:knowledge_hub_mobile/views/myBooks.dart';
 import 'package:knowledge_hub_mobile/views/ordersView.dart';
 import 'package:knowledge_hub_mobile/views/searchResults.dart';
 import '../services/accountService.dart';
@@ -24,7 +25,7 @@ import 'models/order.dart';
 import 'models/user.dart';
 import 'views/order.dart';
 
-void main() {
+void main() async {
   runApp(MyApp());
 }
 
@@ -269,7 +270,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           );
         case 1:
-          return Container();
+          return MyBooksWidget();
         case 2:
           return wishlist;
         case 3:
@@ -311,7 +312,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void searchBooks(String searchQuery) async {
     final response = await http.get(
       Uri.parse(
-          '${PersistentDataService.instance.BackendUri}/api/Book/SearchBooks?search=$searchQuery'),
+          '${PersistentDataService.instance.BackendUri}/api/Book/Search?search=$searchQuery'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization':
@@ -367,7 +368,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           viewingBook || viewingSearch
                               ? Container(
                                   margin: const EdgeInsets.only(
-                                      top: 40, bottom: 10, left: 0, right: 20),
+                                      top: 70, bottom: 10, left: 0, right: 20),
                                   child: TextButton(
                                     style: ButtonStyle(
                                         foregroundColor:
@@ -384,46 +385,48 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ),
                                 )
                               : Container(),
-                          Container(
-                            margin: const EdgeInsets.only(
-                                top: 40, bottom: 10, left: 60, right: 20),
-                            padding: const EdgeInsets.all(0),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              color: widget.userRole == true
-                                  ? Colors.white
-                                  : Color.fromARGB(30, 0, 0, 0),
-                            ),
-                            child: SizedBox(
-                                child: Stack(children: <Widget>[
-                              Positioned(
-                                  top: 10,
-                                  left: 20,
-                                  child: Icon(
-                                    Icons.search,
-                                    color: Colors.grey,
-                                    size: 24,
-                                  )),
-                              Positioned(
-                                  left: 60,
-                                  top: -4,
-                                  height: 50,
-                                  width: 250,
-                                  child: TextField(
-                                    decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        labelText: widget.userRole == true
-                                            ? "Search books, authors, ISBNs"
-                                            : "Search orders by number, city"),
-                                    style: const TextStyle(fontSize: 12),
-                                    onChanged: (String val) async {
-                                      if (val.length >= 3) {
-                                        searchBooks(val);
-                                      }
-                                    },
-                                  ))
-                            ])),
-                          ),
+                          !widget.userRole
+                              ? Container()
+                              : Container(
+                                  margin: const EdgeInsets.only(
+                                      top: 70, bottom: 10, left: 60, right: 20),
+                                  padding: const EdgeInsets.all(0),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(50),
+                                    color: widget.userRole == true
+                                        ? Colors.white
+                                        : Color.fromARGB(30, 0, 0, 0),
+                                  ),
+                                  child: SizedBox(
+                                      child: Stack(children: <Widget>[
+                                    Positioned(
+                                        top: 10,
+                                        left: 20,
+                                        child: Icon(
+                                          Icons.search,
+                                          color: Colors.grey,
+                                          size: 24,
+                                        )),
+                                    Positioned(
+                                        left: 60,
+                                        top: -4,
+                                        height: 50,
+                                        width: 250,
+                                        child: TextField(
+                                          decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                              labelText: widget.userRole == true
+                                                  ? "Search books by name"
+                                                  : "Search orders by number, city"),
+                                          style: const TextStyle(fontSize: 12),
+                                          onChanged: (String val) async {
+                                            if (val.length >= 3) {
+                                              searchBooks(val);
+                                            }
+                                          },
+                                        ))
+                                  ])),
+                                ),
                         ],
                       ),
                     )),
@@ -558,7 +561,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Color.fromARGB(255, 221, 190, 169)),
                         ],
                       ),
-                drawer: viewingBook
+                drawer: viewingBook || viewingSearch
                     ? null
                     : Container(
                         width: 200,
@@ -567,7 +570,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             padding: EdgeInsets.zero,
                             children: [
                               Container(
-                                height: 100,
+                                height: 150,
                                 child: DrawerHeader(
                                   decoration: const BoxDecoration(
                                       color:
