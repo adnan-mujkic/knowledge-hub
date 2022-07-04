@@ -7,5 +7,6 @@ namespace knowledge_hub.WebAPI.Intefraces
    {
       Task<List<BookResponse>> GetBooksWithIds(string ids);
       Task<List<BookResponse>> SearchBooks(string search);
+      Task<List<BookResponse>> GetRecommenedCourses(int userId);
    }
 }

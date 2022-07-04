@@ -8,7 +8,7 @@ using System.Drawing;
 
 namespace knowledge_hub.WebAPI.Services
 {
-   public class BookService: CRUDService<BookResponse, BookInsertRequest, BookInsertRequest, Book>, IBookService
+   public class BookService : CRUDService<BookResponse, BookInsertRequest, BookInsertRequest, Book>, IBookService
    {
       private readonly databaseContext _dbContext;
       private readonly IMapper _mapper;
@@ -24,12 +24,12 @@ namespace knowledge_hub.WebAPI.Services
             .Include(c => c.category)
             .Include(l => l.language)
             .ToListAsync();
-         
+
          var booksWithReviews = new List<BookResponse>();
          for (int i = 0; i < databaseEntities.Count; i++)
          {
             var book = _mapper.Map<BookResponse>(databaseEntities[i]);
-            book.ImagePath = Path.Combine("http://localhost:5000/BookImages/", databaseEntities[i].ImagePath);
+            book.ImagePath = databaseEntities[i].ImagePath;
 
             var comments = await _dbContext.Reviews
             .Where(x => x.BookId == databaseEntities[i].BookId)
@@ -38,7 +38,7 @@ namespace knowledge_hub.WebAPI.Services
             book.Reviews = _mapper.Map<List<ReviewResponse>>(comments);
             booksWithReviews.Add(book);
          }
-         
+
          return booksWithReviews;
       }
 
@@ -52,7 +52,7 @@ namespace knowledge_hub.WebAPI.Services
          if (databaseEntity == null) return null;
 
          var bookWithReview = _mapper.Map<BookResponse>(databaseEntity);
-         bookWithReview.ImagePath = Path.Combine("http://localhost:5000/BookImages/", databaseEntity.ImagePath);
+         bookWithReview.ImagePath = databaseEntity.ImagePath;
 
          var comments = await _dbContext.Reviews
          .Where(x => x.BookId == databaseEntity.BookId)
@@ -77,7 +77,8 @@ namespace knowledge_hub.WebAPI.Services
          string imagePath = Path.Combine(_env.WebRootPath, "BookImages", imageName) + ".png";
          await File.WriteAllBytesAsync(imagePath, request.ImagePath);
 
-         if (request.BookFile.Length > 0) {
+         if (request.BookFile.Length > 0)
+         {
             File.Delete(Path.Combine(_env.WebRootPath, oldFilePath));
             string bookFileName = Guid.NewGuid().ToString();
             string bookFilePath = Path.Combine(_env.WebRootPath, "BookFiles", bookFileName) + ".pdf";
@@ -97,7 +98,7 @@ namespace knowledge_hub.WebAPI.Services
 
       public override async Task<BookResponse> Insert(BookInsertRequest request) {
          var bookToInsert = _mapper.Map<Book>(request);
-         
+
          string imageName = Guid.NewGuid().ToString();
          string imagePath = Path.Combine(_env.WebRootPath, "BookImages", imageName) + ".png";
          await File.WriteAllBytesAsync(imagePath, request.ImagePath);
@@ -135,6 +136,99 @@ namespace knowledge_hub.WebAPI.Services
             .ToListAsync();
 
          return _mapper.Map<List<BookResponse>>(booksSelected);
+      }
+
+      public async Task<List<BookResponse>> GetRecommenedCourses(int userId) {
+         try
+         {
+            if (userId == 0)
+               throw new Exception();
+
+            var reviews = await _dbContext.Reviews
+               .Where(x => x.UserId == userId)
+               .Include(x => x.user)
+               .Include(x => x.book)
+               .ThenInclude(x => x.language)
+               .Include(x => x.book)
+               .ThenInclude(x => x.category)
+               .ToListAsync();
+
+            if (reviews == null)
+               throw new Exception();
+
+            var bestUserReviews = reviews.Where(x => x.Score >= 4).ToList();
+
+            if (bestUserReviews.Count > 0)
+            {
+               var bookCategories = new List<Category>();
+
+               foreach (var review in bestUserReviews)
+               {
+                  var bookCategoriesFiltered = await _dbContext.Books
+                     .Where(x => x.CategoryId == review.book.CategoryId)
+                     .Select(x => x.category)
+                     .ToListAsync();
+
+                  foreach (var filter in bookCategoriesFiltered)
+                  {
+                     bool adding = !bookCategories.Select(x => x.Name).Contains(filter.Name);
+                     if (adding)
+                        bookCategories.Add(filter);
+                  }
+               }
+
+
+               List<Book> finalBookList = new List<Book>();
+               var userBoughtBooks = await _dbContext.Orders
+                     .Where(x => x.UserId == userId)
+                     .Include(x => x.Book)
+                     .ThenInclude(x => x.language)
+                     .Include(x => x.Book)
+                     .ThenInclude(x => x.category)
+                     .Select(x => x.Book)
+                     .ToListAsync();
+
+               if (userBoughtBooks == null)
+                  throw new Exception();
+
+               foreach (var item in bookCategories)
+               {
+                  var categoryBook = await _dbContext.Books
+                     .Where(x => x.CategoryId == item.CategoryId)
+                     .ToListAsync();
+
+                  foreach (var book in categoryBook)
+                  {
+                     bool adding = true;
+                     bool doesContain = userBoughtBooks.Where(x => x.BookId == book.BookId).Any();
+                     if (!doesContain)
+                     {
+                        for (int i = 0; i < finalBookList.Count; i++)
+                        {
+                           if (book.Name == finalBookList[i].Name)
+                              adding = false;
+                        }
+                        foreach (var score in reviews)
+                        {
+                           if (book.Name == score.book.Name)
+                              adding = false;
+                        }
+                        if (adding)
+                           finalBookList.Add(book);
+                     }
+                  }
+               }
+
+               finalBookList = finalBookList.OrderBy(x => Guid.NewGuid()).Take(5).ToList();
+
+               return _mapper.Map<List<BookResponse>>(finalBookList);
+            }
+            throw new Exception();
+         }
+         catch
+         {
+            return _mapper.Map<List<BookResponse>>(null);
+         }
       }
    }
 }

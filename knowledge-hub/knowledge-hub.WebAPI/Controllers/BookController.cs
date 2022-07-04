@@ -24,5 +24,10 @@ namespace knowledge_hub.WebAPI.Controllers
       public async Task<List<BookResponse>> SearchBooks(string search) {
          return await _service.SearchBooks(search);
       }
+
+      [HttpGet("RecommenedCourses")]
+      public async Task<List<BookResponse>> GetRecommenedCourses(int userId) {
+         return await _service.GetRecommenedCourses(userId);
+      }
    }
 }

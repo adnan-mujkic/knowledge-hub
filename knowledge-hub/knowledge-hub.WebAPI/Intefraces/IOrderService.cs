@@ -7,6 +7,7 @@ namespace knowledge_hub.WebAPI.Intefraces
    {
       Task<List<OrderResponse>> InsertMany(OrderInsertRequest request);
       Task<string> InitiatePayment(OrderInsertRequest request);
+      Task<List<OrderResponse>> GetByUser(int UserId);
       Task<List<BookResponse>> GetBoughtBooksByUser(int ID);
    }
 }

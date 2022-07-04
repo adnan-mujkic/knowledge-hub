@@ -203,6 +203,7 @@ namespace knowledge_hub.WebAPI.Database
          modelBuilder.Entity<CardInfo>().HasData(SeedCards());
          modelBuilder.Entity<Order>().HasData(SeedOrders());
          modelBuilder.Entity<Transaction>().HasData(SeedTransactions());
+         modelBuilder.Entity<Review>().HasData(SeedReviews());
       }
 
       private void SeedUsers(ref ModelBuilder modelBuilder) {
@@ -459,6 +460,34 @@ namespace knowledge_hub.WebAPI.Database
                TransactionTime = DateTime.Now,
                Price = 5.99
             } };
+      }
+      private Review[] SeedReviews() {
+         return new[] {
+            new Review{
+               ReviewId = 1,
+               BookId = 1,
+               UserId = 3,
+               Score = 5,
+               Comment = "Great!",
+               PostDate = DateTime.Now
+            },
+             new Review{
+               ReviewId = 2,
+               BookId = 1,
+               UserId = 4,
+               Score = 4,
+               Comment = "Great!",
+               PostDate = DateTime.Now
+            },
+             new Review{
+               ReviewId = 3,
+               BookId = 3,
+               UserId = 3,
+               Score = 4,
+               Comment = "Great!",
+               PostDate = DateTime.Now
+            }
+         }; 
       }
    }
 }

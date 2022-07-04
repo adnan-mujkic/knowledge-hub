@@ -6,6 +6,7 @@ using knowledge_hub.WebAPI.Model.Requests;
 using knowledge_hub.WebAPI.Model.Responses;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
+using static knowledge_hub.WebAPI.Model.Enums;
 
 namespace knowledge_hub.WebAPI.Services
 {
@@ -68,6 +69,10 @@ namespace knowledge_hub.WebAPI.Services
             newOrder.Digital = request.Digital[i];
             newOrder.OrderNumber = orderNumber;
             newOrder.Comment = "";
+            if (request.Digital[i])
+            {
+               newOrder.OrderStatus = (int)OrderStatus.Completed;
+            }
             ordersToInsert.Add(newOrder);
             _dbContext.Add(newOrder);
             await _dbContext.SaveChangesAsync();
@@ -166,10 +171,10 @@ namespace knowledge_hub.WebAPI.Services
          });
       }
 
-      public async Task<List<OrderResponse>> GetByUser(int? UserId) {
+      public async Task<List<OrderResponse>> GetByUser(int UserId) {
          List<Database.Order> databaseEntities = new List<Database.Order>();
 
-         if (UserId != null && UserId != 0) {
+         if (UserId != 0) {
             databaseEntities = await _dbContext.Orders
             .Where(x => x.UserId == UserId)
             .Include(x => x.Book)

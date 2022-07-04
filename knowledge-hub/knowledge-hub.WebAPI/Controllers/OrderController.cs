@@ -26,5 +26,9 @@ namespace knowledge_hub.WebAPI.Controllers
       public async Task<List<BookResponse>> GetBoughtBooksByUser(int ID) {
          return await _service.GetBoughtBooksByUser(ID);
       }
+      [HttpGet("GetByUser")]
+      public async Task<List<OrderResponse>> GetByUser(int ID) {
+         return await _service.GetByUser(ID);
+      }
    }
 }

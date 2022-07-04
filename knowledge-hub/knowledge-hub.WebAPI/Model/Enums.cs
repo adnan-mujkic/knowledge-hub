@@ -5,7 +5,8 @@
       public enum OrderStatus {
          Placed = 0,
          Shipped = 1,
-         Canceled = 2
+         Canceled = 2,
+         Completed = 3,
       }
    }
 }
