@@ -8,7 +8,7 @@ import '../services/accountService.dart';
 import '../services/persistentDataService.dart';
 
 class LoginWidget extends StatefulWidget {
-  LoginWidget({Key? key}) : super(key: key){
+  LoginWidget({Key? key}) : super(key: key) {
     userLogin = new UserLogin();
   }
 
@@ -26,24 +26,24 @@ class LoginState extends State<LoginWidget> {
   String errorText = "There was an error contacting server";
 
   login() async {
-    setState((){
+    setState(() {
       loading = true;
     });
 
     final response = await http.post(
       Uri.parse('${PersistentDataService.instance.BackendUri}/api/User/Login'),
       headers: <String, String>{
-        'Content-Type' : 'application/json; charset=UTF-8',
+        'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(widget.userLogin.toJson()),
     );
 
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       Map<String, dynamic> map = jsonDecode(response.body);
       debugPrint(response.body);
 
-      if(map['message'] != null) {
-        setState((){
+      if (map['message'] != null) {
+        setState(() {
           errorText = map['message'];
           showDialogue = true;
           loading = false;
@@ -60,8 +60,8 @@ class LoginState extends State<LoginWidget> {
       AccountService.instance.cart = as.cart;
       AccountService.instance.saveFileToDisk();
       widget.loginEvent.broadcast();
-    }else{
-      setState((){
+    } else {
+      setState(() {
         showDialogue = true;
         loading = false;
       });
@@ -71,160 +71,155 @@ class LoginState extends State<LoginWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Center(
+        body: Stack(
+      children: [
+        Center(
             child: SingleChildScrollView(
-              child: Container(margin: EdgeInsets.only(top: 100, right: 30, left: 30),
-                  child: Column(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(top: 10),
-                        child: Text(
-                          "Login",
-                          style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blueGrey),
+          child: Container(
+              margin: EdgeInsets.only(top: 100, right: 30, left: 30),
+              child: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(top: 10),
+                    child: Text(
+                      "Login",
+                      style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blueGrey),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 50,
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 10, bottom: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(left: 10),
+                          child: Text("Email:"),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 50,
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 10, bottom: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              margin: EdgeInsets.only(left: 10),
-                              child: Text("Email:"),
+                        Container(
+                          margin: const EdgeInsets.only(top: 10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Color.fromARGB(10, 0, 0, 0),
+                          ),
+                          child: SizedBox(
+                              child: Padding(
+                            padding: EdgeInsets.only(
+                                top: 2, bottom: 2, right: 20, left: 20),
+                            child: TextField(
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: this.widget.userLogin.Email),
+                              style: const TextStyle(fontSize: 12),
+                              onChanged: (String value) {
+                                this.widget.userLogin.Email = value;
+                              },
                             ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 10),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Color.fromARGB(10, 0, 0, 0),
+                          )),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 10, bottom: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(left: 10),
+                          child: Text("Password:"),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Color.fromARGB(10, 0, 0, 0),
+                          ),
+                          child: SizedBox(
+                              child: Padding(
+                            padding: EdgeInsets.only(
+                                top: 2, bottom: 2, right: 20, left: 20),
+                            child: TextField(
+                              obscureText: true,
+                              autocorrect: false,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
                               ),
-                              child: SizedBox(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(top: 2, bottom: 2, right: 20, left: 20),
-                                    child: TextField(
-                                      decoration: InputDecoration(
-                                          border: InputBorder.none,
-                                          hintText: this.widget.userLogin.Email),
-                                      style: const TextStyle(fontSize: 12),
-                                      onChanged: (String value){
-                                        this.widget.userLogin.Email = value;
-                                      },
-                                    ),
-                                  )),
+                              style: const TextStyle(fontSize: 12),
+                              onChanged: (String value) {
+                                this.widget.userLogin.Password = value;
+                              },
                             ),
-                          ],
+                          )),
                         ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 10, bottom: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              margin: EdgeInsets.only(left: 10),
-                              child: Text("Password:"),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 10),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Color.fromARGB(10, 0, 0, 0),
-                              ),
-                              child: SizedBox(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(top: 2, bottom: 2, right: 20, left: 20),
-                                    child: TextField(
-                                      obscureText: true,
-                                      autocorrect: false,
-                                      decoration: InputDecoration(
-                                          border: InputBorder.none,),
-                                      style: const TextStyle(fontSize: 12),
-                                      onChanged: (String value){
-                                        this.widget.userLogin.Password = value;
-                                      },
-                                    ),
-                                  )),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: () {},
-                          child: Text("Forgot Password?"),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                            style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
-                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10)
-                                    )
-                                )
-                            ),
-                            onPressed: () {
-                              login();
-                            },
-                            child: Padding(
-                              padding: EdgeInsets.all(15),
-                              child: Text("Login"),
-                            )
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 50,
-                      ),
-                      Align(
-                        alignment: Alignment.center,
-                        child: TextButton(
-                          onPressed: () {
-                            widget.openRegisterEvent.broadcast();
-                          },
-                          child: Text("Register"),
-                        ),
-                      ),
-                    ],
-                  )),
-            )
-          ),
-          loading? CircularLoadingWidget("Logging in...") : Container(),
-          showDialogue? Container(
-            width: double.infinity,
-            height: double.infinity,
-            color: Colors.black.withOpacity(0.7),
-            child: Center(
-              child: AlertDialog(
-                content: Text(errorText),
-                actions: [
-                  TextButton(
-                    onPressed: (){
-                      setState((){
-                        showDialogue = false;
-                      });
-                    },
-                    child: const Text("Ok"),
-                  )
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(Colors.green),
+                            shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)))),
+                        onPressed: () {
+                          login();
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Text("Login"),
+                        )),
+                  ),
+                  const SizedBox(
+                    height: 50,
+                  ),
+                  Align(
+                    alignment: Alignment.center,
+                    child: TextButton(
+                      onPressed: () {
+                        widget.openRegisterEvent.broadcast();
+                      },
+                      child: Text("Register"),
+                    ),
+                  ),
                 ],
-              ),
-            ),
-          ) : Container()
-        ],
-      )
-    );
+              )),
+        )),
+        loading ? CircularLoadingWidget("Logging in...") : Container(),
+        showDialogue
+            ? Container(
+                width: double.infinity,
+                height: double.infinity,
+                color: Colors.black.withOpacity(0.7),
+                child: Center(
+                  child: AlertDialog(
+                    content: Text(errorText),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            showDialogue = false;
+                          });
+                        },
+                        child: const Text("Ok"),
+                      )
+                    ],
+                  ),
+                ),
+              )
+            : Container()
+      ],
+    ));
   }
 }

@@ -198,7 +198,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget GetDisplayScreen() {
     if (!widget.userRole) {
-      return OrdersViewWidget(widget.userRole);
+      return Stack(children: [OrdersViewWidget(widget.userRole)]);
     }
 
     if (searchedBooks.isNotEmpty && !viewingBook) {
@@ -332,6 +332,13 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  void LogOut() {
+    setState(() {
+      AccountService.instance.LogOut();
+      this.logged = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return loadingScreen
@@ -386,7 +393,35 @@ class _MyHomePageState extends State<MyHomePage> {
                                 )
                               : Container(),
                           !widget.userRole
-                              ? Container()
+                              ? Container(
+                                  margin: EdgeInsets.only(top: 70),
+                                  child: Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(AccountService
+                                          .instance.userData.Username),
+                                      Spacer(),
+                                      Positioned(
+                                          height: 50,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          bottom: 0,
+                                          child: ElevatedButton(
+                                              style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all(
+                                                          Colors.red)),
+                                              onPressed: () {
+                                                LogOut();
+                                              },
+                                              child: Text("Log out"))),
+                                      SizedBox(
+                                        width: 10,
+                                      )
+                                    ],
+                                  ))
                               : Container(
                                   margin: const EdgeInsets.only(
                                       top: 70, bottom: 10, left: 60, right: 20),
@@ -561,7 +596,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Color.fromARGB(255, 221, 190, 169)),
                         ],
                       ),
-                drawer: viewingBook || viewingSearch
+                drawer: viewingBook || viewingSearch || !widget.userRole
                     ? null
                     : Container(
                         width: 200,
@@ -628,18 +663,6 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                               if (widget.userRole)
                                 ListTile(
-                                  title: Text("Payment"),
-                                  leading: Icon(Icons.wallet),
-                                  onTap: () {
-                                    setState(() {
-                                      this.widget.tabs = false;
-                                      this.widget.currentDisplayIndex = 2;
-                                    });
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                              if (widget.userRole)
-                                ListTile(
                                   title: Text("Orders"),
                                   leading: Icon(Icons.shopping_bag),
                                   onTap: () {
@@ -680,9 +703,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   color: Color.fromARGB(180, 255, 0, 30),
                                 ),
                                 onTap: () {
-                                  setState(() {
-                                    this.logged = false;
-                                  });
+                                  LogOut();
                                   Navigator.pop(context);
                                 },
                               ),

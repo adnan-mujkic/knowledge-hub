@@ -112,4 +112,23 @@ class AccountService {
     await Future.delayed(const Duration(milliseconds: 500));
     return true;
   }
+
+  void LogOut() async {
+    authData = AuthData();
+    userData = User();
+    addressData = Address();
+    paymentData = PaymentInfo();
+    myBooks = List<Book>.empty(growable: true);
+    wishlist = List<int>.empty(growable: true);
+    cart = List<CartItemSave>.empty(growable: true);
+
+    var filePath =
+        "${(await getApplicationDocumentsDirectory()).path}/accountData.json";
+    var actualFile = File(filePath);
+
+    if (await actualFile.exists() == false) {
+      return;
+    }
+    await actualFile.delete();
+  }
 }

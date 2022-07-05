@@ -38,14 +38,15 @@ class OrdersViewState extends State<OrdersViewWidget> {
   }
 
   Future<List<Order>> getOrders() async {
-    final response = await http.get(
-        Uri.parse(
-            '${PersistentDataService.instance.BackendUri}/api/Order/GetByUser?ID=${AccountService.instance.userData.UserId}'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization':
-              "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
-        });
+    String url = widget.userRole
+        ? '${PersistentDataService.instance.BackendUri}/api/Order/GetByUser?ID=${AccountService.instance.userData.UserId}'
+        : '${PersistentDataService.instance.BackendUri}/api/Order/Physical';
+
+    final response = await http.get(Uri.parse(url), headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization':
+          "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
+    });
     if (response.statusCode == 200) {
       var jsonBody = jsonDecode(response.body);
       Iterable iterable = jsonBody;
@@ -78,7 +79,7 @@ class OrdersViewState extends State<OrdersViewWidget> {
                 return Column(children: getOrderList(snapshot.data!));
               }
 
-              return const CircularProgressIndicator();
+              return const Center(child: CircularProgressIndicator());
             },
           ),
         ),
