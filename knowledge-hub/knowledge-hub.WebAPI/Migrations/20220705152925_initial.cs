@@ -119,7 +119,6 @@ namespace knowledge_hub.WebAPI.Migrations
                     UserId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Biography = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LoginId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -383,10 +382,10 @@ namespace knowledge_hub.WebAPI.Migrations
                 columns: new[] { "LoginId", "Email", "PasswordHash", "PasswordSalt" },
                 values: new object[,]
                 {
-                    { 1, "admin@knowledge.com", "SwR+KyGtwtOAP9Ky12SDGjqBuT4=", "ggZIRHGzm5z0LdSgj3g5bA==" },
-                    { 2, "delivery@knowledge.com", "fA+PAnSWmAB55Xofe0CXr0kkTzQ=", "YeyuMB2A387e83U2h4p/4A==" },
-                    { 3, "user1@knowledge.com", "QIk/mqwRI/NaTOTuIkR0PO/Qgf4=", "zLtKKc7CL4CXFhQeNtrYrA==" },
-                    { 4, "user2@knowledge.com", "+J+SNxcIt2KrwfFpxXUW93bgOa8=", "f7Dvnd1SWB3NJJVBjFyEWg==" }
+                    { 1, "admin@knowledge.com", "IQ+Wv2nxK95mqB7ohg771Hev2S0=", "lZJpKHoCCVizoFGANoxBxA==" },
+                    { 2, "delivery@knowledge.com", "zJGPmedca0WsiInZ+YKjUZBYng8=", "XCbIdY95AAtw0mRTxCCV5A==" },
+                    { 3, "user1@knowledge.com", "vV8oMGlVNwQPm3+jmU40x7tqH58=", "IRV94HBwQFo2IhqZUM4FwQ==" },
+                    { 4, "user2@knowledge.com", "kwgTpya6rsDHnA0XcpDc+4a/4sk=", "Cmhbf145MMmcDh/mcIeq0Q==" }
                 });
 
             migrationBuilder.InsertData(
@@ -416,13 +415,13 @@ namespace knowledge_hub.WebAPI.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "UserId", "Biography", "ImagePath", "LoginId", "Username" },
+                columns: new[] { "UserId", "Biography", "LoginId", "Username" },
                 values: new object[,]
                 {
-                    { 1, "", null, 1, "Admin" },
-                    { 2, "", null, 2, "Delivery" },
-                    { 3, "", null, 3, "User" },
-                    { 4, "", null, 4, "User" }
+                    { 1, "", 1, "Admin" },
+                    { 2, "", 2, "Delivery" },
+                    { 3, "", 3, "User" },
+                    { 4, "", 4, "User" }
                 });
 
             migrationBuilder.InsertData(
@@ -439,11 +438,21 @@ namespace knowledge_hub.WebAPI.Migrations
                 columns: new[] { "OrderId", "AddressLine", "BookId", "CityId", "Comment", "Digital", "OrderDate", "OrderNumber", "OrderStatus", "ShippingDate", "UserFullName", "UserId" },
                 values: new object[,]
                 {
-                    { 1, "", 1, 1, "", true, new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8875), "8e778038-71fc-4930-bbee-197c50499f9d", 0, new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8918), "User 1", 3 },
-                    { 2, "", 2, 1, "", true, new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8923), "c4a82927-67ac-4aa1-a045-902caf095900", 0, new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8924), "User 1", 3 },
-                    { 3, "", 1, 1, "", true, new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8927), "5ed359e2-1ed1-4bea-bdcf-018afff2f05f", 0, new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8929), "User 2", 4 },
-                    { 4, "", 3, 1, "", true, new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8932), "7bc51742-86ee-4611-a46d-0dcc6f0161b6", 0, new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8933), "User 2", 4 },
-                    { 5, "", 3, 1, "", true, new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8936), "f5a98595-55d5-41f0-a467-d71ad7ba0603", 0, new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8938), "User 2", 4 }
+                    { 1, "", 1, 1, "", true, new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4851), "8e778038-71fc-4930-bbee-197c50499f9d", 0, new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4901), "User 1", 3 },
+                    { 2, "", 2, 1, "", true, new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4933), "c4a82927-67ac-4aa1-a045-902caf095900", 0, new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4934), "User 1", 3 },
+                    { 3, "", 1, 1, "", true, new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4937), "5ed359e2-1ed1-4bea-bdcf-018afff2f05f", 0, new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4938), "User 2", 4 },
+                    { 4, "", 3, 1, "", true, new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4940), "7bc51742-86ee-4611-a46d-0dcc6f0161b6", 0, new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4941), "User 2", 4 },
+                    { 5, "", 3, 1, "", true, new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4942), "f5a98595-55d5-41f0-a467-d71ad7ba0603", 0, new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4944), "User 2", 4 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Reviews",
+                columns: new[] { "ReviewId", "BookId", "Comment", "PostDate", "Score", "UserId" },
+                values: new object[,]
+                {
+                    { 1, 1, "Great!", new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4981), 5.0, 3 },
+                    { 2, 1, "Great!", new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4984), 4.0, 4 },
+                    { 3, 3, "Great!", new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4986), 4.0, 3 }
                 });
 
             migrationBuilder.InsertData(
@@ -462,11 +471,11 @@ namespace knowledge_hub.WebAPI.Migrations
                 columns: new[] { "TransactionId", "CardInfoId", "OrderId", "Price", "TransactionTime" },
                 values: new object[,]
                 {
-                    { 1, 1, 1, 8.9900000000000002, new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8960) },
-                    { 2, 1, 2, 12.99, new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8963) },
-                    { 3, 2, 3, 13.99, new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8966) },
-                    { 4, 2, 4, 7.9900000000000002, new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8968) },
-                    { 5, 2, 5, 5.9900000000000002, new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8970) }
+                    { 1, 1, 1, 8.9900000000000002, new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4959) },
+                    { 2, 1, 2, 12.99, new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4962) },
+                    { 3, 2, 3, 13.99, new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4964) },
+                    { 4, 2, 4, 7.9900000000000002, new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4965) },
+                    { 5, 2, 5, 5.9900000000000002, new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4967) }
                 });
 
             migrationBuilder.CreateIndex(

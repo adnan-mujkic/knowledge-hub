@@ -526,29 +526,29 @@ namespace knowledge_hub.WebAPI.Migrations
                         {
                             LoginId = 1,
                             Email = "admin@knowledge.com",
-                            PasswordHash = "SwR+KyGtwtOAP9Ky12SDGjqBuT4=",
-                            PasswordSalt = "ggZIRHGzm5z0LdSgj3g5bA=="
+                            PasswordHash = "IQ+Wv2nxK95mqB7ohg771Hev2S0=",
+                            PasswordSalt = "lZJpKHoCCVizoFGANoxBxA=="
                         },
                         new
                         {
                             LoginId = 2,
                             Email = "delivery@knowledge.com",
-                            PasswordHash = "fA+PAnSWmAB55Xofe0CXr0kkTzQ=",
-                            PasswordSalt = "YeyuMB2A387e83U2h4p/4A=="
+                            PasswordHash = "zJGPmedca0WsiInZ+YKjUZBYng8=",
+                            PasswordSalt = "XCbIdY95AAtw0mRTxCCV5A=="
                         },
                         new
                         {
                             LoginId = 3,
                             Email = "user1@knowledge.com",
-                            PasswordHash = "QIk/mqwRI/NaTOTuIkR0PO/Qgf4=",
-                            PasswordSalt = "zLtKKc7CL4CXFhQeNtrYrA=="
+                            PasswordHash = "vV8oMGlVNwQPm3+jmU40x7tqH58=",
+                            PasswordSalt = "IRV94HBwQFo2IhqZUM4FwQ=="
                         },
                         new
                         {
                             LoginId = 4,
                             Email = "user2@knowledge.com",
-                            PasswordHash = "+J+SNxcIt2KrwfFpxXUW93bgOa8=",
-                            PasswordSalt = "f7Dvnd1SWB3NJJVBjFyEWg=="
+                            PasswordHash = "kwgTpya6rsDHnA0XcpDc+4a/4sk=",
+                            PasswordSalt = "Cmhbf145MMmcDh/mcIeq0Q=="
                         });
                 });
 
@@ -614,10 +614,10 @@ namespace knowledge_hub.WebAPI.Migrations
                             CityId = 1,
                             Comment = "",
                             Digital = true,
-                            OrderDate = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8875),
+                            OrderDate = new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4851),
                             OrderNumber = "8e778038-71fc-4930-bbee-197c50499f9d",
                             OrderStatus = 0,
-                            ShippingDate = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8918),
+                            ShippingDate = new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4901),
                             UserFullName = "User 1",
                             UserId = 3
                         },
@@ -629,10 +629,10 @@ namespace knowledge_hub.WebAPI.Migrations
                             CityId = 1,
                             Comment = "",
                             Digital = true,
-                            OrderDate = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8923),
+                            OrderDate = new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4933),
                             OrderNumber = "c4a82927-67ac-4aa1-a045-902caf095900",
                             OrderStatus = 0,
-                            ShippingDate = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8924),
+                            ShippingDate = new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4934),
                             UserFullName = "User 1",
                             UserId = 3
                         },
@@ -644,10 +644,10 @@ namespace knowledge_hub.WebAPI.Migrations
                             CityId = 1,
                             Comment = "",
                             Digital = true,
-                            OrderDate = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8927),
+                            OrderDate = new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4937),
                             OrderNumber = "5ed359e2-1ed1-4bea-bdcf-018afff2f05f",
                             OrderStatus = 0,
-                            ShippingDate = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8929),
+                            ShippingDate = new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4938),
                             UserFullName = "User 2",
                             UserId = 4
                         },
@@ -659,10 +659,10 @@ namespace knowledge_hub.WebAPI.Migrations
                             CityId = 1,
                             Comment = "",
                             Digital = true,
-                            OrderDate = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8932),
+                            OrderDate = new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4940),
                             OrderNumber = "7bc51742-86ee-4611-a46d-0dcc6f0161b6",
                             OrderStatus = 0,
-                            ShippingDate = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8933),
+                            ShippingDate = new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4941),
                             UserFullName = "User 2",
                             UserId = 4
                         },
@@ -674,10 +674,10 @@ namespace knowledge_hub.WebAPI.Migrations
                             CityId = 1,
                             Comment = "",
                             Digital = true,
-                            OrderDate = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8936),
+                            OrderDate = new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4942),
                             OrderNumber = "f5a98595-55d5-41f0-a467-d71ad7ba0603",
                             OrderStatus = 0,
-                            ShippingDate = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8938),
+                            ShippingDate = new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4944),
                             UserFullName = "User 2",
                             UserId = 4
                         });
@@ -714,6 +714,35 @@ namespace knowledge_hub.WebAPI.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Reviews");
+
+                    b.HasData(
+                        new
+                        {
+                            ReviewId = 1,
+                            BookId = 1,
+                            Comment = "Great!",
+                            PostDate = new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4981),
+                            Score = 5.0,
+                            UserId = 3
+                        },
+                        new
+                        {
+                            ReviewId = 2,
+                            BookId = 1,
+                            Comment = "Great!",
+                            PostDate = new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4984),
+                            Score = 4.0,
+                            UserId = 4
+                        },
+                        new
+                        {
+                            ReviewId = 3,
+                            BookId = 3,
+                            Comment = "Great!",
+                            PostDate = new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4986),
+                            Score = 4.0,
+                            UserId = 3
+                        });
                 });
 
             modelBuilder.Entity("knowledge_hub.WebAPI.Database.Role", b =>
@@ -787,7 +816,7 @@ namespace knowledge_hub.WebAPI.Migrations
                             CardInfoId = 1,
                             OrderId = 1,
                             Price = 8.9900000000000002,
-                            TransactionTime = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8960)
+                            TransactionTime = new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4959)
                         },
                         new
                         {
@@ -795,7 +824,7 @@ namespace knowledge_hub.WebAPI.Migrations
                             CardInfoId = 1,
                             OrderId = 2,
                             Price = 12.99,
-                            TransactionTime = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8963)
+                            TransactionTime = new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4962)
                         },
                         new
                         {
@@ -803,7 +832,7 @@ namespace knowledge_hub.WebAPI.Migrations
                             CardInfoId = 2,
                             OrderId = 3,
                             Price = 13.99,
-                            TransactionTime = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8966)
+                            TransactionTime = new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4964)
                         },
                         new
                         {
@@ -811,7 +840,7 @@ namespace knowledge_hub.WebAPI.Migrations
                             CardInfoId = 2,
                             OrderId = 4,
                             Price = 7.9900000000000002,
-                            TransactionTime = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8968)
+                            TransactionTime = new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4965)
                         },
                         new
                         {
@@ -819,7 +848,7 @@ namespace knowledge_hub.WebAPI.Migrations
                             CardInfoId = 2,
                             OrderId = 5,
                             Price = 5.9900000000000002,
-                            TransactionTime = new DateTime(2022, 7, 1, 23, 26, 58, 607, DateTimeKind.Local).AddTicks(8970)
+                            TransactionTime = new DateTime(2022, 7, 5, 17, 29, 24, 989, DateTimeKind.Local).AddTicks(4967)
                         });
                 });
 
@@ -832,9 +861,6 @@ namespace knowledge_hub.WebAPI.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"), 1L, 1);
 
                     b.Property<string>("Biography")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("LoginId")

@@ -217,5 +217,17 @@ namespace knowledge_hub.WebAPI.Services
 
          return _mapper.Map<List<BookResponse>>(orders.Select(x => x.Book).ToList());
       }
+
+      public async Task<List<OrderResponse>> GetPhysical() {
+         var orders = await _dbContext.Orders
+            .Where(x => x.Digital == false)
+            .Include(x => x.Book)
+            .ThenInclude(x => x.language)
+            .Include(x => x.Book)
+            .ThenInclude(x => x.category)
+            .ToListAsync();
+
+         return _mapper.Map<List<OrderResponse>>(orders);
+      }
    }
 }

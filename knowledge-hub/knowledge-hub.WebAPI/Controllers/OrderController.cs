@@ -30,5 +30,9 @@ namespace knowledge_hub.WebAPI.Controllers
       public async Task<List<OrderResponse>> GetByUser(int ID) {
          return await _service.GetByUser(ID);
       }
+      [HttpGet("Physical")]
+      public async Task<List<OrderResponse>> GetPhysical() {
+         return await _service.GetPhysical();
+      }
    }
 }

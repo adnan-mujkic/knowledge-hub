@@ -200,6 +200,17 @@ namespace knowledge_hub.WebAPI.Database
             }
          );
 
+         modelBuilder.Entity<Address>().HasData(
+               new Address
+               {
+                  AddressId = 1,
+                  CityId = 2,
+                  UserId = 4,
+                  AddressLine = "Kneza Višeslava",
+                  FullName = "User 2"
+               }
+            );
+
          modelBuilder.Entity<CardInfo>().HasData(SeedCards());
          modelBuilder.Entity<Order>().HasData(SeedOrders());
          modelBuilder.Entity<Transaction>().HasData(SeedTransactions());
@@ -405,7 +416,7 @@ namespace knowledge_hub.WebAPI.Database
             {
                OrderId = 5,
                OrderNumber = "f5a98595-55d5-41f0-a467-d71ad7ba0603",
-               Digital = true,
+               Digital = false,
                UserId = 4,
                UserFullName = "User 2",
                BookId = 3,
@@ -461,6 +472,7 @@ namespace knowledge_hub.WebAPI.Database
                Price = 5.99
             } };
       }
+
       private Review[] SeedReviews() {
          return new[] {
             new Review{

@@ -62,7 +62,6 @@ builder.Services.AddAuthorization(options =>
 {
    options.AddPolicy("AdminOnly", policy => policy.RequireClaim(ClaimTypes.Role));
 });
-builder.WebHost.UseUrls("http://localhost:5000", "http://192.168.1.101:5000");
 
 StripeConfiguration.ApiKey = "sk_test_51LDPJEJa87uOA78Aa5nA9zW3NmWxlSImbu3sR7MxH6NksDwGGqFHcrNUs8tVLxxZgURUviHWaSLmv79gul4gyJw8007rQAOjqB";
 

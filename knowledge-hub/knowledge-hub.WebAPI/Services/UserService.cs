@@ -149,7 +149,6 @@ namespace knowledge_hub.WebAPI.Services
       }
       public async Task<UserResponse> RegisterUser(UserRegisterRequest request) {
          var userEntity = _mapper.Map<User>(request);
-         userEntity.ImagePath = "";
          await _dbContext.Users.AddAsync(userEntity);
          await _dbContext.SaveChangesAsync();
 
