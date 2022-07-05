@@ -27,13 +27,11 @@ namespace WindowsFormsApp1.Forms.Transactions
          string url;
          if (!string.IsNullOrWhiteSpace(usernameSearch))
          {
-            url = $"{Properties.Settings.Default.ApiUrl}/Transaction/Search?username={usernameSearch}";
-            data = await url.GetJsonAsync<List<TransactionResponse>>();
+            data = await APIService.GetFromUrlWithAuth<List<TransactionResponse>>($"Transaction/Search?username={usernameSearch}");
          }
          else
          {
-            url = $"{Properties.Settings.Default.ApiUrl}/Transaction/";
-            data = await url.GetJsonAsync<List<TransactionResponse>>();
+            data = await APIService.GetFromUrlWithAuth<List<TransactionResponse>>("Transaction");
          }
 
          var viewOrderButton = new DataGridViewButtonColumn();
@@ -63,8 +61,7 @@ namespace WindowsFormsApp1.Forms.Transactions
 
       async void DisplayOrder() {
          int ID = Convert.ToInt32(dataGridView1.CurrentRow.Cells["OrderID"].Value);
-         var url = $"{Properties.Settings.Default.ApiUrl}/Order/{ID}";
-         var result = await url.GetAsync().ReceiveJson<OrderResponse>();
+         var result = await APIService.GetFromUrlWithAuth<OrderResponse>($"Order/{ID}");
          var orderStatusForm = new OrderPreview(result);
          orderStatusForm.Show();
       }
@@ -83,10 +80,9 @@ namespace WindowsFormsApp1.Forms.Transactions
       }
       public async void RemoveTransaction() {
          int ID = Convert.ToInt32(dataGridView1.CurrentRow.Cells["TransactionID"].Value);
-         var url = $"{Properties.Settings.Default.ApiUrl}/Transaction?ID={ID}";
-         var result = await url.DeleteAsync();
+         var result = await APIService.DeleteFromUrlWithAuth("Transaction", ID);
 
-         if (result.StatusCode == 200)
+         if (result)
          {
             MessageBox.Show("Transaction removed");
             LoadTransactionList();

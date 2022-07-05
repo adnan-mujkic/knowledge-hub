@@ -64,10 +64,9 @@ namespace knowledge_hub.Forms.User
 
       private async void RemoveUser() {
          int ID = Convert.ToInt32(dataGridView1.CurrentRow.Cells["UserID"].Value);
-         var url = $"{WindowsFormsApp1.Properties.Settings.Default.ApiUrl}/User?ID={ID}";
-         var result = await url.DeleteAsync();
+         bool result = await APIService.DeleteFromUrlWithAuth("User", ID);
 
-         if (result.StatusCode == 200)
+         if (result)
          {
             MessageBox.Show("User removed");
             LoadUserList();
@@ -76,9 +75,8 @@ namespace knowledge_hub.Forms.User
 
       private async void EditUserButton_Click(object sender, EventArgs e) {
          int ID = Convert.ToInt32(dataGridView1.CurrentRow.Cells["UserID"].Value);
-         var url = $"{WindowsFormsApp1.Properties.Settings.Default.ApiUrl}/User/GetDetailedUserInfo?ID={ID}";
 
-         var response = await url.GetJsonAsync<UserDataResponse>();
+         var response = await APIService.GetFromUrlWithAuth<UserDataResponse>($"User/GetDetailedUserInfo?ID={ID}");
          if (response == null)
          {
             MessageBox.Show("User getting error");

@@ -24,8 +24,7 @@ namespace WindowsFormsApp1.Forms.City
          RefreshButton.Enabled = false;
          Cursor = Cursors.WaitCursor;
 
-         var url = $"{Properties.Settings.Default.ApiUrl}/City";
-         var response = await url.GetJsonAsync<List<CityResponse>>();
+         var response = await APIService.GetFromUrlWithAuth<List<CityResponse>>("City");
          dataGridView1.AutoGenerateColumns = false;
          dataGridView1.ReadOnly = true;
          dataGridView1.DataSource = response;
@@ -40,9 +39,8 @@ namespace WindowsFormsApp1.Forms.City
 
       private async void EditButton_Click(object sender, EventArgs e) {
          int ID = Convert.ToInt32(dataGridView1.CurrentRow.Cells["CityID"].Value);
-         var url = $"{Properties.Settings.Default.ApiUrl}/City/{ID}";
 
-         var response = await url.GetJsonAsync<CityResponse>();
+         var response = await APIService.GetFromUrlWithAuth<CityResponse>($"City/{ID}");
          if (response == null)
          {
             MessageBox.Show("User getting error");
@@ -54,8 +52,7 @@ namespace WindowsFormsApp1.Forms.City
 
       private async void DeleteButton_Click(object sender, EventArgs e) {
          int ID = Convert.ToInt32(dataGridView1.CurrentRow.Cells["CityID"].Value);
-         var url = $"{Properties.Settings.Default.ApiUrl}/City?ID={ID}";
-         var response = await url.DeleteAsync().ReceiveJson<bool>();
+         var response = await APIService.DeleteFromUrlWithAuth("City", ID);
          FetchCityList();
          MessageBox.Show(response ? "City deleted" : "City cannot be deleted!");
       }

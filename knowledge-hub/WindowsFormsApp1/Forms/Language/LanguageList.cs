@@ -26,8 +26,7 @@ namespace WindowsFormsApp1.Forms.Language
          RefreshButton.Enabled = false;
          Cursor = Cursors.WaitCursor;
 
-         var url = $"{Properties.Settings.Default.ApiUrl}/Language";
-         var response = await url.GetJsonAsync<List<LanguageResponse>>();
+         var response = await APIService.GetFromUrlWithAuth<List<LanguageResponse>>("Language");
          dataGridView1.AutoGenerateColumns = false;
          dataGridView1.ReadOnly = true;
          dataGridView1.DataSource = response;
@@ -55,18 +54,16 @@ namespace WindowsFormsApp1.Forms.Language
          }
 
          int ID = Convert.ToInt32(dataGridView1.CurrentRow.Cells["LanguageID"].Value);
-         var url = $"{Properties.Settings.Default.ApiUrl}/Language?ID={ID}";
          var data = new LanguageInsertRequest { Name = value };
-         var response = await url.PutJsonAsync(data).ReceiveJson<LanguageResponse>();
+         var response = await APIService.PutFromUrlWithAuth<LanguageResponse>($"Language?ID={ID}", data);
          FetchLanguageList();
          inputPanel.inputSubmitDelegate -= UpdateName;
          MessageBox.Show("Language name changed");
       }
 
       private async void AddButton_Click(object sender, EventArgs e) {
-         var url = $"{Properties.Settings.Default.ApiUrl}/Language";
          var data = new LanguageInsertRequest { Name = textBox1.Text };
-         await url.PostJsonAsync(data).ReceiveJson<LanguageResponse>();
+         await APIService.PostFromUrlWithAuth<LanguageResponse>("Language", data);
          FetchLanguageList();
          textBox1.Text = "";
          MessageBox.Show("Language added");
@@ -74,8 +71,7 @@ namespace WindowsFormsApp1.Forms.Language
 
       private async void DeleteButton_Click(object sender, EventArgs e) {
          int ID = Convert.ToInt32(dataGridView1.CurrentRow.Cells["LanguageID"].Value);
-         var url = $"{Properties.Settings.Default.ApiUrl}/Language?ID={ID}";
-         var response = await url.DeleteAsync().ReceiveJson<bool>();
+         var response = await APIService.DeleteFromUrlWithAuth("Language", ID);
          FetchLanguageList();
          MessageBox.Show(response ? "Language deleted" : "Language cannot be deleted!");
       }

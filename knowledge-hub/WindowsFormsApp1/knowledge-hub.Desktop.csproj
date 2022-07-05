@@ -260,6 +260,12 @@
     <EmbeddedResource Include="Forms\Transactions\TransactionList.resx">
       <DependentUpon>TransactionList.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\User\UserAdd.resx">
+      <DependentUpon>UserAdd.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\User\UserEdit.resx">
+      <DependentUpon>UserEdit.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\User\UserList.resx">
       <DependentUpon>UserList.cs</DependentUpon>
     </EmbeddedResource>

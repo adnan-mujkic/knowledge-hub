@@ -26,8 +26,7 @@ namespace WindowsFormsApp1.Forms.Category
          RefreshButton.Enabled = false;
          Cursor = System.Windows.Forms.Cursors.WaitCursor;
 
-         var url = $"{Properties.Settings.Default.ApiUrl}/Category";
-         var response = await url.GetJsonAsync<List<CategoryResponse>>();
+         var response = await APIService.GetFromUrlWithAuth<List<CategoryResponse>>("Category");
          dataGridView1.AutoGenerateColumns = false;
          dataGridView1.ReadOnly = true;
          dataGridView1.DataSource = response;
@@ -55,18 +54,16 @@ namespace WindowsFormsApp1.Forms.Category
          }
 
          int ID = Convert.ToInt32(dataGridView1.CurrentRow.Cells["CategoryID"].Value);
-         var url = $"{Properties.Settings.Default.ApiUrl}/Category?ID={ID}";
          var data = new CategoryInsertRequest { Name = value };
-         var response = await url.PutJsonAsync(data).ReceiveJson<CategoryResponse>();
+         var response = await APIService.PutFromUrlWithAuth<CategoryResponse>($"Category?ID={ID}", data);
          FetchCategoryList();
          inputPanel.inputSubmitDelegate -= UpdateName;
          MessageBox.Show("Category name changed");
       }
 
       private async void AddButton_Click(object sender, EventArgs e) {
-         var url = $"{Properties.Settings.Default.ApiUrl}/Category";
          var data = new CategoryInsertRequest { Name = textBox1.Text };
-         await url.PostJsonAsync(data).ReceiveJson<CategoryResponse>();
+         await APIService.PostFromUrlWithAuth<CategoryResponse>($"Category", data);
          FetchCategoryList();
          textBox1.Text = "";
          MessageBox.Show("Category added");
@@ -74,8 +71,7 @@ namespace WindowsFormsApp1.Forms.Category
 
       private async void DeleteButton_Click(object sender, EventArgs e) {
          int ID = Convert.ToInt32(dataGridView1.CurrentRow.Cells["CategoryID"].Value);
-         var url = $"{Properties.Settings.Default.ApiUrl}/Category?ID={ID}";
-         var response = await url.DeleteAsync().ReceiveJson<bool>();
+         var response = await APIService.DeleteFromUrlWithAuth($"Category", ID);
          FetchCategoryList();
          MessageBox.Show(response ? "Category deleted" : "Error deleting category");
       }

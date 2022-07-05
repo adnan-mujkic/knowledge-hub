@@ -46,8 +46,7 @@ namespace WindowsFormsApp1.Forms.City
             Country = CityCountryInput.Text
          };
 
-         var url = $"{Properties.Settings.Default.ApiUrl}/City";
-         var result = await url.PostJsonAsync(cityAddRequest).ReceiveJson<CityResponse>();
+         var result = await APIService.PostFromUrlWithAuth<CityResponse>("City", cityAddRequest);
 
          if (result == null || result.CityId == 0)
          {

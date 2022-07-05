@@ -20,8 +20,6 @@ namespace WindowsFormsApp1.Forms.Book
    public partial class BookAdd : UserControl
    {
       List<string> errorMessages;
-      string languagesUrl = $"{Properties.Settings.Default.ApiUrl}/Language";
-      string categoriesUrl = $"{Properties.Settings.Default.ApiUrl}/Category";
       byte[] bookFile;
       public BookAdd() {
          InitializeComponent();
@@ -31,7 +29,7 @@ namespace WindowsFormsApp1.Forms.Book
       }
 
       private async void LoadAdditionalData() {
-         var languageData = await languagesUrl.GetAsync().ReceiveJson<List<LanguageResponse>>();
+         var languageData = await APIService.GetFromUrlWithAuth<List<LanguageResponse>>("Language");
          List<KeyValuePair<int, string>> languagePairs = new List<KeyValuePair<int, string>>();
          foreach (var language in languageData)
          {
@@ -42,7 +40,7 @@ namespace WindowsFormsApp1.Forms.Book
          LanguageSelect.DisplayMember = "Value";
          LanguageSelect.ValueMember = "Key";
 
-         var categoryData = await categoriesUrl.GetAsync().ReceiveJson<List<CategoryResponse>>();
+         var categoryData = await APIService.GetFromUrlWithAuth<List<CategoryResponse>>("Category");
          List<KeyValuePair<int, string>> categoryPairs = new List<KeyValuePair<int, string>>();
          foreach (var category in categoryData)
          {
@@ -117,8 +115,7 @@ namespace WindowsFormsApp1.Forms.Book
             BookFile = bookFile
          };
 
-         var url = $"{Properties.Settings.Default.ApiUrl}/Book";
-         var response = await url.PostJsonAsync(dataToSend).ReceiveJson<BookResponse>();
+         var response = await APIService.PostFromUrlWithAuth<BookResponse>("Book", dataToSend);
          if (response == null || response.BookId == 0)
          {
             MessageBox.Show("Error adding book");

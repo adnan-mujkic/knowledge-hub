@@ -36,18 +36,6 @@ namespace WindowsFormsApp1.Forms.User
          PanelHelper.SwapPanel(this.Parent, this, new UserList());
       }
 
-      private void button1_Click(object sender, EventArgs e) {
-         OpenFileDialog openfd = new OpenFileDialog
-         {
-            Filter = "Image Files (*.jpg;*.jpeg;*.gif;*.png;)|*.jpg;*.jpeg;*.gif;*.png;"
-         };
-         if (openfd.ShowDialog() == DialogResult.OK)
-         {
-            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox1.Image = new Bitmap(openfd.FileName);
-         }
-      }
-
       private void EmailInput_Validating(object sender, CancelEventArgs e) {
          errorMessages.Remove("Email cannot be empty!");
          if (string.IsNullOrWhiteSpace(EmailInput.Text))
@@ -133,6 +121,7 @@ namespace WindowsFormsApp1.Forms.User
                finalErrors += errMsg + "\n";
             }
             MessageBox.Show(finalErrors);
+            return;
          }
          RegisterUser();
       }
@@ -145,8 +134,7 @@ namespace WindowsFormsApp1.Forms.User
             ConfirmPassword = PasswordConfirmInput.Text
          };
 
-         var url = $"{Properties.Settings.Default.ApiUrl}/User/Register";
-         var result = await url.PostJsonAsync(loginRegisterRequest).ReceiveJson<RegisterResponse>();
+         var result = await APIService.PostFromUrlWithAuth<RegisterResponse>("User/Register", loginRegisterRequest);
          if (result.LoginId == 0)
          {
             MessageBox.Show($"Registration failed\n{result.Message}");
@@ -157,13 +145,18 @@ namespace WindowsFormsApp1.Forms.User
             LoginId = result.LoginId,
             Username = UsernameInput.Text,
             Biography = BiographyInput.Text,
-            Image = pictureBox1.Image != null ? ImageHelper.SystemDrawingToByteArray(pictureBox1.Image) : null
          };
-         url = $"{Properties.Settings.Default.ApiUrl}/User/RegisterUser";
-         var inertResult = await url.PostJsonAsync(userRegisterRequest).ReceiveJson<UserResponse>();
+         var insertResult = await APIService.PostFromUrlWithAuth<UserResponse>("User/RegisterUser", userRegisterRequest);
 
-         MessageBox.Show("User registered");
-         PanelHelper.SwapPanel(this.Parent, this, new UserList());
+         if(insertResult == null || insertResult.UserId == 0)
+         {
+            MessageBox.Show("User not registered");
+         }
+         else
+         {
+            MessageBox.Show("User registered");
+            PanelHelper.SwapPanel(this.Parent, this, new UserList());
+         }
       }
    }
 }

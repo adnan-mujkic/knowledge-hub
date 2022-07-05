@@ -67,8 +67,7 @@ namespace WindowsFormsApp1.Forms.City
          data.Name = CityNameInput.Text;
          data.ZipCode = CityZipInput.Text;
          data.Country = CityCountryInput.Text;
-         var url = $"{Properties.Settings.Default.ApiUrl}/City?ID={data.CityId}";
-         var response = await url.PutJsonAsync(data).ReceiveJson<CityResponse>();
+         var response = await APIService.PutFromUrlWithAuth<CityResponse>($"City?ID={data.CityId}", data);
 
          if (response == null || response.CityId == 0)
          {

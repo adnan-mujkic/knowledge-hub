@@ -12,14 +12,20 @@ namespace WindowsFormsApp1
 {
    public class APIService
    {
-      public static string Email = "admin@knowledgehubtest.com";
-      public static string Password = "admin";
+      public static string Email;
+      public static string Password;
 
       public async static Task<UserDataResponse> Authenticate(AuthenticationRequest request) {
          string url = $"{Properties.Settings.Default.ApiUrl}/User/Login";
          try
          {
-            return await url.PostJsonAsync(request).ReceiveJson<UserDataResponse>();
+            var result = await url.PostJsonAsync(request).ReceiveJson<UserDataResponse>();
+            if(result != null)
+            {
+               Email = request.Email;
+               Password = request.Password;
+            }
+            return result;
          }
          catch (Exception e)
          {
@@ -33,6 +39,28 @@ namespace WindowsFormsApp1
          return await formattedUrl
             .WithHeader("Authorization", $"Basic {Email}:{Password}")
             .GetJsonAsync<T>();
+      }
+      public async static Task<bool> DeleteFromUrlWithAuth(string url, int ID) {
+         var formattedUrl = $"{Properties.Settings.Default.ApiUrl}/{url}?ID={ID}";
+         var result = await formattedUrl
+            .WithHeader("Authorization", $"Basic {Email}:{Password}")
+            .DeleteAsync();
+         return result.StatusCode == 200;
+      }
+
+      public async static Task<T> PutFromUrlWithAuth<T>(string url, object data) {
+         var formattedUrl = $"{Properties.Settings.Default.ApiUrl}/{url}";
+         return await formattedUrl
+            .WithHeader("Authorization", $"Basic {Email}:{Password}")
+            .PutJsonAsync(data)
+            .ReceiveJson<T>();
+      }
+      public async static Task<T> PostFromUrlWithAuth<T>(string url, object data) {
+         var formattedUrl = $"{Properties.Settings.Default.ApiUrl}/{url}";
+         return await formattedUrl
+            .WithHeader("Authorization", $"Basic {Email}:{Password}")
+            .PostJsonAsync(data)
+            .ReceiveJson<T>();
       }
    }
 }

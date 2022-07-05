@@ -28,13 +28,11 @@ namespace WindowsFormsApp1.Forms.Book
          List<BookResponse> response;
          if (!string.IsNullOrWhiteSpace(search))
          {
-            url = $"{Properties.Settings.Default.ApiUrl}/Book/Search?search={UserSearchBox.Text}";
-            response = await url.GetJsonAsync<List<BookResponse>>();
+            response = await APIService.GetFromUrlWithAuth<List<BookResponse>>($"Book/Search?search={UserSearchBox.Text}");
          }
          else
          {
-            url = $"{Properties.Settings.Default.ApiUrl}/Book/";
-            response = await url.GetJsonAsync<List<BookResponse>>();
+            response = await APIService.GetFromUrlWithAuth<List<BookResponse>>($"Book");
          }
 
          dataGridView1.AutoGenerateColumns = false;
@@ -55,9 +53,8 @@ namespace WindowsFormsApp1.Forms.Book
 
       private async void EditButton_Click(object sender, EventArgs e) {
          int ID = Convert.ToInt32(dataGridView1.CurrentRow.Cells["BookID"].Value);
-         var url = $"{Properties.Settings.Default.ApiUrl}/Book/{ID}";
+         var response = await APIService.GetFromUrlWithAuth<BookResponse>($"Book/{ID}");
 
-         var response = await url.GetJsonAsync<BookResponse>();
          if (response == null)
          {
             MessageBox.Show("Book getting error");
@@ -77,10 +74,9 @@ namespace WindowsFormsApp1.Forms.Book
       }
       private async void RemoveBook() {
          int ID = Convert.ToInt32(dataGridView1.CurrentRow.Cells["BookID"].Value);
-         var url = $"{Properties.Settings.Default.ApiUrl}/Book?ID={ID}";
-         var result = await url.DeleteAsync();
+         var result = await APIService.DeleteFromUrlWithAuth("Book", ID);
 
-         if (result.StatusCode == 200)
+         if (result)
          {
             MessageBox.Show("Book removed");
             LoadBookList();

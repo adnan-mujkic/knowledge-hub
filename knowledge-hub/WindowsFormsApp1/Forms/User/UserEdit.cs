@@ -51,18 +51,6 @@ namespace WindowsFormsApp1.Forms.User
          PanelHelper.SwapPanel(this.Parent, this, new UserList());
       }
 
-      private void button1_Click(object sender, EventArgs e) {
-         OpenFileDialog openfd = new OpenFileDialog
-         {
-            Filter = "Image Files (*.jpg;*.jpeg;*.gif;*.png;)|*.jpg;*.jpeg;*.gif;*.png;"
-         };
-         if (openfd.ShowDialog() == DialogResult.OK)
-         {
-            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox1.Image = new Bitmap(openfd.FileName);
-         }
-      }
-
       private void EmailInput_Validating(object sender, CancelEventArgs e) {
          errorMessages.Remove("Email cannot be empty!");
          if (string.IsNullOrWhiteSpace(EmailInput.Text))
@@ -109,6 +97,7 @@ namespace WindowsFormsApp1.Forms.User
                finalErrors += errMsg + "\n";
             }
             MessageBox.Show(finalErrors);
+            return;
          }
 
          data.authData.email = EmailInput.Text;
@@ -117,10 +106,8 @@ namespace WindowsFormsApp1.Forms.User
          data.userData.Username = UsernameInput.Text;
          data.userData.UserRole = RoleSelect.SelectedItem.ToString();
 
-         var url = $"{Properties.Settings.Default.ApiUrl}/User/UserUpdateInfo";
          data.myBooks = new List<BookResponse>();
-         var jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(data);
-         var response = await url.PutJsonAsync(data).ReceiveJson<bool>();
+         var response = await APIService.PutFromUrlWithAuth<bool>("User/UserUpdateInfo", data);
 
          if (!response)
          {
