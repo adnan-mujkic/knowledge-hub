@@ -14,7 +14,7 @@ namespace knowledge_hub.WebAPI.Intefraces
       Task<PaymentInfoResponse> UpdatePayment(UserPaymentInfoRequest request);
       Task<HttpStatusCode> UpdatePassword(PasswordUpdateRequest request);
       Task<AddressResponse> UpdateAddress(UserAddressUpdateRequest request);
-      Task<bool> UserUpdateInfo(UserDataResponse userInfo);
+      Task<bool> UserUpdateInfo(UserResponse userInfo);
       Task<UserDataResponse> GetDetailedUserInfo(int ID);
       Task<List<UserResponse>> SearchUser(string search);
    }

@@ -19,18 +19,18 @@ namespace WindowsFormsApp1.Forms.User
    {
       List<string> errorMessages;
       string emailPattern = @"^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$";
-      UserDataResponse data;
+      UserResponse data;
 
-      public UserEdit(UserDataResponse _data) {
+      public UserEdit(UserResponse _data) {
          data = _data;
          InitializeComponent();
          RoleSelect.DropDownStyle = ComboBoxStyle.DropDownList;
          errorMessages = new List<string>();
 
-         EmailInput.Text = data.authData.email;
-         UsernameInput.Text = data.userData.Username;
-         BiographyInput.Text = data.userData.Biography;
-         RoleSelect.SelectedIndex = GetIndexOfRole(data.userData.UserRole);
+         EmailInput.Text = data.Email;
+         UsernameInput.Text = data.Username;
+         BiographyInput.Text = data.Biography;
+         RoleSelect.SelectedIndex = GetIndexOfRole(data.UserRole);
       }
 
       private int GetIndexOfRole(string roleName) {
@@ -100,13 +100,11 @@ namespace WindowsFormsApp1.Forms.User
             return;
          }
 
-         data.authData.email = EmailInput.Text;
-         data.userData.Email = EmailInput.Text;
-         data.userData.Biography = BiographyInput.Text;
-         data.userData.Username = UsernameInput.Text;
-         data.userData.UserRole = RoleSelect.SelectedItem.ToString();
+         data.Email = EmailInput.Text;
+         data.Biography = BiographyInput.Text;
+         data.Username = UsernameInput.Text;
+         data.UserRole = RoleSelect.SelectedItem.ToString();
 
-         data.myBooks = new List<BookResponse>();
          var response = await APIService.PutFromUrlWithAuth<bool>("User/UserUpdateInfo", data);
 
          if (!response)

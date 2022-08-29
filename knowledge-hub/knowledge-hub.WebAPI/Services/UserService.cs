@@ -244,37 +244,37 @@ namespace knowledge_hub.WebAPI.Services
          }
       }
 
-      public async Task<bool> UserUpdateInfo(UserDataResponse userInfo) {
+      public async Task<bool> UserUpdateInfo(UserResponse userInfo) {
          try
          {
             var roles = await _dbContext.Roles.ToListAsync();
             var userRole = await _dbContext.UserRoles
-               .Where(x => x.UserID == userInfo.userData.UserId)
+               .Where(x => x.UserID == userInfo.UserId)
                .Include(x => x.Role)
                .FirstOrDefaultAsync();
             if (userRole == null) return false;
 
-            var user = await _dbContext.Users.FindAsync(userInfo.userData.UserId);
+            var user = await _dbContext.Users.FindAsync(userInfo.UserId);
             if (user == null) return false;
 
             var login = await _dbContext.Logins.FindAsync(user.LoginId);
             if (login == null) return false;
 
-            if (userRole.Role.Name != userInfo.userData.UserRole)
+            if (userRole.Role.Name != userInfo.UserRole)
             {
                _dbContext.UserRoles.Remove(userRole);
                await _dbContext.AddAsync(new UserRoles
                {
                   UserID = user.UserId,
                   RoleID = roles
-                     .Where(x => x.Name == userInfo.userData.UserRole)
+                     .Where(x => x.Name == userInfo.UserRole)
                      .FirstOrDefault().RoleID
                });
             }
 
-            user.Username = userInfo.userData.Username;
-            user.Biography = userInfo.userData.Biography;
-            login.Email = userInfo.authData.email;
+            user.Username = userInfo.Username;
+            user.Biography = userInfo.Biography;
+            login.Email = userInfo.Email;
 
             await _dbContext.SaveChangesAsync();
             return true;
@@ -318,6 +318,7 @@ namespace knowledge_hub.WebAPI.Services
 
          user.UserRole = userRole;
          userData.userData = _mapper.Map<UserResponse>(user);
+         userData.userData.Email = login.Email;
          userData.addressData = _mapper.Map<AddressResponse>(addressData);
          userData.paymentData = _mapper.Map<PaymentInfoResponse>(paymentData);
          userData.wishlist = new List<BookResponse>();

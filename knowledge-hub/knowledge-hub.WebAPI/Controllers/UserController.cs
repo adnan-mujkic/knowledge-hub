@@ -43,7 +43,7 @@ namespace knowledge_hub.WebAPI.Controllers
       }
 
       [HttpPut("UserUpdateInfo")]
-      public async Task<bool> UserUpdateInfo(UserDataResponse userInfo) {
+      public async Task<bool> UserUpdateInfo(UserResponse userInfo) {
          return await _service.UserUpdateInfo(userInfo);
       }
 

@@ -83,7 +83,7 @@ namespace knowledge_hub.Forms.User
             return;
          }
 
-         PanelHelper.SwapPanel(this.Parent, this, new UserEdit(response));
+         PanelHelper.SwapPanel(this.Parent, this, new UserEdit(response.userData));
       }
 
       private async void SearchUsersButton_Click(object sender, EventArgs e) {
