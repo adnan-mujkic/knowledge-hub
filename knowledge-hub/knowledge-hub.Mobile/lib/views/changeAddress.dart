@@ -8,11 +8,10 @@ import 'package:http/http.dart' as http;
 
 import '../models/city.dart';
 
-
 class ChangeAddressWidget extends StatefulWidget {
-  ChangeAddressWidget({Key? key}) : super(key: key){
+  ChangeAddressWidget({Key? key}) : super(key: key) {
     userAddress = AccountService.instance.addressData;
-    if(userAddress.City == null ||userAddress.City == "")
+    if (userAddress.City == null || userAddress.City == "")
       userAddress.City = PersistentDataService.instance.cities[0].Name;
   }
 
@@ -24,29 +23,32 @@ class ChangeAddressWidget extends StatefulWidget {
 }
 
 class ChangeAddressState extends State<ChangeAddressWidget> {
-
-  changeAddress()async{
+  changeAddress() async {
     final response = await http.post(
-      Uri.parse('${PersistentDataService.instance.BackendUri}/api/User/UpdateAddress'),
+      Uri.parse(
+          '${PersistentDataService.instance.BackendUri}/api/User/UpdateAddress'),
       headers: <String, String>{
-        'Content-Type' : 'application/json; charset=UTF-8',
-        'Authorization' : "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization':
+            "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
       },
       body: jsonEncode({
-        'userId' : AccountService.instance.userData.UserId,
+        'userId': AccountService.instance.userData.UserId,
         'fullName': widget.userAddress.FullName,
         'addressLine': widget.userAddress.AdressLine,
         'city': widget.userAddress.City
       }),
     );
 
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       Map<String, dynamic> map = jsonDecode(response.body);
       AccountService.instance.addressData.FullName = map['fullName'] ?? "";
       AccountService.instance.addressData.AdressLine = map['addressLine'] ?? "";
       AccountService.instance.addressData.City = map['city'] ?? "";
       AccountService.instance.addressData.Postcode = map['postcode'] ?? "";
       AccountService.instance.saveFileToDisk();
+      PersistentDataService.instance.screenWideNotification
+          .broadcast(Value<String>("Address Updated!"));
     }
   }
 
@@ -55,7 +57,8 @@ class ChangeAddressState extends State<ChangeAddressWidget> {
     return SingleChildScrollView(
       child: Align(
         alignment: Alignment.bottomCenter,
-        child: Container(margin: EdgeInsets.only(top: 10, right: 30, left: 30),
+        child: Container(
+            margin: EdgeInsets.only(top: 10, right: 30, left: 30),
             child: Column(
               children: [
                 Container(
@@ -88,17 +91,18 @@ class ChangeAddressState extends State<ChangeAddressWidget> {
                         ),
                         child: SizedBox(
                             child: Padding(
-                              padding: EdgeInsets.only(top: 0, bottom: 0, right: 20, left: 20),
-                              child: TextField(
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: this.widget.userAddress.FullName),
-                                style: const TextStyle(fontSize: 12),
-                                onChanged: (String? value){
-                                  this.widget.userAddress.FullName = value;
-                                },
-                              ),
-                            )),
+                          padding: EdgeInsets.only(
+                              top: 0, bottom: 0, right: 20, left: 20),
+                          child: TextField(
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: this.widget.userAddress.FullName),
+                            style: const TextStyle(fontSize: 12),
+                            onChanged: (String? value) {
+                              this.widget.userAddress.FullName = value;
+                            },
+                          ),
+                        )),
                       ),
                     ],
                   ),
@@ -120,17 +124,18 @@ class ChangeAddressState extends State<ChangeAddressWidget> {
                         ),
                         child: SizedBox(
                             child: Padding(
-                              padding: EdgeInsets.only(top: 0, bottom: 0, right: 20, left: 20),
-                              child: TextField(
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: this.widget.userAddress.AdressLine),
-                                style: const TextStyle(fontSize: 12),
-                                onChanged: (String? value){
-                                  this.widget.userAddress.AdressLine = value;
-                                },
-                              ),
-                            )),
+                          padding: EdgeInsets.only(
+                              top: 0, bottom: 0, right: 20, left: 20),
+                          child: TextField(
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: this.widget.userAddress.AdressLine),
+                            style: const TextStyle(fontSize: 12),
+                            onChanged: (String? value) {
+                              this.widget.userAddress.AdressLine = value;
+                            },
+                          ),
+                        )),
                       ),
                     ],
                   ),
@@ -153,7 +158,8 @@ class ChangeAddressState extends State<ChangeAddressWidget> {
                         child: SizedBox(
                           width: double.infinity,
                           child: Padding(
-                            padding: const EdgeInsets.only(top: 0, bottom: 0, right: 20, left: 20),
+                            padding: const EdgeInsets.only(
+                                top: 0, bottom: 0, right: 20, left: 20),
                             child: DropdownButton<String>(
                               value: widget.userAddress.City,
                               onChanged: (String? newValue) {
@@ -161,7 +167,8 @@ class ChangeAddressState extends State<ChangeAddressWidget> {
                                   widget.userAddress.City = newValue;
                                 });
                               },
-                              items: PersistentDataService.instance.cities.map<DropdownMenuItem<String>>((City value) {
+                              items: PersistentDataService.instance.cities
+                                  .map<DropdownMenuItem<String>>((City value) {
                                 return DropdownMenuItem<String>(
                                   value: value.Name,
                                   child: Text(value.Name),
@@ -181,22 +188,21 @@ class ChangeAddressState extends State<ChangeAddressWidget> {
                   width: double.infinity,
                   child: ElevatedButton(
                       style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
-                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)
-                              )
-                          )
-                      ),
-                      onPressed: ()  {
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.green),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(10)))),
+                      onPressed: () {
                         changeAddress();
                         widget.saveChangesEvent.broadcast();
                       },
                       child: Padding(
                         padding: EdgeInsets.all(15),
                         child: Text("Save"),
-                      )
-                  ),
+                      )),
                 ),
               ],
             )),

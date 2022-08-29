@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:knowledge_hub_mobile/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:knowledge_hub_mobile/services/accountService.dart';
+import 'package:event/event.dart';
 
 class UserManagmentWidget extends StatefulWidget {
-  UserManagmentWidget({Key? key}) : super(key: key){
+  UserManagmentWidget({Key? key}) : super(key: key) {
     username = AccountService.instance.userData.Username;
     biography = AccountService.instance.userData.Biography;
   }
@@ -19,26 +20,29 @@ class UserManagmentWidget extends StatefulWidget {
 }
 
 class UserManagmentState extends State<UserManagmentWidget> {
-
-  saveAccountSettings()async{
+  saveAccountSettings() async {
     final response = await http.put(
-      Uri.parse('${PersistentDataService.instance.BackendUri}/api/User?ID=${AccountService.instance.userData.UserId.toString()}'),
+      Uri.parse(
+          '${PersistentDataService.instance.BackendUri}/api/User?ID=${AccountService.instance.userData.UserId.toString()}'),
       headers: <String, String>{
-        'Content-Type' : 'application/json; charset=UTF-8',
-        'Authorization' : "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization':
+            "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
       },
       body: jsonEncode({
-        'username' : widget.username,
+        'username': widget.username,
         'biography': widget.biography,
-        'imagePath' : ''
+        'imagePath': ''
       }),
     );
 
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       Map<String, dynamic> map = jsonDecode(response.body);
-      AccountService.instance.userData.Username = map['username']??"";
-      AccountService.instance.userData.Biography = map['biography']??"";
+      AccountService.instance.userData.Username = map['username'] ?? "";
+      AccountService.instance.userData.Biography = map['biography'] ?? "";
       AccountService.instance.saveFileToDisk();
+      PersistentDataService.instance.screenWideNotification
+          .broadcast(Value<String>("Info Updated!"));
     }
   }
 
@@ -47,7 +51,8 @@ class UserManagmentState extends State<UserManagmentWidget> {
     return SingleChildScrollView(
       child: Align(
         alignment: Alignment.bottomCenter,
-        child: Container(margin: EdgeInsets.only(top: 10, right: 30, left: 30),
+        child: Container(
+            margin: EdgeInsets.only(top: 10, right: 30, left: 30),
             child: Column(
               children: [
                 Container(
@@ -80,17 +85,18 @@ class UserManagmentState extends State<UserManagmentWidget> {
                         ),
                         child: SizedBox(
                             child: Padding(
-                              padding: EdgeInsets.only(top: 2, bottom: 2, right: 20, left: 20),
-                              child: TextField(
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: this.widget.username),
-                                style: const TextStyle(fontSize: 12),
-                                onChanged: (String value){
-                                  this.widget.username = value;
-                                },
-                              ),
-                            )),
+                          padding: EdgeInsets.only(
+                              top: 2, bottom: 2, right: 20, left: 20),
+                          child: TextField(
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: this.widget.username),
+                            style: const TextStyle(fontSize: 12),
+                            onChanged: (String value) {
+                              this.widget.username = value;
+                            },
+                          ),
+                        )),
                       ),
                     ],
                   ),
@@ -112,18 +118,19 @@ class UserManagmentState extends State<UserManagmentWidget> {
                         ),
                         child: SizedBox(
                             child: Padding(
-                              padding: EdgeInsets.only(top: 2, bottom: 2, right: 20, left: 20),
-                              child: TextField(
-                                maxLines: 10,
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: this.widget.biography),
-                                style: const TextStyle(fontSize: 12),
-                                onChanged: (String value){
-                                  this.widget.biography = value;
-                                },
-                              ),
-                            )),
+                          padding: EdgeInsets.only(
+                              top: 2, bottom: 2, right: 20, left: 20),
+                          child: TextField(
+                            maxLines: 10,
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: this.widget.biography),
+                            style: const TextStyle(fontSize: 12),
+                            onChanged: (String value) {
+                              this.widget.biography = value;
+                            },
+                          ),
+                        )),
                       ),
                     ],
                   ),
@@ -135,21 +142,20 @@ class UserManagmentState extends State<UserManagmentWidget> {
                   width: double.infinity,
                   child: ElevatedButton(
                       style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
-                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)
-                              )
-                          )
-                      ),
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.green),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(10)))),
                       onPressed: () {
                         saveAccountSettings();
                       },
                       child: Padding(
                         padding: EdgeInsets.all(15),
                         child: Text("Save"),
-                      )
-                  ),
+                      )),
                 ),
               ],
             )),

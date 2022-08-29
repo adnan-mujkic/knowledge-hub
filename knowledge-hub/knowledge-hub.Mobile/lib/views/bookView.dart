@@ -165,19 +165,6 @@ class BookViewState extends State<BookViewWidget> {
     return commentsWidgets;
   }
 
-  showMoreComments() {
-    int amountToIncrease = 4;
-    if (commentsWidgets.length == comments.length) {
-      amountToIncrease = 0;
-    } else if (commentsWidgets.length + amountToIncrease > comments.length) {
-      amountToIncrease = comments.length - commentsWidgets.length;
-    }
-
-    setState(() {
-      currentlyDisplayedComments += amountToIncrease;
-    });
-  }
-
   postReview() async {
     final response = await http.post(
         Uri.parse('${PersistentDataService.instance.BackendUri}/api/Review'),
@@ -559,12 +546,6 @@ class BookViewState extends State<BookViewWidget> {
 
                           return const CircularProgressIndicator();
                         },
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          showMoreComments();
-                        },
-                        child: Text("Load More"),
                       ),
                       const SizedBox(
                         height: 30,

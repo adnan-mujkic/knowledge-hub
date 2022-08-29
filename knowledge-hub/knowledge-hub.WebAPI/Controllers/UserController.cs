@@ -33,7 +33,7 @@ namespace knowledge_hub.WebAPI.Controllers
       public async Task<PaymentInfoResponse> UpdatePayment(UserPaymentInfoRequest request) {
          return await _service.UpdatePayment(request);
       }
-      [HttpPost("UpdatePassword")]
+      [HttpPut("UpdatePassword")]
       public async Task<HttpStatusCode> UpdatePassword(PasswordUpdateRequest request) {
          return await _service.UpdatePassword(request);
       }

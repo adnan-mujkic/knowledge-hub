@@ -10,7 +10,7 @@ import '../services/persistentDataService.dart';
 import '../services/accountService.dart';
 
 class ChangePasswordWidget extends StatefulWidget {
-  ChangePasswordWidget({Key? key}) : super(key: key){
+  ChangePasswordWidget({Key? key}) : super(key: key) {
     userPassword = new ChangePassword();
   }
 
@@ -21,26 +21,50 @@ class ChangePasswordWidget extends StatefulWidget {
 }
 
 class ChangePasswordState extends State<ChangePasswordWidget> {
+  changePassword() async {
+    if (!validatePassword(widget.userPassword.NewPassword!)) {
+      PersistentDataService.instance.screenWideNotification.broadcast(Value<
+              String>(
+          "Password must have an uppercase, lowercase letter, number, symbol and be at least 8 characters long!"));
+      return;
+    }
+    if (widget.userPassword.NewPassword! !=
+        widget.userPassword.ConfirmPassword!) {
+      PersistentDataService.instance.screenWideNotification
+          .broadcast(Value<String>("Passwords do not match!"));
+      return;
+    }
 
-  changePassword()async{
     final response = await http.put(
-      Uri.parse('${PersistentDataService.instance.BackendUri}/api/User/UpdatePassword'),
+      Uri.parse(
+          '${PersistentDataService.instance.BackendUri}/api/User/UpdatePassword'),
       headers: <String, String>{
-        'Content-Type' : 'application/json; charset=UTF-8',
-        'Authorization' : "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization':
+            "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
       },
       body: jsonEncode({
-        'userId' : AccountService.instance.userData.UserId,
+        'userId': AccountService.instance.userData.UserId,
         'oldPassword': widget.userPassword.OldPassword,
         'newPassword': widget.userPassword.NewPassword,
         'confirmPassword': widget.userPassword.ConfirmPassword,
       }),
     );
 
-    if(response.statusCode == 200){
-      AccountService.instance.authData.Password = widget.userPassword.NewPassword ?? "";
+    if (response.statusCode == 200) {
+      AccountService.instance.authData.Password =
+          widget.userPassword.NewPassword ?? "";
       AccountService.instance.saveFileToDisk();
+      PersistentDataService.instance.screenWideNotification
+          .broadcast(Value<String>("Password Chagned!"));
     }
+  }
+
+  bool validatePassword(String value) {
+    String passwordPattern =
+        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
+    RegExp regExp = RegExp(passwordPattern);
+    return regExp.hasMatch(value);
   }
 
   @override
@@ -48,7 +72,8 @@ class ChangePasswordState extends State<ChangePasswordWidget> {
     return SingleChildScrollView(
       child: Align(
         alignment: Alignment.bottomCenter,
-        child: Container(margin: EdgeInsets.only(top: 10, right: 30, left: 30),
+        child: Container(
+            margin: EdgeInsets.only(top: 10, right: 30, left: 30),
             child: Column(
               children: [
                 Container(
@@ -81,18 +106,20 @@ class ChangePasswordState extends State<ChangePasswordWidget> {
                         ),
                         child: SizedBox(
                             child: Padding(
-                              padding: EdgeInsets.only(top: 2, bottom: 2, right: 20, left: 20),
-                              child: TextField(
-                                autocorrect: false,
-                                obscureText: true,
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,),
-                                style: const TextStyle(fontSize: 12),
-                                onChanged: (String? value){
-                                  this.widget.userPassword.OldPassword = value;
-                                },
-                              ),
-                            )),
+                          padding: EdgeInsets.only(
+                              top: 2, bottom: 2, right: 20, left: 20),
+                          child: TextField(
+                            autocorrect: false,
+                            obscureText: true,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                            ),
+                            style: const TextStyle(fontSize: 12),
+                            onChanged: (String? value) {
+                              this.widget.userPassword.OldPassword = value;
+                            },
+                          ),
+                        )),
                       ),
                     ],
                   ),
@@ -114,18 +141,20 @@ class ChangePasswordState extends State<ChangePasswordWidget> {
                         ),
                         child: SizedBox(
                             child: Padding(
-                              padding: EdgeInsets.only(top: 2, bottom: 2, right: 20, left: 20),
-                              child: TextField(
-                                autocorrect: false,
-                                obscureText: true,
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,),
-                                style: const TextStyle(fontSize: 12),
-                                onChanged: (String? value){
-                                  this.widget.userPassword.NewPassword = value;
-                                },
-                              ),
-                            )),
+                          padding: EdgeInsets.only(
+                              top: 2, bottom: 2, right: 20, left: 20),
+                          child: TextField(
+                            autocorrect: false,
+                            obscureText: true,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                            ),
+                            style: const TextStyle(fontSize: 12),
+                            onChanged: (String? value) {
+                              this.widget.userPassword.NewPassword = value;
+                            },
+                          ),
+                        )),
                       ),
                     ],
                   ),
@@ -147,18 +176,20 @@ class ChangePasswordState extends State<ChangePasswordWidget> {
                         ),
                         child: SizedBox(
                             child: Padding(
-                              padding: EdgeInsets.only(top: 2, bottom: 2, right: 20, left: 20),
-                              child: TextField(
-                                autocorrect: false,
-                                obscureText: true,
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,),
-                                style: const TextStyle(fontSize: 12),
-                                onChanged: (String? value){
-                                  this.widget.userPassword.ConfirmPassword = value;
-                                },
-                              ),
-                            )),
+                          padding: EdgeInsets.only(
+                              top: 2, bottom: 2, right: 20, left: 20),
+                          child: TextField(
+                            autocorrect: false,
+                            obscureText: true,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                            ),
+                            style: const TextStyle(fontSize: 12),
+                            onChanged: (String? value) {
+                              this.widget.userPassword.ConfirmPassword = value;
+                            },
+                          ),
+                        )),
                       ),
                     ],
                   ),
@@ -170,21 +201,20 @@ class ChangePasswordState extends State<ChangePasswordWidget> {
                   width: double.infinity,
                   child: ElevatedButton(
                       style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
-                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)
-                              )
-                          )
-                      ),
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.green),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(10)))),
                       onPressed: () {
                         changePassword();
                       },
                       child: Padding(
                         padding: EdgeInsets.all(15),
                         child: Text("Save"),
-                      )
-                  ),
+                      )),
                 ),
               ],
             )),
