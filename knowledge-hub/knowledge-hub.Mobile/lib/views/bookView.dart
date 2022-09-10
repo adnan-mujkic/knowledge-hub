@@ -94,7 +94,7 @@ class BookViewState extends State<BookViewWidget> {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization':
-              "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
+              "Basic ${base64Encode(utf8.encode('${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}'))}"
         },
       );
       if (response.statusCode == 200) {
@@ -110,7 +110,7 @@ class BookViewState extends State<BookViewWidget> {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization':
-              "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
+              "Basic ${base64Encode(utf8.encode('${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}'))}"
         },
         body: jsonEncode({
           'bookId': widget.book.BookId,
@@ -171,7 +171,7 @@ class BookViewState extends State<BookViewWidget> {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization':
-              "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
+              "Basic ${base64Encode(utf8.encode('${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}'))}"
         },
         body: jsonEncode({
           'userId': AccountService.instance.userData.UserId,
@@ -189,7 +189,7 @@ class BookViewState extends State<BookViewWidget> {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization':
-              "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
+              "Basic ${base64Encode(utf8.encode('${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}'))}"
         });
     if (response.statusCode == 200) {
       var jsonBody = jsonDecode(response.body);

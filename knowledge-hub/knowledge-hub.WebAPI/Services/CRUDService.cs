@@ -29,7 +29,7 @@ namespace knowledge_hub.WebAPI.Services
          }
       }
 
-      public virtual async Task<List<T>> Get() {
+      public virtual async Task<List<T>> Get(string? search) {
          var databaseEntities = await _dbContext.Set<TDatabase>().ToListAsync();
          return _mapper.Map<List<T>>(databaseEntities);
       }

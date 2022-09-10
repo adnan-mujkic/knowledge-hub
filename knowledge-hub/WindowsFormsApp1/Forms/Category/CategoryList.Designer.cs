@@ -145,6 +145,7 @@ namespace WindowsFormsApp1.Forms.Category
          this.textBox1.Name = "textBox1";
          this.textBox1.Size = new System.Drawing.Size(189, 22);
          this.textBox1.TabIndex = 14;
+         this.textBox1.Validating += new System.ComponentModel.CancelEventHandler(this.textBox1_Validating);
          // 
          // label2
          // 

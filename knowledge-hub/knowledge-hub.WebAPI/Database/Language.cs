@@ -6,6 +6,8 @@ namespace knowledge_hub.WebAPI.Database
    {
       [Key]
       public int LanguageId { get; set; }
+
+      [Required]
       public string Name { get; set; }
    }
 }

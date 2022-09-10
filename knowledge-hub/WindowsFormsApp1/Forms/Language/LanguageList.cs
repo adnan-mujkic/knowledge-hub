@@ -16,10 +16,13 @@ namespace WindowsFormsApp1.Forms.Language
    public partial class LanguageList : UserControl
    {
       SingleTextInputForm inputPanel;
+      List<string> errorMessages;
+
 
       public LanguageList() {
          InitializeComponent();
          FetchLanguageList();
+         errorMessages = new List<string>();
       }
 
       private async void FetchLanguageList() {
@@ -74,6 +77,16 @@ namespace WindowsFormsApp1.Forms.Language
          var response = await APIService.DeleteFromUrlWithAuth("Language", ID);
          FetchLanguageList();
          MessageBox.Show(response ? "Language deleted" : "Language cannot be deleted!");
+      }
+
+      private void textBox1_Validating(object sender, CancelEventArgs e) {
+         errorMessages.Remove("Language name cannot be empty!");
+         if (string.IsNullOrWhiteSpace(textBox1.Text))
+         {
+            errorMessages.Add("Language name cannot be empty!");
+            e.Cancel = false;
+            return;
+         }
       }
    }
 }

@@ -2,7 +2,7 @@
 {
    public interface ICRUDService<T, TInsert, TUpdate>
    {
-      Task<List<T>> Get();
+      Task<List<T>> Get(string? search);
       Task<T> GetById(int ID, string serverPath);
       Task<T> Insert(TInsert request);
       Task<T> Update(int ID, TUpdate reuqest);

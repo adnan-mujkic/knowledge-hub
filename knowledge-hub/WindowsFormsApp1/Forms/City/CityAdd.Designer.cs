@@ -42,50 +42,53 @@ namespace WindowsFormsApp1.Forms.City
          // label5
          // 
          this.label5.AutoSize = true;
-         this.label5.Location = new System.Drawing.Point(320, 290);
+         this.label5.Location = new System.Drawing.Point(320, 232);
          this.label5.Name = "label5";
-         this.label5.Size = new System.Drawing.Size(63, 20);
+         this.label5.Size = new System.Drawing.Size(55, 16);
          this.label5.TabIndex = 42;
          this.label5.Text = "Country:";
          // 
          // CityCountryInput
          // 
-         this.CityCountryInput.Location = new System.Drawing.Point(320, 313);
+         this.CityCountryInput.Location = new System.Drawing.Point(320, 250);
+         this.CityCountryInput.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
          this.CityCountryInput.Name = "CityCountryInput";
-         this.CityCountryInput.Size = new System.Drawing.Size(189, 27);
+         this.CityCountryInput.Size = new System.Drawing.Size(189, 22);
          this.CityCountryInput.TabIndex = 41;
+         this.CityCountryInput.Validating += new System.ComponentModel.CancelEventHandler(this.CityCountryInput_Validating);
          // 
          // label4
          // 
          this.label4.AutoSize = true;
-         this.label4.Location = new System.Drawing.Point(320, 214);
+         this.label4.Location = new System.Drawing.Point(320, 171);
          this.label4.Name = "label4";
-         this.label4.Size = new System.Drawing.Size(67, 20);
+         this.label4.Size = new System.Drawing.Size(60, 16);
          this.label4.TabIndex = 40;
          this.label4.Text = "Zipcode:";
          // 
          // CityZipInput
          // 
-         this.CityZipInput.Location = new System.Drawing.Point(320, 237);
+         this.CityZipInput.Location = new System.Drawing.Point(320, 190);
+         this.CityZipInput.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
          this.CityZipInput.Name = "CityZipInput";
-         this.CityZipInput.Size = new System.Drawing.Size(189, 27);
+         this.CityZipInput.Size = new System.Drawing.Size(189, 22);
          this.CityZipInput.TabIndex = 39;
          this.CityZipInput.Validating += new System.ComponentModel.CancelEventHandler(this.CityZipInput_Validating);
          // 
          // label3
          // 
          this.label3.AutoSize = true;
-         this.label3.Location = new System.Drawing.Point(320, 142);
+         this.label3.Location = new System.Drawing.Point(320, 114);
          this.label3.Name = "label3";
-         this.label3.Size = new System.Drawing.Size(52, 20);
+         this.label3.Size = new System.Drawing.Size(47, 16);
          this.label3.TabIndex = 38;
          this.label3.Text = "Name:";
          // 
          // label2
          // 
          this.label2.AutoSize = true;
-         this.label2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-         this.label2.Location = new System.Drawing.Point(349, 87);
+         this.label2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+         this.label2.Location = new System.Drawing.Point(349, 70);
          this.label2.Name = "label2";
          this.label2.Size = new System.Drawing.Size(141, 28);
          this.label2.TabIndex = 37;
@@ -93,10 +96,12 @@ namespace WindowsFormsApp1.Forms.City
          // 
          // CityNameInput
          // 
-         this.CityNameInput.Location = new System.Drawing.Point(320, 165);
+         this.CityNameInput.Location = new System.Drawing.Point(320, 132);
+         this.CityNameInput.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
          this.CityNameInput.Name = "CityNameInput";
-         this.CityNameInput.Size = new System.Drawing.Size(189, 27);
+         this.CityNameInput.Size = new System.Drawing.Size(189, 22);
          this.CityNameInput.TabIndex = 36;
+         this.CityNameInput.Validating += new System.ComponentModel.CancelEventHandler(this.CityNameInput_Validating);
          // 
          // AddButton
          // 
@@ -105,9 +110,10 @@ namespace WindowsFormsApp1.Forms.City
          this.AddButton.Cursor = System.Windows.Forms.Cursors.Hand;
          this.AddButton.FlatAppearance.BorderSize = 0;
          this.AddButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-         this.AddButton.Location = new System.Drawing.Point(383, 365);
+         this.AddButton.Location = new System.Drawing.Point(383, 292);
+         this.AddButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
          this.AddButton.Name = "AddButton";
-         this.AddButton.Size = new System.Drawing.Size(77, 38);
+         this.AddButton.Size = new System.Drawing.Size(77, 30);
          this.AddButton.TabIndex = 35;
          this.AddButton.Text = "Add";
          this.AddButton.UseVisualStyleBackColor = true;
@@ -120,9 +126,10 @@ namespace WindowsFormsApp1.Forms.City
          this.cancelButton.Cursor = System.Windows.Forms.Cursors.Hand;
          this.cancelButton.FlatAppearance.BorderSize = 0;
          this.cancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-         this.cancelButton.Location = new System.Drawing.Point(383, 421);
+         this.cancelButton.Location = new System.Drawing.Point(383, 337);
+         this.cancelButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
          this.cancelButton.Name = "cancelButton";
-         this.cancelButton.Size = new System.Drawing.Size(77, 38);
+         this.cancelButton.Size = new System.Drawing.Size(77, 30);
          this.cancelButton.TabIndex = 43;
          this.cancelButton.Text = "Cancel";
          this.cancelButton.UseVisualStyleBackColor = true;
@@ -130,7 +137,7 @@ namespace WindowsFormsApp1.Forms.City
          // 
          // CityAdd
          // 
-         this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+         this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Controls.Add(this.cancelButton);
          this.Controls.Add(this.label5);
@@ -141,8 +148,10 @@ namespace WindowsFormsApp1.Forms.City
          this.Controls.Add(this.label2);
          this.Controls.Add(this.CityNameInput);
          this.Controls.Add(this.AddButton);
+         this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
          this.Name = "CityAdd";
-         this.Size = new System.Drawing.Size(864, 514);
+         this.Size = new System.Drawing.Size(864, 411);
+         this.Load += new System.EventHandler(this.CityAdd_Load);
          this.ResumeLayout(false);
          this.PerformLayout();
 

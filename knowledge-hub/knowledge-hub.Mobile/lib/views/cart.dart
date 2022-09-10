@@ -67,7 +67,7 @@ class CartState extends State<CartWidget> {
       headers: {
         'Content-Type': 'application/json',
         'Authorization':
-            "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
+            "Basic ${base64Encode(utf8.encode('${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}'))}"
       },
     );
     return json.decode(response.body);
@@ -111,7 +111,7 @@ class CartState extends State<CartWidget> {
         headers: {
           'Content-Type': 'application/json',
           'Authorization':
-              "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
+              "Basic ${base64Encode(utf8.encode('${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}'))}"
         },
         body: createOrderRequest());
     if (response.body == "") {
@@ -137,7 +137,7 @@ class CartState extends State<CartWidget> {
           headers: {
             'Content-Type': 'application/json',
             'Authorization':
-                "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
+                "Basic ${base64Encode(utf8.encode('${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}'))}"
           },
           body: createOrderRequest());
       if (response.statusCode == 200) {

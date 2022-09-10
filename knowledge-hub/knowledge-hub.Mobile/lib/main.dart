@@ -285,7 +285,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case 1:
         return ChangePasswordWidget();
       case 2:
-        return ChangePaymentInfoWidget();
+        break;
       case 3:
         return OrdersViewWidget(widget.userRole);
       case 4:
@@ -312,11 +312,11 @@ class _MyHomePageState extends State<MyHomePage> {
   void searchBooks(String searchQuery) async {
     final response = await http.get(
       Uri.parse(
-          '${PersistentDataService.instance.BackendUri}/api/Book/Search?search=$searchQuery'),
+          '${PersistentDataService.instance.BackendUri}/api/Book?search=$searchQuery'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization':
-            "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
+            "Basic ${base64Encode(utf8.encode('${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}'))}"
       },
     );
     if (response.statusCode == 200) {

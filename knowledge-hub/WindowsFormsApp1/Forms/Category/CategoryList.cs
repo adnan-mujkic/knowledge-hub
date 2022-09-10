@@ -16,10 +16,12 @@ namespace WindowsFormsApp1.Forms.Category
    public partial class CategoryList : UserControl
    {
       SingleTextInputForm inputPanel;
+      List<string> errorMessages;
 
       public CategoryList() {
          InitializeComponent();
          FetchCategoryList();
+         errorMessages = new List<string>();
       }
 
       private async void FetchCategoryList() {
@@ -62,6 +64,18 @@ namespace WindowsFormsApp1.Forms.Category
       }
 
       private async void AddButton_Click(object sender, EventArgs e) {
+         ValidateChildren();
+         if (errorMessages.Count > 0)
+         {
+            string finalErrors = "";
+            foreach (var errMsg in errorMessages)
+            {
+               finalErrors += errMsg + "\n";
+            }
+            MessageBox.Show(finalErrors);
+            return;
+         }
+
          var data = new CategoryInsertRequest { Name = textBox1.Text };
          await APIService.PostFromUrlWithAuth<CategoryResponse>($"Category", data);
          FetchCategoryList();
@@ -74,6 +88,16 @@ namespace WindowsFormsApp1.Forms.Category
          var response = await APIService.DeleteFromUrlWithAuth($"Category", ID);
          FetchCategoryList();
          MessageBox.Show(response ? "Category deleted" : "Error deleting category");
+      }
+
+      private void textBox1_Validating(object sender, CancelEventArgs e) {
+         errorMessages.Remove("Country name cannot be empty");
+         if (!string.IsNullOrWhiteSpace(textBox1.Text))
+         {
+            errorMessages.Add("Country name cannot be empty");
+            e.Cancel = false;
+            return;
+         }
       }
    }
 }

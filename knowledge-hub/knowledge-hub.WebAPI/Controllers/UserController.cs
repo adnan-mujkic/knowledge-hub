@@ -1,6 +1,7 @@
 ﻿using knowledge_hub.WebAPI.Intefraces;
 using knowledge_hub.WebAPI.Model.Requests;
 using knowledge_hub.WebAPI.Model.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -34,15 +35,18 @@ namespace knowledge_hub.WebAPI.Controllers
          return await _service.UpdatePayment(request);
       }
       [HttpPut("UpdatePassword")]
+      [Authorize]
       public async Task<HttpStatusCode> UpdatePassword(PasswordUpdateRequest request) {
          return await _service.UpdatePassword(request);
       }
       [HttpPost("UpdateAddress")]
+      [Authorize]
       public async Task<AddressResponse> UpdateAddress(UserAddressUpdateRequest request) {
          return await _service.UpdateAddress(request);
       }
 
       [HttpPut("UserUpdateInfo")]
+      [Authorize]
       public async Task<bool> UserUpdateInfo(UserResponse userInfo) {
          return await _service.UserUpdateInfo(userInfo);
       }
@@ -50,11 +54,6 @@ namespace knowledge_hub.WebAPI.Controllers
       [HttpGet("GetDetailedUserInfo")]
       public async Task<UserDataResponse> GetDetailedUserInfo(int ID) {
          return await _service.GetDetailedUserInfo(ID);
-      }
-
-      [HttpGet("Search")]
-      public async Task<List<UserResponse>> SearchUser(string search) {
-         return await _service.SearchUser(search);
       }
    }
 }

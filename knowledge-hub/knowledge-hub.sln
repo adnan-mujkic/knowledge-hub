@@ -5,8 +5,6 @@ VisualStudioVersion = 17.2.32519.379
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "knowledge-hub.WebAPI", "knowledge-hub.WebAPI\knowledge-hub.WebAPI.csproj", "{E6237F6C-F04C-4B93-B22F-0F4116825E80}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "knowledge-hub.WinUI", "knowledge-hub.WinUI\knowledge-hub.WinUI.csproj", "{AC52A6A9-56C1-4245-8E59-66F8EA122FF4}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "knowledge-hub.Desktop", "WindowsFormsApp1\knowledge-hub.Desktop.csproj", "{5588B0C1-0327-4A5E-8CAD-236CC652A5EF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "knowledge-hub.Models", "knowledge-hub.Models\knowledge-hub.Models.csproj", "{C6D997C7-C0D7-4102-9C0E-D17F8D9E6673}"
@@ -21,10 +19,6 @@ Global
 		{E6237F6C-F04C-4B93-B22F-0F4116825E80}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E6237F6C-F04C-4B93-B22F-0F4116825E80}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E6237F6C-F04C-4B93-B22F-0F4116825E80}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AC52A6A9-56C1-4245-8E59-66F8EA122FF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AC52A6A9-56C1-4245-8E59-66F8EA122FF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AC52A6A9-56C1-4245-8E59-66F8EA122FF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AC52A6A9-56C1-4245-8E59-66F8EA122FF4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5588B0C1-0327-4A5E-8CAD-236CC652A5EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5588B0C1-0327-4A5E-8CAD-236CC652A5EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5588B0C1-0327-4A5E-8CAD-236CC652A5EF}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -138,6 +138,7 @@ namespace WindowsFormsApp1.Forms.Book
          this.DescriptionInput.Name = "DescriptionInput";
          this.DescriptionInput.Size = new System.Drawing.Size(311, 143);
          this.DescriptionInput.TabIndex = 21;
+         this.DescriptionInput.Validating += new System.ComponentModel.CancelEventHandler(this.DescriptionInput_Validating);
          // 
          // label5
          // 
@@ -155,6 +156,7 @@ namespace WindowsFormsApp1.Forms.Book
          this.AuthorInput.Name = "AuthorInput";
          this.AuthorInput.Size = new System.Drawing.Size(311, 22);
          this.AuthorInput.TabIndex = 19;
+         this.AuthorInput.Validating += new System.ComponentModel.CancelEventHandler(this.AuthorInput_Validating);
          // 
          // label6
          // 
@@ -173,6 +175,7 @@ namespace WindowsFormsApp1.Forms.Book
          this.NameInput.Name = "NameInput";
          this.NameInput.Size = new System.Drawing.Size(311, 41);
          this.NameInput.TabIndex = 17;
+         this.NameInput.Validating += new System.ComponentModel.CancelEventHandler(this.NameInput_Validating);
          // 
          // label1
          // 

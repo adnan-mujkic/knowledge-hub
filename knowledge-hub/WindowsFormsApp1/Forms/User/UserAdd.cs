@@ -7,24 +7,17 @@ using knowledge_hub.Desktop.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using knowledge_hub.Forms.User;
+using WindowsFormsApp1.Helpers;
 
 namespace WindowsFormsApp1.Forms.User
 {
    public partial class UserAdd : UserControl
    {
       List<string> errorMessages;
-      Regex hasNumber = new Regex(@"[0-9]+");
-      Regex hasUpperChar = new Regex(@"[A-Z]+");
-      Regex hasMinimum8Chars = new Regex(@".{8,}");
-      string emailPattern = @"^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$";
 
       public UserAdd() {
          InitializeComponent();
@@ -46,7 +39,7 @@ namespace WindowsFormsApp1.Forms.User
          }
 
          errorMessages.Remove("Email not correct format");
-         if (!Regex.IsMatch(EmailInput.Text, emailPattern))
+         if (!Validation.IsEmail(EmailInput.Text))
          {
             errorMessages.Add("Email not correct format");
             e.Cancel = false;
@@ -64,9 +57,7 @@ namespace WindowsFormsApp1.Forms.User
          }
 
          errorMessages.Remove("Password needs to have a number, an upper character and a minimum of 8 characters!");
-         if (!hasNumber.IsMatch(PasswordInput.Text) ||
-            !hasUpperChar.IsMatch(PasswordInput.Text) ||
-            !hasMinimum8Chars.IsMatch(PasswordInput.Text))
+         if (!Validation.IsPassword(PasswordInput.Text))
          {
             errorMessages.Add("Password needs to have a number, an upper character and a minimum of 8 characters!");
             e.Cancel = false;

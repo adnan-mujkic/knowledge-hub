@@ -16,6 +16,5 @@ namespace knowledge_hub.WebAPI.Intefraces
       Task<AddressResponse> UpdateAddress(UserAddressUpdateRequest request);
       Task<bool> UserUpdateInfo(UserResponse userInfo);
       Task<UserDataResponse> GetDetailedUserInfo(int ID);
-      Task<List<UserResponse>> SearchUser(string search);
    }
 }

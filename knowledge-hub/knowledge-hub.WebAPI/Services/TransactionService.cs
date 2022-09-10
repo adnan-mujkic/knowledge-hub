@@ -17,7 +17,7 @@ namespace knowledge_hub.WebAPI.Services
          _mapper = mapper;
       }
 
-      public override async Task<List<TransactionResponse>> Get() {
+      public override async Task<List<TransactionResponse>> Get(string search) {
          try
          {
             var transactions = await _dbContext.Transactions

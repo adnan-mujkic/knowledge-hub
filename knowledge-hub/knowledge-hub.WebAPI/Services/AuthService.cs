@@ -32,7 +32,9 @@ namespace knowledge_hub.WebAPI.Services
          try
          {
             var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
-            var credentials = authHeader.Parameter.Split(':');
+            var base64String = Convert.FromBase64String(authHeader.Parameter);
+            var userNamePass = UTF8Encoding.UTF8.GetString(base64String);
+            var credentials = userNamePass.Split(':');
             var request = new AuthenticationRequest
             {
                Email = credentials[0],

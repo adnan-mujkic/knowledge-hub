@@ -15,13 +15,27 @@ namespace WindowsFormsApp1.Forms
       public delegate void InputSubmitDelegate(string value);
       public event InputSubmitDelegate inputSubmitDelegate;
 
+      List<string> errorMessages;
+
       public SingleTextInputForm(string label, string textPlaceholder = "") {
          InitializeComponent();
          label1.Text = label;
          textBox1.Text = textPlaceholder;
+         errorMessages = new List<string>();
       }
 
       private void OkButton_Click(object sender, EventArgs e) {
+         ValidateChildren();
+         if (errorMessages.Count > 0)
+         {
+            string finalErrors = "";
+            foreach (var errMsg in errorMessages)
+            {
+               finalErrors += errMsg + "\n";
+            }
+            MessageBox.Show(finalErrors);
+            return;
+         }
          if (inputSubmitDelegate != null)
             inputSubmitDelegate.Invoke(textBox1.Text);
          this.Hide();
@@ -32,5 +46,15 @@ namespace WindowsFormsApp1.Forms
             inputSubmitDelegate.Invoke("");
          this.Hide();
       }
-   }
+
+        private void textBox1_Validating(object sender, CancelEventArgs e) {
+         errorMessages.Remove("Text cannot be empty!");
+         if (string.IsNullOrWhiteSpace(textBox1.Text))
+         {
+            errorMessages.Add("Text cannot be empty!");
+            e.Cancel = false;
+            return;
+         }
+      }
+    }
 }

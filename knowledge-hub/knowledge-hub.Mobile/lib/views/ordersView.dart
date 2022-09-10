@@ -45,7 +45,7 @@ class OrdersViewState extends State<OrdersViewWidget> {
     final response = await http.get(Uri.parse(url), headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization':
-          "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
+          "Basic ${base64Encode(utf8.encode('${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}'))}"
     });
     if (response.statusCode == 200) {
       var jsonBody = jsonDecode(response.body);

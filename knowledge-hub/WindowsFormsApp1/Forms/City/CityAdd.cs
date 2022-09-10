@@ -82,5 +82,29 @@ namespace WindowsFormsApp1.Forms.City
 
          return true;
       }
+
+        private void CityAdd_Load(object sender, EventArgs e) {
+
+        }
+
+      private void CityCountryInput_Validating(object sender, CancelEventArgs e) {
+         errorMessages.Remove("Country name cannot be empty");
+         if (!string.IsNullOrWhiteSpace(CityCountryInput.Text))
+         {
+            errorMessages.Add("Country name cannot be empty");
+            e.Cancel = false;
+            return;
+         }
+      }
+
+      private void CityNameInput_Validating(object sender, CancelEventArgs e) {
+         errorMessages.Remove("City name cannot be empty");
+         if (!string.IsNullOrWhiteSpace(CityNameInput.Text))
+         {
+            errorMessages.Add("City name cannot be empty");
+            e.Cancel = false;
+            return;
+         }
+      }
    }
 }

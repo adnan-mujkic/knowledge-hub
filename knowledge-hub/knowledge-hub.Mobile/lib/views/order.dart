@@ -49,7 +49,7 @@ class OrderWidget extends State<OrderController> {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization':
-              "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
+              "Basic ${base64Encode(utf8.encode('${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}'))}"
         },
         body: jsonEncode(
             {'comment': widget.comment, 'orderStatus': getOrderStatusEnum()}));

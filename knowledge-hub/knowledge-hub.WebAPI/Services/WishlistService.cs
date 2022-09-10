@@ -16,7 +16,7 @@ namespace knowledge_hub.WebAPI.Services
          _mapper = mapper;
       }
 
-      public override Task<List<WishlistResponse>> Get() {
+      public override Task<List<WishlistResponse>> Get(string search) {
          return null;
       }
 

@@ -18,12 +18,13 @@ namespace knowledge_hub.WebAPI.Services
          _mapper = mapper;
       }
 
-      public override async Task<List<UserResponse>> Get() {
+      public override async Task<List<UserResponse>> Get(string search) {
          List<User> users = new List<User>();
          List<Role> roles = await _dbContext.Roles.ToListAsync();
          List<UserRoles> userRoles = new List<UserRoles>();
-         users = await _dbContext.Users
-               .ToListAsync();
+         users = string.IsNullOrWhiteSpace(search)?
+            await _dbContext.Users.ToListAsync():
+            await _dbContext.Users.Where(x => x.Username == search).ToListAsync();
          userRoles = await _dbContext.UserRoles
             .ToListAsync();
 

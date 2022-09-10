@@ -3,6 +3,7 @@ using knowledge_hub.WebAPI.Model.Requests;
 using knowledge_hub.WebAPI.Model.Responses;
 using knowledge_hub.WebAPI.Intefraces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace knowledge_hub.WebAPI.Controllers
 {
@@ -20,6 +21,12 @@ namespace knowledge_hub.WebAPI.Controllers
       [HttpGet("Check")]
       public async Task<bool> Check(WishlistInsertRequest request) {
          return await _service.Check(request);
+      }
+
+      [HttpDelete]
+      [Authorize]
+      public override Task<bool> Delete(int ID) {
+         return base.Delete(ID);
       }
    }
 }

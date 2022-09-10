@@ -14,28 +14,32 @@ namespace knowledge_hub.WebAPI.Controllers
       }
 
       [HttpGet]
-      public async Task<List<T>> Get() {
-         return await _crudService.Get();
+      [Authorize]
+      public async Task<List<T>> Get(string? search) {
+         return await _crudService.Get(search);
       }
 
       [HttpGet("{ID}")]
+      [Authorize]
       public async Task<T> GetById(int ID) {
          return await _crudService.GetById(ID, Request.Scheme + "//" + Request.Host);
       }
 
       [HttpPost]
+      [Authorize]
       public async Task<T> Insert(TInsert insertRequest) {
          return await _crudService.Insert(insertRequest);
       }
 
       [HttpPut]
+      [Authorize]
       public async Task<T> Update(int ID, TUpdate updateRequest) {
          return await _crudService.Update(ID, updateRequest);
       }
 
       [HttpDelete]
       [Authorize(Roles = "Admin")]
-      public async Task<bool> Delete(int ID) {
+      public virtual async Task<bool> Delete(int ID) {
          return await _crudService.Delete(ID);
       }
    }

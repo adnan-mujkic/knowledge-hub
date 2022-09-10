@@ -209,6 +209,7 @@
     <Compile Include="Helpers\ImageHelper.cs" />
     <Compile Include="Helpers\PanelHelper.cs" />
     <Compile Include="Helpers\RolesHelper.cs" />
+    <Compile Include="Helpers\Validation.cs" />
     <Compile Include="PersistentData.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -227,6 +228,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Category\CategoryList.resx">
       <DependentUpon>CategoryList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\City\CityAdd.resx">
+      <DependentUpon>CityAdd.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\City\CityEdit.resx">
+      <DependentUpon>CityEdit.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\City\CityList.resx">
       <DependentUpon>CityList.cs</DependentUpon>
@@ -256,6 +263,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Report\TopWorstBooks.resx">
       <DependentUpon>TopWorstBooks.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SingleTextInputForm.resx">
+      <DependentUpon>SingleTextInputForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Transactions\TransactionList.resx">
       <DependentUpon>TransactionList.cs</DependentUpon>

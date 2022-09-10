@@ -198,5 +198,35 @@ namespace WindowsFormsApp1.Forms.Book
             Cursor.Current = Cursors.Default;
          }
       }
+
+      private void NameInput_Validating(object sender, CancelEventArgs e) {
+         errorMessages.Remove("Book name cannot be empty!");
+         if (string.IsNullOrWhiteSpace(NameInput.Text))
+         {
+            errorMessages.Add("Book name cannot be empty!");
+            e.Cancel = false;
+            return;
+         }
+      }
+
+      private void AuthorInput_Validating(object sender, CancelEventArgs e) {
+         errorMessages.Remove("Author name cannot be empty!");
+         if (string.IsNullOrWhiteSpace(AuthorInput.Text))
+         {
+            errorMessages.Add("Author name cannot be empty!");
+            e.Cancel = false;
+            return;
+         }
+      }
+
+      private void DescriptionInput_Validating(object sender, CancelEventArgs e) {
+         errorMessages.Remove("Book description cannot be empty!");
+         if (string.IsNullOrWhiteSpace(DescriptionInput.Text))
+         {
+            errorMessages.Add("Book description name cannot be empty!");
+            e.Cancel = false;
+            return;
+         }
+      }
    }
 }

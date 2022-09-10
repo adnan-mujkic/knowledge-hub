@@ -7,10 +7,15 @@ namespace knowledge_hub.WebAPI.Database
    {
       [Key]
       public int TransactionId { get; set; }
+
+      [Required]
       public int? OrderId { get; set; }
       [ForeignKey("OrderId")]
       public virtual Order Order { get; set; }
+
+      [Required]
       public int? CardInfoId { get; set; }
+
       [ForeignKey("CardInfoId")]
       public virtual CardInfo CardInfo { get; set; }
       public DateTime TransactionTime { get; set; }

@@ -19,8 +19,10 @@ namespace knowledge_hub.WebAPI.Services
          _mapper = mapper;
          _env = env;
       }
-      public override async Task<List<BookResponse>> Get() {
-         var databaseEntities = await _dbContext.Set<Book>()
+      public override async Task<List<BookResponse>> Get(string? search) {
+         var databaseEntities = await (string.IsNullOrEmpty(search)?
+            _dbContext.Books:
+            _dbContext.Books.Where(x => x.Name.Contains(search)))
             .Include(c => c.category)
             .Include(l => l.language)
             .ToListAsync();
@@ -113,29 +115,6 @@ namespace knowledge_hub.WebAPI.Services
          await _dbContext.Books.AddAsync(bookToInsert);
          await _dbContext.SaveChangesAsync();
          return _mapper.Map<BookResponse>(bookToInsert);
-      }
-      private static Image ByteArrayToSystemDrawing(byte[] byteArrayIn) {
-         MemoryStream ms = new MemoryStream(byteArrayIn, 0, byteArrayIn.Length);
-         ms.Write(byteArrayIn, 0, byteArrayIn.Length);
-         return Image.FromStream(ms, true);
-      }
-
-      public async Task<List<BookResponse>> GetBooksWithIds(string ids) {
-         string[] idMap = ids.Split(",");
-         List<int> idList = new List<int>();
-         for (int i = 0; i < idMap.Length; i++)
-         {
-            idList.Add(Convert.ToInt32(idMap[i]));
-         }
-         return _mapper.Map<List<BookResponse>>(_dbContext.Books.Where(x => idList.Contains(x.BookId)).ToList());
-      }
-
-      public async Task<List<BookResponse>> SearchBooks(string search) {
-         var booksSelected = await _dbContext.Books
-            .Where(x => x.Name.Contains(search))
-            .ToListAsync();
-
-         return _mapper.Map<List<BookResponse>>(booksSelected);
       }
 
       public async Task<List<BookResponse>> GetRecommenedCourses(int userId) {

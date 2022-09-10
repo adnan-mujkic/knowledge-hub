@@ -5,6 +5,7 @@ import 'package:knowledge_hub_mobile/services/accountService.dart';
 import 'package:knowledge_hub_mobile/services/persistentDataService.dart';
 import 'package:event/event.dart';
 import 'package:http/http.dart' as http;
+import 'package:knowledge_hub_mobile/validationHelper.dart';
 
 import '../models/city.dart';
 
@@ -23,14 +24,20 @@ class ChangeAddressWidget extends StatefulWidget {
 }
 
 class ChangeAddressState extends State<ChangeAddressWidget> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   changeAddress() async {
+    final FormState? form = _formKey.currentState;
+    if (form == null || !form.validate()) {
+      return;
+    }
     final response = await http.post(
       Uri.parse(
           '${PersistentDataService.instance.BackendUri}/api/User/UpdateAddress'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization':
-            "Basic ${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}"
+            "Basic ${base64Encode(utf8.encode('${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}'))}"
       },
       body: jsonEncode({
         'userId': AccountService.instance.userData.UserId,
@@ -59,152 +66,161 @@ class ChangeAddressState extends State<ChangeAddressWidget> {
         alignment: Alignment.bottomCenter,
         child: Container(
             margin: EdgeInsets.only(top: 10, right: 30, left: 30),
-            child: Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(top: 10),
-                  child: Text(
-                    "Address",
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blueGrey),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(top: 10),
+                    child: Text(
+                      "Address",
+                      style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blueGrey),
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 10, bottom: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(left: 10),
-                        child: Text("Full Name:"),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 10),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: Color.fromARGB(10, 0, 0, 0),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 10, bottom: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(left: 10),
+                          child: Text("Full Name:"),
                         ),
-                        child: SizedBox(
-                            child: Padding(
-                          padding: EdgeInsets.only(
-                              top: 0, bottom: 0, right: 20, left: 20),
-                          child: TextField(
-                            decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: this.widget.userAddress.FullName),
-                            style: const TextStyle(fontSize: 12),
-                            onChanged: (String? value) {
-                              this.widget.userAddress.FullName = value;
-                            },
+                        Container(
+                          margin: const EdgeInsets.only(top: 10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            color: Color.fromARGB(10, 0, 0, 0),
                           ),
-                        )),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 10, bottom: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(left: 10),
-                        child: Text("Address Line:"),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 10),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: Color.fromARGB(10, 0, 0, 0),
-                        ),
-                        child: SizedBox(
-                            child: Padding(
-                          padding: EdgeInsets.only(
-                              top: 0, bottom: 0, right: 20, left: 20),
-                          child: TextField(
-                            decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: this.widget.userAddress.AdressLine),
-                            style: const TextStyle(fontSize: 12),
-                            onChanged: (String? value) {
-                              this.widget.userAddress.AdressLine = value;
-                            },
-                          ),
-                        )),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 10, bottom: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(left: 10),
-                        child: Text("City:"),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 10),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Color.fromARGB(10, 0, 0, 0),
-                        ),
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: Padding(
-                            padding: const EdgeInsets.only(
+                          child: SizedBox(
+                              child: Padding(
+                            padding: EdgeInsets.only(
                                 top: 0, bottom: 0, right: 20, left: 20),
-                            child: DropdownButton<String>(
-                              value: widget.userAddress.City,
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  widget.userAddress.City = newValue;
-                                });
+                            child: TextFormField(
+                              validator: emptyValidation,
+                              initialValue:
+                                  AccountService.instance.addressData.FullName,
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: this.widget.userAddress.FullName),
+                              style: const TextStyle(fontSize: 12),
+                              onChanged: (String? value) {
+                                this.widget.userAddress.FullName = value;
                               },
-                              items: PersistentDataService.instance.cities
-                                  .map<DropdownMenuItem<String>>((City value) {
-                                return DropdownMenuItem<String>(
-                                  value: value.Name,
-                                  child: Text(value.Name),
-                                );
-                              }).toList(),
+                            ),
+                          )),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 10, bottom: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(left: 10),
+                          child: Text("Address Line:"),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            color: Color.fromARGB(10, 0, 0, 0),
+                          ),
+                          child: SizedBox(
+                              child: Padding(
+                            padding: EdgeInsets.only(
+                                top: 0, bottom: 0, right: 20, left: 20),
+                            child: TextFormField(
+                              validator: emptyValidation,
+                              initialValue: AccountService
+                                  .instance.addressData.AdressLine,
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: this.widget.userAddress.AdressLine),
+                              style: const TextStyle(fontSize: 12),
+                              onChanged: (String? value) {
+                                this.widget.userAddress.AdressLine = value;
+                              },
+                            ),
+                          )),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 10, bottom: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(left: 10),
+                          child: Text("City:"),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Color.fromARGB(10, 0, 0, 0),
+                          ),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 0, bottom: 0, right: 20, left: 20),
+                              child: DropdownButton<String>(
+                                value: widget.userAddress.City,
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    widget.userAddress.City = newValue;
+                                  });
+                                },
+                                items: PersistentDataService.instance.cities
+                                    .map<DropdownMenuItem<String>>(
+                                        (City value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value.Name,
+                                    child: Text(value.Name),
+                                  );
+                                }).toList(),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.green),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(10)))),
-                      onPressed: () {
-                        changeAddress();
-                        widget.saveChangesEvent.broadcast();
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.all(15),
-                        child: Text("Save"),
-                      )),
-                ),
-              ],
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(Colors.green),
+                            shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)))),
+                        onPressed: () {
+                          changeAddress();
+                          widget.saveChangesEvent.broadcast();
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Text("Save"),
+                        )),
+                  ),
+                ],
+              ),
             )),
       ),
     );

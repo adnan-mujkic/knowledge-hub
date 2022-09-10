@@ -38,10 +38,10 @@ namespace WindowsFormsApp1.Forms
          // 
          this.label1.AutoEllipsis = true;
          this.label1.AutoSize = true;
-         this.label1.Location = new System.Drawing.Point(47, 25);
-         this.label1.MaximumSize = new System.Drawing.Size(400, 20);
+         this.label1.Location = new System.Drawing.Point(47, 20);
+         this.label1.MaximumSize = new System.Drawing.Size(400, 16);
          this.label1.Name = "label1";
-         this.label1.Size = new System.Drawing.Size(122, 20);
+         this.label1.Size = new System.Drawing.Size(117, 16);
          this.label1.TabIndex = 0;
          this.label1.Text = "labelaaaaaaaaaa";
          this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -51,9 +51,10 @@ namespace WindowsFormsApp1.Forms
          this.OkButton.BackColor = System.Drawing.Color.BurlyWood;
          this.OkButton.FlatAppearance.BorderSize = 0;
          this.OkButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-         this.OkButton.Location = new System.Drawing.Point(110, 147);
+         this.OkButton.Location = new System.Drawing.Point(110, 118);
+         this.OkButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
          this.OkButton.Name = "OkButton";
-         this.OkButton.Size = new System.Drawing.Size(106, 44);
+         this.OkButton.Size = new System.Drawing.Size(106, 35);
          this.OkButton.TabIndex = 1;
          this.OkButton.Text = "OK";
          this.OkButton.UseVisualStyleBackColor = false;
@@ -61,19 +62,22 @@ namespace WindowsFormsApp1.Forms
          // 
          // textBox1
          // 
-         this.textBox1.Location = new System.Drawing.Point(47, 80);
+         this.textBox1.Location = new System.Drawing.Point(47, 64);
+         this.textBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
          this.textBox1.Name = "textBox1";
-         this.textBox1.Size = new System.Drawing.Size(388, 27);
+         this.textBox1.Size = new System.Drawing.Size(388, 22);
          this.textBox1.TabIndex = 3;
+         this.textBox1.Validating += new System.ComponentModel.CancelEventHandler(this.textBox1_Validating);
          // 
          // CancelButton
          // 
          this.CancelButton.BackColor = System.Drawing.Color.BurlyWood;
          this.CancelButton.FlatAppearance.BorderSize = 0;
          this.CancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-         this.CancelButton.Location = new System.Drawing.Point(273, 147);
+         this.CancelButton.Location = new System.Drawing.Point(273, 118);
+         this.CancelButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
          this.CancelButton.Name = "CancelButton";
-         this.CancelButton.Size = new System.Drawing.Size(106, 44);
+         this.CancelButton.Size = new System.Drawing.Size(106, 35);
          this.CancelButton.TabIndex = 4;
          this.CancelButton.Text = "Cancel";
          this.CancelButton.UseVisualStyleBackColor = false;
@@ -81,15 +85,16 @@ namespace WindowsFormsApp1.Forms
          // 
          // SingleTextInputForm
          // 
-         this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+         this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.ClientSize = new System.Drawing.Size(498, 224);
+         this.ClientSize = new System.Drawing.Size(498, 179);
          this.ControlBox = false;
          this.Controls.Add(this.CancelButton);
          this.Controls.Add(this.textBox1);
          this.Controls.Add(this.OkButton);
          this.Controls.Add(this.label1);
          this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+         this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
          this.Name = "SingleTextInputForm";
          this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
          this.Text = "SingleTextInputForm";
