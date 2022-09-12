@@ -104,7 +104,7 @@ class AccountService {
     Iterable iterable = jsonObject['myBooks'];
     instance.myBooks = List<Book>.from(iterable.map((e) => Book.fromJson(e)));
     iterable = jsonObject['wishlist'];
-    instance.wishlist = List<int>.from(iterable.map((e) => jsonDecode(e)));
+    instance.wishlist = List<int>.from(iterable.map((e) => e));
     iterable = jsonObject['cart'];
     instance.cart =
         List<CartItemSave>.from(iterable.map((e) => CartItemSave.fromJson(e)));

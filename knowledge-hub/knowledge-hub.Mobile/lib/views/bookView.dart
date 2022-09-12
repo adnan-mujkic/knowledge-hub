@@ -179,7 +179,9 @@ class BookViewState extends State<BookViewWidget> {
           'rating': widget.reviewScore,
           'commentText': widget.commentText
         }));
-    if (response.statusCode == 200) {}
+    if (response.statusCode == 200) {
+      setState(() {});
+    }
   }
 
   Future<List<Comment>> getReviews(int bookId) async {

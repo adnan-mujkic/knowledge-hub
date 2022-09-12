@@ -38,7 +38,7 @@ namespace knowledge_hub.WebAPI.Controllers
       }
 
       [HttpDelete]
-      [Authorize(Roles = "Admin")]
+      [Authorize(Roles = "Admin,User")]
       public virtual async Task<bool> Delete(int ID) {
          return await _crudService.Delete(ID);
       }

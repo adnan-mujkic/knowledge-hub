@@ -24,9 +24,9 @@ namespace knowledge_hub.WebAPI.Controllers
       }
 
       [HttpDelete]
-      [Authorize]
+      [Authorize(Roles = "Admin,User")]
       public override Task<bool> Delete(int ID) {
          return base.Delete(ID);
       }
-   }
+    }
 }

@@ -148,6 +148,13 @@ class CartState extends State<CartWidget> {
           PersistentDataService.instance.screenWideNotification
               .broadcast(Value<String>("Payment Complete!"));
         });
+      } else {
+        setState(() {
+          step = 0;
+          viewingPayment = false;
+          PersistentDataService.instance.screenWideNotification
+              .broadcast(Value<String>("Error processing payment!"));
+        });
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

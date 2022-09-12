@@ -21,10 +21,9 @@ namespace knowledge_hub.WebAPI.Database
       public DbSet<Transaction> Transactions { get; set; }
       public DbSet<BookUserWishlist> Whishlist { get; set; }
       public DbSet<Address> Addresses { get; set; }
+      public DbSet<OrderAddress> OrderAddresses { get; set; }
 
-
-
-      protected override void OnModelCreating(ModelBuilder modelBuilder) {
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
          modelBuilder.Entity<User>()
             .HasOne(u => u.UserRole)
             .WithOne(r => r.User)

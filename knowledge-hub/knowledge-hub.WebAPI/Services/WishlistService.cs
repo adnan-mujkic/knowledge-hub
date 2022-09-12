@@ -17,7 +17,7 @@ namespace knowledge_hub.WebAPI.Services
       }
 
       public override Task<List<WishlistResponse>> Get(string search) {
-         return null;
+         return Task.FromResult(new List<WishlistResponse>());
       }
 
       public async Task<List<BookResponse>> GetByUserId(int userId) {

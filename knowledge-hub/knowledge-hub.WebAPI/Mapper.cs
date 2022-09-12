@@ -39,8 +39,15 @@ namespace knowledge_hub.WebAPI
             .ForMember(dest => dest.CardDate, opt => opt.MapFrom(src => src.Date))
             .ReverseMap();
 
-         CreateMap<Order, OrderResponse>()
+         CreateMap<OrderAddress, OrderResponse>()
             .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City.Name))
+            .ForMember(dest => dest.Book, opt => opt.MapFrom(src => src.Order.Book))
+            .ForMember(dest => dest.BookId, opt => opt.MapFrom(src => src.Order.BookId))
+            .ForMember(dest => dest.OrderNumber, opt => opt.MapFrom(src => src.Order.OrderNumber))
+            .ForMember(dest => dest.OrderStatus, opt => opt.MapFrom(src => src.Order.OrderStatus))
+            .ForMember(dest => dest.ShippingDate, opt => opt.MapFrom(src => src.Order.ShippingDate))
+            .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Order.UserId))
+            .ForMember(dest => dest.UserFullName, opt => opt.MapFrom(src => src.Order.UserFullName))
             .ReverseMap();
 
          CreateMap<City, CityResponse>().ReverseMap();

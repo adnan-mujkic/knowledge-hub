@@ -28,10 +28,5 @@ namespace knowledge_hub.WebAPI.Database
       public DateTime ShippingDate { get; set; }
 
       public int OrderStatus { get; set; }
-
-      public string? Comment { get; set; }
-      public string? AddressLine { get; set; }
-      public int? CityId { get; set; }
-      public City City { get; set; }
    }
 }

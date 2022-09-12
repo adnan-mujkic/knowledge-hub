@@ -68,10 +68,17 @@ class RegisterState extends State<RegisterWidget> {
         loading = false;
         loginOrUserRegistration = false;
       });
+    } else if (response.statusCode == 400) {
+      setState(() {
+        errorText = "Error registering!";
+        loading = false;
+        showDialogue = true;
+      });
     } else {
       setState(() {
-        showDialogue = true;
+        errorText = "Error contacting server!";
         loading = false;
+        showDialogue = true;
       });
     }
   }

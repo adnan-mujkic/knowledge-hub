@@ -60,10 +60,17 @@ class LoginState extends State<LoginWidget> {
       AccountService.instance.cart = as.cart;
       AccountService.instance.saveFileToDisk();
       widget.loginEvent.broadcast();
+    } else if (response.statusCode == 400) {
+      setState(() {
+        errorText = "User not found!";
+        loading = false;
+        showDialogue = true;
+      });
     } else {
       setState(() {
-        showDialogue = true;
+        errorText = "Error contacting server!";
         loading = false;
+        showDialogue = true;
       });
     }
   }

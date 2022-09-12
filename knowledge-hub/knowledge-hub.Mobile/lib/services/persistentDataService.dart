@@ -53,7 +53,8 @@ class PersistentDataService {
       );
 
       if (response.statusCode == 200) {
-        Book book = jsonDecode(response.body) as Book;
+        var jsonObject = jsonDecode(response.body);
+        Book book = Book.fromJson(jsonObject);
 
         CartItem ci = CartItem();
         ci.book = book;
