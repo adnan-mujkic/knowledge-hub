@@ -13,8 +13,8 @@ class PersistentDataService {
   static final PersistentDataService instance =
       PersistentDataService._privateConstructor();
 
-  //String BackendUri = "http://10.0.2.2:5000";
-  String BackendUri = "http://10.0.2.2:5125";
+  String BackendUri = "http://10.0.2.2:5000";
+  //String BackendUri = "http://10.0.2.2:5125";
   List<City> cities = List<City>.empty(growable: true);
   List<CartItem> cart = List<CartItem>.empty(growable: true);
   var screenWideNotification = Event<Value<String>>();

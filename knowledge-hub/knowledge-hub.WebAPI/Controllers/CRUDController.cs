@@ -15,13 +15,13 @@ namespace knowledge_hub.WebAPI.Controllers
 
       [HttpGet]
       [Authorize]
-      public async Task<List<T>> Get(string? search) {
+      public virtual async Task<List<T>> Get(string? search) {
          return await _crudService.Get(search);
       }
 
       [HttpGet("{ID}")]
       [Authorize]
-      public async Task<T> GetById(int ID) {
+      public virtual async Task<T> GetById(int ID) {
          return await _crudService.GetById(ID, Request.Scheme + "//" + Request.Host);
       }
 

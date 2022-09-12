@@ -28,20 +28,22 @@ class UserManagmentState extends State<UserManagmentWidget> {
     if (form == null || !form.validate()) {
       return;
     }
-    final response = await http.put(
-      Uri.parse(
-          '${PersistentDataService.instance.BackendUri}/api/User?ID=${AccountService.instance.userData.UserId.toString()}'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization':
-            "Basic ${base64Encode(utf8.encode('${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}'))}"
-      },
-      body: jsonEncode({
-        'username': widget.username,
-        'biography': widget.biography,
-        'imagePath': ''
-      }),
-    );
+    final response = await http
+        .put(
+          Uri.parse(
+              '${PersistentDataService.instance.BackendUri}/api/User?ID=${AccountService.instance.userData.UserId.toString()}'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization':
+                "Basic ${base64Encode(utf8.encode('${AccountService.instance.authData.Email}:${AccountService.instance.authData.Password}'))}"
+          },
+          body: jsonEncode({
+            'username': widget.username,
+            'biography': widget.biography,
+            'imagePath': ''
+          }),
+        )
+        .timeout(const Duration(seconds: 5));
 
     if (response.statusCode == 200) {
       Map<String, dynamic> map = jsonDecode(response.body);

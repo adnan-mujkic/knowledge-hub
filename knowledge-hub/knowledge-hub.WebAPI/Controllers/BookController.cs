@@ -20,5 +20,17 @@ namespace knowledge_hub.WebAPI.Controllers
       public async Task<List<BookResponse>> GetRecommenedCourses(int userId) {
          return await _service.GetRecommenedCourses(userId);
       }
+
+      [HttpGet("{ID}")]
+      [AllowAnonymous]
+      public override Task<BookResponse> GetById(int ID) {
+         return base.GetById(ID);
+      }
+
+      [HttpGet]
+      [AllowAnonymous]
+      public override Task<List<BookResponse>> Get(string? search) {
+         return base.Get(search);
+      }
    }
 }

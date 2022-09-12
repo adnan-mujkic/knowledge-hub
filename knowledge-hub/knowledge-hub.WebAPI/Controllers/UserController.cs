@@ -31,6 +31,7 @@ namespace knowledge_hub.WebAPI.Controllers
          return await _service.RegisterUser(request);
       }
       [HttpPost("UpdatePayment")]
+      [Authorize]
       public async Task<PaymentInfoResponse> UpdatePayment(UserPaymentInfoRequest request) {
          return await _service.UpdatePayment(request);
       }
@@ -52,6 +53,7 @@ namespace knowledge_hub.WebAPI.Controllers
       }
 
       [HttpGet("GetDetailedUserInfo")]
+      [Authorize]
       public async Task<UserDataResponse> GetDetailedUserInfo(int ID) {
          return await _service.GetDetailedUserInfo(ID);
       }
